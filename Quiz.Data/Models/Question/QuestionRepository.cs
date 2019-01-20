@@ -1,58 +1,36 @@
 using System.Linq;
+using QuizData.Repository;
 
 
 namespace QuizData.Models
 {
-    public class QuestionRepository : IQuestionRepository
+    public class QuestionRepository : Repository<Question>, IQuestionRepository
     {
-        private ApplicationDbContext context;
-        
-        public QuestionRepository(ApplicationDbContext ctx)
+        public QuestionRepository(ApplicationDbContext repositoryContext) : base(repositoryContext)
         {
-            context = ctx;
+            
         }
 
-        public IQueryable<Question> Questions => context.Questions;
+        public IQueryable<Question> Questions => GetObjList();
         
-        public void SaveQuestion(Question question)
+        public Question GetQuestionByID(int questionID)
         {
-            if (question.QuestionID == 0)
-            {
-                context.Questions.Add(question);
-            }
-            else
-            {
-                var dbEntry = context.Questions.FirstOrDefault(p => p.QuestionID == question.QuestionID);
+            return GetObjByID(questionID);
+        }
 
-                if (dbEntry != null)
-                {
-                    dbEntry.QuestionImage = question.QuestionImage;
-                    dbEntry.QuizID = question.QuizID;
-                    dbEntry.QuizThemeID = question.QuizThemeID;
-                    dbEntry.AnswerTypeID = question.AnswerTypeID;
-                    dbEntry.QuestionTypeID = question.QuestionTypeID;
-                    dbEntry.CorrectAnswer = question.CorrectAnswer;
-                }
-            }
-            context.SaveChanges();
+        public void AddQuestion(Question question)
+        {
+            AddObj(question);
+        }
+
+        public void UpdateQuestion(Question question)
+        {
+            UpdateObj(question);
         }
 
         public Question DeleteQuestion(int questionID)
         {
-            var dbEntry = context.Questions.FirstOrDefault(p => p.QuestionID == questionID);
-
-            if (dbEntry != null)
-            {
-                context.Questions.Remove(dbEntry);
-                context.SaveChanges();
-            }
-
-            return dbEntry;
-        }
-
-        public Question GetQuestionByID(int questionID)
-        {
-            return context.Questions.Find(questionID);
+            return DeleteObj(questionID);
         }
     }
 }

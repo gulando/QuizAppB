@@ -1,14 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using QuizData.EntityBase;
 
 
 namespace QuizData.Models
 {
-    public class Question
+    public class Question : BussinessEntityBase
     {
-        [Key]
-        public int QuestionID { get; set; }
-        
+        [Column("QuestionID")]
+        public override int ID { get; set; }
+
         [ForeignKey("Quiz")]
         public int QuizID { get; set; }
         

@@ -1,56 +1,37 @@
 using System.Linq;
 using QuizData.Models;
+using QuizData.Repository;
 
 
 namespace QuizData.Models
 {
-    public class AnswerRepository : IAnswerRepository
+    public class AnswerRepository : Repository<Answer>, IAnswerRepository
     {
-        private ApplicationDbContext context;
-        
-        public AnswerRepository(ApplicationDbContext ctx)
+        public AnswerRepository(ApplicationDbContext repositoryContext) : base(repositoryContext)
         {
-            context = ctx;
+            
         }
-
-        public IQueryable<Answer> Answers => context.Answers;
         
-        public void SaveAnswer(Answer answer)
-        {
-            if (answer.AnswerID == 0)
-            {
-                context.Answers.Add(answer);
-            }
-            else
-            {
-                var dbEntry = context.Answers.FirstOrDefault(p => p.AnswerID == answer.AnswerID);
+        public IQueryable<Answer> Answers => GetObjList();
 
-                if (dbEntry != null)
-                {
-                    dbEntry.AnswerText = answer.AnswerText;
-                    dbEntry.QuestionID = answer.QuestionID;
-                    dbEntry.AnswerTypeID = answer.AnswerTypeID;
-                }
-            }
-            context.SaveChanges();
+        public Answer GetAnswerByID(int answerID)
+        {
+            return GetObjByID(answerID);
+        }
+        
+        public void AddAnswer(Answer answer)
+        {
+            AddObj(answer);
+        }
+        
+        public void UpdateAnswer(Answer answer)
+        {
+            UpdateObj(answer);
         }
 
         public Answer DeleteAnswer(int answerID)
         {
-            var dbEntry = context.Answers.FirstOrDefault(p => p.AnswerID == answerID);
-
-            if (dbEntry != null)
-            {
-                context.Answers.Remove(dbEntry);
-                context.SaveChanges();
-            }
-
-            return dbEntry;
-        }
-
-        public Answer GetAnswerByID(int answerID)
-        {
-            return context.Answers.Find(answerID);
+            return DeleteObj(answerID);
         }
     }
 }

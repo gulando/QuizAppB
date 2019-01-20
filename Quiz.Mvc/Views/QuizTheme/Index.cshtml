@@ -5,7 +5,7 @@
 }
 <table class="table table-sm table-striped">
     <thead>
-    <tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th></tr>
+    <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
     </thead>
     <tbody>
     @foreach (var quiztheme in Model) {
@@ -15,10 +15,10 @@
             <td>
                 <form asp-action="Delete" method="post">
                     <a asp-action="Edit"
-                       class="btn btn-sm btn-warning" asp-route-id="@quiztheme.QuizID">
+                       class="btn btn-sm btn-warning" asp-route-id="@quiztheme.ID">
                         Edit
                     </a>
-                    <input type="hidden" name="id" value="@quiztheme.QuizID" />
+                    <input type="hidden" name="id" value="@quiztheme.ID" />
                     <button type="submit" class="btn btn-danger btn-sm">
                         Delete
                     </button>
@@ -29,4 +29,4 @@
     </tbody>
 </table>
 
-<a asp-action="Create" class="btn btn-primary">Create New Product</a>
+<a asp-action="Create" class="btn btn-primary">Create New QuizTheme</a>

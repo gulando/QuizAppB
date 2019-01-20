@@ -1,55 +1,36 @@
 using System.Linq;
-using QuizData.Models;
+using QuizData.Repository;
 
 
 namespace QuizData.Models
 {
-    public class QuestionTypeRepository : IQuestionTypeRepository
+    public class QuestionTypeRepository : Repository<QuestionType>, IQuestionTypeRepository
     {
-        private ApplicationDbContext context;
-        
-        public QuestionTypeRepository(ApplicationDbContext ctx)
+        public QuestionTypeRepository(ApplicationDbContext repositoryContext) : base(repositoryContext)
         {
-            context = ctx;
+            
         }
 
-        public IQueryable<QuestionType> QuestionTypes => context.QuestionTypes;
+        public IQueryable<QuestionType> QuestionTypes => GetObjList();
 
-        public void SaveQuestionType(QuestionType questionType)
+        public QuestionType GetQuestionByID(int questionTypeID)
         {
-            if (questionType.QuestionTypeID == 0)
-            {
-                context.QuestionTypes.Add(questionType);
-            }
-            else
-            {
-                QuestionType dbEntry = context.QuestionTypes.FirstOrDefault(p => p.QuestionTypeID == questionType.QuestionTypeID);
+            return GetObjByID(questionTypeID);
+        }
 
-                if (dbEntry != null)
-                {
-                    dbEntry.QuestionTypeName = questionType.QuestionTypeName;
-                    dbEntry.QuizID = questionType.QuizID;
-                }
-            }
-            context.SaveChanges();
+        public void AddQuestionType(QuestionType questionType)
+        {
+            AddObj(questionType);
+        }
+
+        public void UpdateQuestionType(QuestionType questionType)
+        {
+            UpdateObj(questionType);
         }
 
         public QuestionType DeleteQuestionType(int questionTypeID)
         {
-            var dbEntry = context.QuestionTypes.FirstOrDefault(p => p.QuestionTypeID == questionTypeID);
-
-            if (dbEntry != null)
-            {
-                context.QuestionTypes.Remove(dbEntry);
-                context.SaveChanges();
-            }
-
-            return dbEntry;
-        }
-
-        public QuestionType GetQuestionByID(int questionTypeID)
-        {
-            return context.QuestionTypes.Find(questionTypeID);
+            return DeleteObj(questionTypeID);
         }
     }
 }

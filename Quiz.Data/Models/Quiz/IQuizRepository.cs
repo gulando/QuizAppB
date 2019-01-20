@@ -7,10 +7,12 @@ namespace QuizData.Models
     {
         IQueryable<Quiz> Quizes { get; }
 
-        void SaveQuiz(Quiz quiz);
+        Quiz GetQuizByID(int quizID);
+        
+        void AddQuiz(Quiz quiz);
+        
+        void UpdateQuiz(Quiz quiz);
         
         Quiz DeleteQuiz(int quizID);
-        
-        Quiz GetQuizByID(int quizID); 
     }
 }

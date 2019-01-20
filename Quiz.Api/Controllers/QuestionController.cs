@@ -6,7 +6,7 @@ using QuizData.Models;
 
 namespace QuizApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class QuestionController : Controller
     {
         
@@ -29,18 +29,21 @@ namespace QuizApi.Controllers
         
         [HttpGet("{questionID}")]
         [Produces("application/json")]
-        public JsonResult GetQuestion(int questionID) => Json(_questionRepository.GetQuestionByID(questionID));
+        [ActionName("GetQuestionByID")]
+        public JsonResult GetQuestionByID(int questionID) => Json(_questionRepository.GetQuestionByID(questionID));
 
         [HttpGet]
         [Produces("application/json")]
-        public JsonResult GetAll() => Json(_questionRepository.Questions.ToList());
+        [ActionName("GetAllQuestions")]
+        public JsonResult GetAllQuestions() => Json(_questionRepository.Questions.ToList());
 
         [HttpPost]
+        [ActionName("AddQuestion")]
         public IActionResult AddQuestion([FromBody] Question res)
         {
             try
             {
-                _questionRepository.SaveQuestion(new Question
+                _questionRepository.AddQuestion(new Question
                 {
                     QuizID = res.QuizID,
                     QuizThemeID = res.QuizThemeID,
@@ -59,13 +62,14 @@ namespace QuizApi.Controllers
         }
 
         [HttpPut("{questionID}")]
+        [ActionName("UpdateQuestion")]
         public IActionResult UpdateQuestion(int questionID, [FromBody] Question res)
         {
             try
             {
-                _questionRepository.SaveQuestion(new Question
+                _questionRepository.UpdateQuestion(new Question
                 {
-                    QuestionID =  questionID,
+                    ID =  questionID,
                     QuizID = res.QuizID,
                     QuizThemeID = res.QuizThemeID,
                     AnswerTypeID = res.AnswerTypeID,
@@ -83,6 +87,7 @@ namespace QuizApi.Controllers
         }
         
         [HttpDelete("{questionID}")]
+        [ActionName("DeleteQuestion")]
         public IActionResult DeleteQuestion(int questionID)
         {
             try

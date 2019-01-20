@@ -1,55 +1,35 @@
 using System.Linq;
-using QuizData.Models;
+using QuizData.Repository;
 
 
 namespace QuizData.Models
 {
-    public class AnswerTypeRepository : IAnswerTypeRepository
+    public class AnswerTypeRepository : Repository<AnswerType>,  IAnswerTypeRepository
     {
-        private readonly ApplicationDbContext _context;
-        
-        public AnswerTypeRepository(ApplicationDbContext ctx)
+        public AnswerTypeRepository(ApplicationDbContext repositoryContext) : base(repositoryContext)
         {
-            _context = ctx;
         }
 
-        public IQueryable<AnswerType> AnswerTypes => _context.AnswerTypes;
-
-        public void SaveAnswerType(AnswerType answerType)
+        public IQueryable<AnswerType> AnswerTypes => GetObjList();
+        
+        public AnswerType GetAnswerTypeByID(int answerTypeID)
         {
-            if (answerType.AnswerTypeID == 0)
-            {
-                _context.AnswerTypes.Add(answerType);
-            }
-            else
-            {
-                AnswerType dbEntry = _context.AnswerTypes.FirstOrDefault(p => p.AnswerTypeID == answerType.AnswerTypeID);
+            return GetObjByID(answerTypeID);
+        }
 
-                if (dbEntry != null)
-                {
-                    dbEntry.AnswerTypeName = answerType.AnswerTypeName;
-                    dbEntry.QuizTD = answerType.QuizTD;
-                }
-            }
-            _context.SaveChanges();
+        public void AddAnswerType(AnswerType answerType)
+        {
+            AddObj(answerType);
+        }
+
+        public void UpdateAnswerType(AnswerType answerType)
+        {
+            UpdateObj(answerType);
         }
 
         public AnswerType DeleteAnswerType(int answerTypeID)
         {
-            var dbEntry = _context.AnswerTypes.FirstOrDefault(p => p.AnswerTypeID == answerTypeID);
-
-            if (dbEntry != null)
-            {
-                _context.AnswerTypes.Remove(dbEntry);
-                _context.SaveChanges();
-            }
-
-            return dbEntry;
-        }
-
-        public AnswerType GetAnswerTypeByID(int answerTypeID)
-        {
-            return _context.AnswerTypes.Find(answerTypeID);
+            return DeleteObj(answerTypeID);
         }
     }
 }

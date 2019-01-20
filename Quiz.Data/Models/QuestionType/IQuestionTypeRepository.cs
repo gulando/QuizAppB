@@ -7,10 +7,13 @@ namespace QuizData.Models
     {
         IQueryable<QuestionType> QuestionTypes { get; }
 
-        void SaveQuestionType(QuestionType questionType);
+        QuestionType GetQuestionByID(int questionTypeID);
+        
+        void AddQuestionType(QuestionType questionType);
+        
+        void UpdateQuestionType(QuestionType questionType);
         
         QuestionType DeleteQuestionType(int questionTypeID);
         
-        QuestionType GetQuestionByID(int questionTypeID);
     }
 }

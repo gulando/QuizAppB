@@ -30,12 +30,12 @@ namespace QuizApi.Controllers
         [HttpGet("{quizID}")]
         [Produces("application/json")]
         [ActionName("GetQuizByID")]
-        public JsonResult GetQuiz(int quizID) => Json(_quizRepository.GetQuizByID(quizID));
+        public JsonResult GetQuizByID(int quizID) => Json(_quizRepository.GetQuizByID(quizID));
 
         [HttpGet]
         [Produces("application/json")]
-        [ActionName("GetAllQuizes")]
-        public JsonResult GetAll() => Json(_quizRepository.Quizes.ToList());
+        [ActionName("GetAllQuizes")] 
+        public JsonResult GetAllQuizes() => Json(_quizRepository.Quizes.ToList());
 
         [HttpPost]
         [ActionName("AddQuiz")]
@@ -43,7 +43,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _quizRepository.SaveQuiz(new Quiz
+                _quizRepository.AddQuiz(new Quiz
                 {
                     QuizName = res.QuizName
                 });
@@ -62,9 +62,9 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _quizRepository.SaveQuiz(new Quiz
+                _quizRepository.UpdateQuiz(new Quiz
                 {
-                    QuizID =  quizID,
+                    ID =  quizID,
                     QuizName = res.QuizName
                 });
                 return new OkResult();

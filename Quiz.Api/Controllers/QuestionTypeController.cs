@@ -6,7 +6,7 @@ using QuizData.Models;
 
 namespace QuizApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class QuestionTypeController : Controller
     {
         
@@ -29,18 +29,21 @@ namespace QuizApi.Controllers
         
         [HttpGet("{questionTypeID}")]
         [Produces("application/json")]
-        public JsonResult GetQuestionType(int questionTypeID) => Json(_questionTypeRepository.GetQuestionByID(questionTypeID));
+        [ActionName("GetQuestionTypeByID")]
+        public JsonResult GetQuestionTypeByID(int questionTypeID) => Json(_questionTypeRepository.GetQuestionByID(questionTypeID));
 
         [HttpGet]
         [Produces("application/json")]
-        public JsonResult GetAll() => Json(_questionTypeRepository.QuestionTypes.ToList());
+        [ActionName("GetAllQuestionTypes")]
+        public JsonResult GetAllQuestionTypes() => Json(_questionTypeRepository.QuestionTypes.ToList());
 
         [HttpPost]
+        [ActionName("AddQuestionType")]
         public IActionResult AddQuestionType([FromBody] QuestionType res)
         {
             try
             {
-                _questionTypeRepository.SaveQuestionType(new QuestionType
+                _questionTypeRepository.AddQuestionType(new QuestionType
                 {
                     QuizID = res.QuizID,
                     QuestionTypeName = res.QuestionTypeName
@@ -56,14 +59,15 @@ namespace QuizApi.Controllers
         }
 
         [HttpPut("{questionTypeID}")]
+        [ActionName("UpdateQuestionType")]
         public IActionResult UpdateQuestionType(int questionTypeID, [FromBody] QuestionType res)
         {
             try
             {
-                _questionTypeRepository.SaveQuestionType(new QuestionType
+                _questionTypeRepository.UpdateQuestionType(new QuestionType
                 {
                     QuizID = res.QuizID,
-                    QuestionTypeID = questionTypeID,
+                    ID = questionTypeID,
                     QuestionTypeName = res.QuestionTypeName
                 });
                 return new OkResult();
@@ -76,6 +80,7 @@ namespace QuizApi.Controllers
         }
         
         [HttpDelete("{questionTypeID}")]
+        [ActionName("DeleteQuestionType")]
         public IActionResult DeleteQuestionType(int questionTypeID)
         {
             try

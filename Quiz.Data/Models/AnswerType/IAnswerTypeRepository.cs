@@ -6,10 +6,14 @@ namespace QuizData.Models
     {
         IQueryable<AnswerType> AnswerTypes { get; }
 
-        void SaveAnswerType(AnswerType answerType);
+        AnswerType GetAnswerTypeByID(int answerTypeID);
+        
+        void AddAnswerType(AnswerType answerType);
+        
+        void UpdateAnswerType(AnswerType answerType);
         
         AnswerType DeleteAnswerType(int answerTypeID);
         
-        AnswerType GetAnswerTypeByID(int answerTypeID);
+
     }
 }

@@ -7,10 +7,9 @@ using QuizData.Models;
 namespace QuizApi.Controllers
 {
     
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class QuizThemeController : Controller
     {
-        
         
         #region properties
         
@@ -31,18 +30,21 @@ namespace QuizApi.Controllers
         
         [HttpGet("{quizThemeID}")]
         [Produces("application/json")]
+        [ActionName("GetQuizThemeByID")]
         public JsonResult GetQuizTheme(int quizThemeID) => Json(_quizThemeRepository.GetQuizThemeByID(quizThemeID));
 
         [HttpGet]
         [Produces("application/json")]
-        public JsonResult GetAll() => Json(_quizThemeRepository.QuizeThemes.ToList());
+        [ActionName("GetAllQuizThemes")]
+        public JsonResult GetAllQuizThemes() => Json(_quizThemeRepository.QuizeThemes.ToList());
 
         [HttpPost]
+        [ActionName("AddQuizTheme")]
         public IActionResult AddQuizTheme([FromBody] QuizTheme res)
         {
             try
             {
-                _quizThemeRepository.SaveQuizTheme(new QuizTheme
+                _quizThemeRepository.AddQuizTheme(new QuizTheme
                 {
                     QuizID = res.QuizID,
                     QuizThemeName = res.QuizThemeName
@@ -57,13 +59,14 @@ namespace QuizApi.Controllers
         }
 
         [HttpPut("{quizThemeID}")]
+        [ActionName("UpdateQuizTheme")]
         public IActionResult UpdateQuizTheme(int quizThemeID, [FromBody] QuizTheme res)
         {
             try
             {
-                _quizThemeRepository.SaveQuizTheme(new QuizTheme
+                _quizThemeRepository.UpdateQuizTheme(new QuizTheme
                 {
-                    QuizThemeID =  quizThemeID,
+                    ID =  quizThemeID,
                     QuizThemeName = res.QuizThemeName
                 });
                 return new OkResult();
@@ -76,6 +79,7 @@ namespace QuizApi.Controllers
         }
         
         [HttpDelete("{quizThemeID}")]
+        [ActionName("DeleteQuizTheme")]
         public IActionResult DeleteQuizTheme(int quizThemeID)
         {
             try

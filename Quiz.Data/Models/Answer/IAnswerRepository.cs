@@ -7,7 +7,9 @@ namespace QuizData.Models
     {
         IQueryable<Answer> Answers { get; }
 
-        void SaveAnswer(Answer answer);
+        void UpdateAnswer(Answer answer);
+        
+        void AddAnswer(Answer answer);
         
         Answer DeleteAnswer(int answerID); 
         

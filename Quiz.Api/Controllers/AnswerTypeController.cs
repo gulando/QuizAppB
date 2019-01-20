@@ -6,7 +6,7 @@ using QuizData.Models;
 
 namespace QuizApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class AnswerTypeController : Controller
     {
         
@@ -29,20 +29,23 @@ namespace QuizApi.Controllers
         
         [HttpGet("{answerTypeID}")]
         [Produces("application/json")]
+        [ActionName("GetAnswerTypeByID")]
         public JsonResult GetAnswerType(int answerTypeID) => Json(_answerTypeRepository.GetAnswerTypeByID(answerTypeID));
 
         [HttpGet]
         [Produces("application/json")]
-        public JsonResult GetAll() => Json(_answerTypeRepository.AnswerTypes.ToList());
+        [ActionName("GetAllAnswerTypes")]
+        public JsonResult GetAllAnswerTypes() => Json(_answerTypeRepository.AnswerTypes.ToList());
 
         [HttpPost]
+        [ActionName("AddAnswerType")]
         public IActionResult AddAnswerType([FromBody] AnswerType res)
         {
             try
             {
-                _answerTypeRepository.SaveAnswerType(new AnswerType
+                _answerTypeRepository.AddAnswerType(new AnswerType
                 {
-                    QuizTD = res.QuizTD,
+                    QuizID = res.QuizID,
                     AnswerTypeName = res.AnswerTypeName
                 });
                 
@@ -56,13 +59,14 @@ namespace QuizApi.Controllers
         }
 
         [HttpPut("{answerTypeID}")]
+        [ActionName("UpdateAnswerType")]
         public IActionResult UpdateAnswerType(int answerTypeID, [FromBody] AnswerType res)
         {
             try
             {
-                _answerTypeRepository.SaveAnswerType(new AnswerType
+                _answerTypeRepository.UpdateAnswerType(new AnswerType
                 {
-                    AnswerTypeID = answerTypeID,
+                    ID = answerTypeID,
                     AnswerTypeName = res.AnswerTypeName
                 });
                 return new OkResult();
@@ -75,6 +79,7 @@ namespace QuizApi.Controllers
         }
         
         [HttpDelete("{answerTypeID}")]
+        [ActionName("DeleteAnswerType")]
         public IActionResult DeleteAnswerType(int answerTypeID)
         {
             try

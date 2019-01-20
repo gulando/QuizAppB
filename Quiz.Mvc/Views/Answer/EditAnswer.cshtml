@@ -1,0 +1,20 @@
+@model QuizData.Models.Answer
+@{
+    ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
+    Layout = "_Layout";
+}
+
+<form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
+    <div class="form-group">
+        <label asp-for="QuestionID"></label>
+        <input asp-for="QuestionID" class="form-control" />
+        <label asp-for="AnswerTypeID"></label>
+        <input asp-for="AnswerTypeID" class="form-control" />
+        <label asp-for="AnswerText"></label>
+        <input asp-for="AnswerText" class="form-control" />
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
