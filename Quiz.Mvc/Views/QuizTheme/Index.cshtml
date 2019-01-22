@@ -1,16 +1,16 @@
-@model IEnumerable<QuizData.Models.QuizTheme>
+@model IEnumerable<QuizData.Models.QuizThemeSummary>
 @{
     ViewData["Title"] = "Quiz Themes";
     Layout = "_Layout";
 }
 <table class="table table-sm table-striped">
     <thead>
-    <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
+    <tr><th>Quiz Name</th><th>Quiz Theme Name</th><th>Actions</th></tr>
     </thead>
     <tbody>
     @foreach (var quiztheme in Model) {
         <tr>
-            <td>@quiztheme.QuizID</td>
+            <td>@quiztheme.QuizName</td>
             <td>@quiztheme.QuizThemeName</td>
             <td>
                 <form asp-action="Delete" method="post">
@@ -29,4 +29,7 @@
     </tbody>
 </table>
 
-<a asp-action="Create" class="btn btn-primary">Create New QuizTheme</a>
+<div class="text-center">
+    <a asp-action="Create" class="btn btn-primary">Create New Quiz Theme</a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Go To Home</a>
+</div>

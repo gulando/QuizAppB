@@ -27,7 +27,7 @@ namespace QuizApi.Controllers
         
         public IActionResult Index()
         {
-            var quizThemes = _quizThemeRepository.QuizeThemes;
+            var quizThemes = _quizThemeRepository.GetQuizThemeSummary();
             return View(quizThemes);
         }
         

@@ -14,4 +14,9 @@ namespace QuizData.Models
         
         public string QuizThemeName { get; set; }
     }
+
+    public class QuizThemeSummary : QuizTheme
+    {
+        public string QuizName { get; set; }
+    }
 }

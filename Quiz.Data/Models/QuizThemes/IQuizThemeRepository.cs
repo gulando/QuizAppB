@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -14,5 +15,7 @@ namespace QuizData.Models
         void UpdateQuizTheme(QuizTheme quizTheme);
         
         QuizTheme DeleteQuizTheme(int quizThemeID);
+
+        List<QuizThemeSummary> GetQuizThemeSummary();
     }
 }

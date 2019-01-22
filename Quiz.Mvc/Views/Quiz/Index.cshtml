@@ -5,12 +5,11 @@
 }
 <table class="table table-sm table-striped">
     <thead>
-    <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
+    <tr><th>Name</th><th>Actions</th></tr>
     </thead>
     <tbody>
     @foreach (var quiz in Model) {
         <tr>
-            <td>@quiz.ID</td>
             <td>@quiz.QuizName</td>
             <td>
                 <form asp-action="Delete" method="post">
@@ -29,4 +28,7 @@
     </tbody>
 </table>
 
-<a asp-action="Create" class="btn btn-primary">Create New Quiz</a>
+<div class="text-center">
+    <a asp-action="Create" class="btn btn-primary">Create New Quiz</a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Go To Home</a>
+</div>
