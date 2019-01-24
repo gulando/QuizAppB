@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -5,11 +6,14 @@ namespace QuizData.Models
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+            
+        }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<QuizTheme>().HasDiscriminator<string>("QuizThemeName");
+            
         }
         
         public DbSet<Quiz> Quizes { get; set; }
@@ -23,7 +27,5 @@ namespace QuizData.Models
         public DbSet<QuestionType> QuestionTypes { get; set; }
         
         public DbSet<AnswerType> AnswerTypes { get; set; }
-        
-        public DbSet<QuizThemeSummary> QuizThemeSummaries {get; set; }
     }
 }

@@ -8,17 +8,16 @@ namespace QuizData.Repository
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : BussinessEntityBase
     {
-        
-        private ApplicationDbContext dbContext  { get; }
- 
-        public Repository(ApplicationDbContext repositoryContext)
+        protected ApplicationDbContext dbContext  { get; }
+
+        protected Repository(ApplicationDbContext repositoryContext)
         {
             dbContext = repositoryContext;
         }
         
         private bool disposed;
 
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if(!disposed)
             {

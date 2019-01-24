@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update;
 using QuizData.Repository;
 
 
 namespace QuizData.Models
 {
     public class QuizThemeRepository : Repository<QuizTheme>, IQuizThemeRepository
-    {
-        private ApplicationDbContext dbContext;
-        
+    {        
         public QuizThemeRepository(ApplicationDbContext repositoryContext) : base(repositoryContext)
         {
-            dbContext = repositoryContext;
+            
         }
 
         public IQueryable<QuizTheme> QuizeThemes => GetObjList();
@@ -39,6 +38,17 @@ namespace QuizData.Models
 
         public List<QuizThemeSummary> GetQuizThemeSummary()
         {
-            return dbContext.QuizThemeSummaries.FromSql("GetQuizThemesSummary").ToList();        }
+            var result = (from quizes in dbContext.Quizes
+                join quizThemes in dbContext.QuizThemes on quizes.ID equals quizThemes.QuizID
+                select new QuizThemeSummary
+                {
+                    QuizID = quizes.ID,
+                    ID = quizThemes.ID,
+                    QuizName = quizes.QuizName,
+                    QuizThemeName = quizThemes.QuizThemeName
+                }).ToList();
+
+            return result;     
+        }
     }
 }
