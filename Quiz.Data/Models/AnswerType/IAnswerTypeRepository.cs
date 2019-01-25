@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QuizData.Models
 {
     public interface IAnswerTypeRepository
     {
-        IQueryable<AnswerType> AnswerTypes { get; }
+        IEnumerable<AnswerType> AnswerTypes { get; }
 
         AnswerType GetAnswerTypeByID(int answerTypeID);
         

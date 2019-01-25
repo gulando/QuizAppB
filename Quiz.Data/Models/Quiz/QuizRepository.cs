@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using QuizData.Repository;
 
@@ -11,7 +12,7 @@ namespace QuizData.Models
             
         }
 
-        public IQueryable<Quiz> Quizes => GetObjList();
+        public IEnumerable<Quiz> Quizes => GetObjList();
 
         public Quiz GetQuizByID(int quizID)
         {

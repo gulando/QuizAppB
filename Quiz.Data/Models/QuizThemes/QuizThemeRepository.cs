@@ -14,7 +14,7 @@ namespace QuizData.Models
             
         }
 
-        public IQueryable<QuizTheme> QuizeThemes => GetObjList();
+        public IEnumerable<QuizTheme> QuizeThemes => GetObjList();
 
         public QuizTheme GetQuizThemeByID(int quizThemeID)
         {

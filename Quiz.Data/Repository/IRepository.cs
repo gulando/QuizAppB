@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -8,7 +9,7 @@ namespace QuizData.Repository
     {
         T GetObjByID(int objID);
         
-        IQueryable<T> GetObjList();
+        IEnumerable<T> GetObjList();
         
         T AddObj(T obj);
         

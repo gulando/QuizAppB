@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -5,7 +6,7 @@ namespace QuizData.Models
 {
     public interface IAnswerRepository
     {
-        IQueryable<Answer> Answers { get; }
+        IEnumerable<Answer> Answers { get; }
 
         void UpdateAnswer(Answer answer);
         

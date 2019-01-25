@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using QuizData.EntityBase;
 using QuizData.Models;
@@ -48,7 +49,7 @@ namespace QuizData.Repository
             }
         }
 
-        public IQueryable<TEntity> GetObjList()
+        public IEnumerable<TEntity> GetObjList()
         {
             try
             {

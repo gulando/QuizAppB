@@ -6,7 +6,7 @@ namespace QuizData.Models
 {
     public interface IQuizThemeRepository
     {
-        IQueryable<QuizTheme> QuizeThemes { get; }
+        IEnumerable<QuizTheme> QuizeThemes { get; }
 
         QuizTheme GetQuizThemeByID(int quizThemeID);
         

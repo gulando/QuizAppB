@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -5,7 +6,7 @@ namespace QuizData.Models
 {
     public interface IQuizRepository
     {
-        IQueryable<Quiz> Quizes { get; }
+        IEnumerable<Quiz> Quizes { get; }
 
         Quiz GetQuizByID(int quizID);
         
