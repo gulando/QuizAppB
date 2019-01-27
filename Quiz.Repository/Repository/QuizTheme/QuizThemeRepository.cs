@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Update;
-using QuizData.Repository;
+using QuizData;
 
 
-namespace QuizData.Models
+namespace QuizRepository
 {
     public class QuizThemeRepository : Repository<QuizTheme>, IQuizThemeRepository
     {        
@@ -16,7 +14,7 @@ namespace QuizData.Models
 
         public IEnumerable<QuizTheme> QuizeThemes => GetObjList();
 
-        public QuizTheme GetQuizThemeByID(int quizThemeID)
+        public QuizData.QuizTheme GetQuizThemeByID(int quizThemeID)
         {
             return GetObjByID(quizThemeID);
         }

@@ -1,9 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using QuizData.EntityBase;
 
 
-namespace QuizData.Models
+namespace QuizData
 {
     public class Question : BussinessEntityBase
     {
@@ -25,5 +23,16 @@ namespace QuizData.Models
         public byte[] QuestionImage { get; set; }
         
         public string CorrectAnswer { get; set; }
+    }
+
+    public class QuestionSummary : Question
+    {
+        public string QuizName { get; set; }
+        
+        public string QuizThemeName { get; set; }
+        
+        public string QuestionTypeName { get; set; }
+        
+        public string AnswerTypeName { get; set; }
     }
 }

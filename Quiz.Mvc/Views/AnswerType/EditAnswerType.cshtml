@@ -1,4 +1,4 @@
-@model QuizData.Models.AnswerType
+@model QuizData.AnswerTypeSummary
 @{
     ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
     Layout = "_Layout";
@@ -8,6 +8,8 @@
     <div class="form-group">
         <label asp-for="QuizID"></label>
         <input asp-for="QuizID" class="form-control" />
+        <label asp-for="QuestionTypeID"></label>
+        <input asp-for="QuestionTypeID" class="form-control" />
         <label asp-for="AnswerTypeName"></label>
         <input asp-for="AnswerTypeName" class="form-control" />
     </div>

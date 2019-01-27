@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
+using QuizService;
+using QuizData;
 
 
 namespace QuizApi.Controllers
@@ -12,15 +13,15 @@ namespace QuizApi.Controllers
         
         #region properties
         
-        private readonly IAnswerTypeRepository _answerTypeRepository;
+        private readonly IAnswerTypeService _answerTypeService;
         
         #endregion
 
         #region ctor
         
-        public AnswerTypeController(IAnswerTypeRepository repo)
+        public AnswerTypeController(IAnswerTypeService service)
         {
-            _answerTypeRepository = repo;
+            _answerTypeService = service;
         }
         
         #endregion
@@ -30,12 +31,12 @@ namespace QuizApi.Controllers
         [HttpGet("{answerTypeID}")]
         [Produces("application/json")]
         [ActionName("GetAnswerTypeByID")]
-        public JsonResult GetAnswerType(int answerTypeID) => Json(_answerTypeRepository.GetAnswerTypeByID(answerTypeID));
+        public JsonResult GetAnswerType(int answerTypeID) => Json(_answerTypeService.GetAnswerTypeByID(answerTypeID));
 
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllAnswerTypes")]
-        public JsonResult GetAllAnswerTypes() => Json(_answerTypeRepository.AnswerTypes.ToList());
+        public JsonResult GetAllAnswerTypes() => Json(_answerTypeService.AnswerTypes.ToList());
 
         [HttpPost]
         [ActionName("AddAnswerType")]
@@ -43,7 +44,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _answerTypeRepository.AddAnswerType(new AnswerType
+                _answerTypeService.AddAnswerType(new AnswerType
                 {
                     QuizID = res.QuizID,
                     AnswerTypeName = res.AnswerTypeName
@@ -64,7 +65,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _answerTypeRepository.UpdateAnswerType(new AnswerType
+                _answerTypeService.UpdateAnswerType(new AnswerType
                 {
                     ID = answerTypeID,
                     AnswerTypeName = res.AnswerTypeName
@@ -84,7 +85,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _answerTypeRepository.DeleteAnswerType(answerTypeID);
+                _answerTypeService.DeleteAnswerType(answerTypeID);
                 return new OkResult();
             }
             catch (Exception e)

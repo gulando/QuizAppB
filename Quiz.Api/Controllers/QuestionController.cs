@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
+using QuizService;
+using QuizData;
 
 
 namespace QuizApi.Controllers
@@ -12,15 +13,15 @@ namespace QuizApi.Controllers
         
         #region properties
         
-        private readonly IQuestionRepository _questionRepository;
+        private readonly IQuestionService _questionService;
         
         #endregion
 
         #region ctor
         
-        public QuestionController(IQuestionRepository repo)
+        public QuestionController(IQuestionService service)
         {
-            _questionRepository = repo;
+            _questionService = service;
         }
         
         #endregion
@@ -30,12 +31,12 @@ namespace QuizApi.Controllers
         [HttpGet("{questionID}")]
         [Produces("application/json")]
         [ActionName("GetQuestionByID")]
-        public JsonResult GetQuestionByID(int questionID) => Json(_questionRepository.GetQuestionByID(questionID));
+        public JsonResult GetQuestionByID(int questionID) => Json(_questionService.GetQuestionByID(questionID));
 
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllQuestions")]
-        public JsonResult GetAllQuestions() => Json(_questionRepository.Questions.ToList());
+        public JsonResult GetAllQuestions() => Json(_questionService.Questions.ToList());
 
         [HttpPost]
         [ActionName("AddQuestion")]
@@ -43,7 +44,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _questionRepository.AddQuestion(new Question
+                _questionService.AddQuestion(new Question
                 {
                     QuizID = res.QuizID,
                     QuizThemeID = res.QuizThemeID,
@@ -67,7 +68,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _questionRepository.UpdateQuestion(new Question
+                _questionService.UpdateQuestion(new Question
                 {
                     ID =  questionID,
                     QuizID = res.QuizID,
@@ -92,7 +93,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _questionRepository.DeleteQuestion(questionID);
+                _questionService.DeleteQuestion(questionID);
                 return new OkResult();
             }
             catch (Exception e)

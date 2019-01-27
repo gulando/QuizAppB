@@ -1,7 +1,6 @@
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
-
+using QuizService;
+using QuizData;
 
 namespace QuizMvc.Controllers
 {
@@ -10,15 +9,15 @@ namespace QuizMvc.Controllers
         
         #region properties
         
-        private readonly IQuizRepository _quizRepository;
+        private readonly IQuizService _quizService;
         
         #endregion
 
         #region ctor
         
-        public QuizController(IQuizRepository repo)
+        public QuizController(IQuizService service)
         {
-            _quizRepository = repo;
+            _quizService = service;
         }
         
         #endregion
@@ -27,7 +26,7 @@ namespace QuizMvc.Controllers
         
         public IActionResult Index()
         {
-            var quizes = _quizRepository.Quizes;
+            var quizes = _quizService.Quizes;
             return View(quizes);
 
         }
@@ -35,20 +34,20 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            _quizRepository.DeleteQuiz(id);
+            _quizService.DeleteQuiz(id);
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            return View("EditQuiz", _quizRepository.GetQuizByID(id));
+            return View("EditQuiz", _quizService.GetQuizByID(id));
         }
 
         [HttpPost]
         public IActionResult Edit(Quiz quiz)
         {
-            _quizRepository.UpdateQuiz(quiz);
+            _quizService.UpdateQuiz(quiz);
             return RedirectToAction(nameof(Index));
         }
 
@@ -61,7 +60,7 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Create(Quiz quiz)
         {
-            _quizRepository.AddQuiz(quiz);
+            _quizService.AddQuiz(quiz);
             return RedirectToAction(nameof(Index));
         }
         

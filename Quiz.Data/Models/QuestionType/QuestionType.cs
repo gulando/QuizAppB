@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using QuizData.EntityBase;
 
 
-namespace QuizData.Models
+namespace QuizData
 {
     public class QuestionType : BussinessEntityBase
     {
@@ -13,5 +12,11 @@ namespace QuizData.Models
         public int QuizID { get; set; }
         
         public string QuestionTypeName { get; set; }
+    }
+
+    public class QuestionTypeSummary : QuestionType
+    {
+        public string QuizName { get; set; }
+        
     }
 }

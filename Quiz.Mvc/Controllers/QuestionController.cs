@@ -1,7 +1,6 @@
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
+using QuizService;
+using QuizData;
 
 
 namespace QuizMvc.Controllers
@@ -10,15 +9,15 @@ namespace QuizMvc.Controllers
     {
         #region properties
         
-        private readonly IQuestionRepository _questionRepository;
+        private readonly IQuestionService _questionService;
         
         #endregion
 
         #region ctor
         
-        public QuestionController(IQuestionRepository repo)
+        public QuestionController(IQuestionService service)
         {
-            _questionRepository = repo;
+            _questionService = service;
         }
         
         #endregion
@@ -27,7 +26,7 @@ namespace QuizMvc.Controllers
         
         public IActionResult Index()
         {
-            var questions = _questionRepository.Questions;
+            var questions = _questionService.GetQuestionSummary();
             return View(questions);
 
         }
@@ -35,20 +34,20 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            _questionRepository.DeleteQuestion(id);
+            _questionService.DeleteQuestion(id);
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            return View("EditQuestion", _questionRepository.GetQuestionByID(id));
+            return View("EditQuestion", _questionService.GetQuestionByID(id));
         }
 
         [HttpPost]
         public IActionResult Edit(Question question)
         {
-            _questionRepository.UpdateQuestion(question);
+            _questionService.UpdateQuestion(question);
             return RedirectToAction(nameof(Index));
         }
 
@@ -61,7 +60,7 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Create(Question question)
         {
-            _questionRepository.AddQuestion(question);
+            _questionService.AddQuestion(question);
             return RedirectToAction(nameof(Index));
         }
         

@@ -1,7 +1,6 @@
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
+using QuizService;
+using QuizData;
 
 
 namespace QuizMvc.Controllers
@@ -10,15 +9,15 @@ namespace QuizMvc.Controllers
     {
         #region properties
         
-        private readonly IQuestionTypeRepository _questionTypeRepository;
+        private readonly IQuestionTypeService _questionTypeService;
         
         #endregion
 
         #region ctor
         
-        public QuestionTypeController(IQuestionTypeRepository repo)
+        public QuestionTypeController(IQuestionTypeService service)
         {
-            _questionTypeRepository = repo;
+            _questionTypeService = service;
         }
         
         #endregion
@@ -27,27 +26,27 @@ namespace QuizMvc.Controllers
         
         public IActionResult Index()
         {
-            var questionTypes = _questionTypeRepository.QuestionTypes;
+            var questionTypes = _questionTypeService.GetQuestionTypeSummary();
             return View(questionTypes);
         }
 
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            _questionTypeRepository.DeleteQuestionType(id);
+            _questionTypeService.DeleteQuestionType(id);
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            return View("EditQuestionType", _questionTypeRepository.GetQuestionByID(id));
+            return View("EditQuestionType", _questionTypeService.GetQuestionTypeByID(id));
         }
 
         [HttpPost]
         public IActionResult Edit(QuestionType questionType)
         {
-            _questionTypeRepository.UpdateQuestionType(questionType);
+            _questionTypeService.UpdateQuestionType(questionType);
             return RedirectToAction(nameof(Index));
         }
 
@@ -60,7 +59,7 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Create(QuestionType questionType)
         {
-            _questionTypeRepository.AddQuestionType(questionType);
+            _questionTypeService.AddQuestionType(questionType);
             return RedirectToAction(nameof(Index));
         }
         

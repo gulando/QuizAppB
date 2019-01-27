@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using QuizData.Models;
+using QuizRepository;
+using QuizService;
 
 
 namespace QuizMvc
@@ -21,12 +22,21 @@ namespace QuizMvc
             
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(conString));
             
+            //add repository
             services.AddTransient<IAnswerRepository, AnswerRepository>();
             services.AddTransient<IAnswerTypeRepository, AnswerTypeRepository>();
             services.AddTransient<IQuestionRepository, QuestionRepository>();
             services.AddTransient<IQuestionTypeRepository, QuestionTypeRepository>();
-            services.AddTransient<IQuizRepository, QuizRepository>();
+            services.AddTransient<IQuizRepository, QuizRepository.QuizRepository>();
             services.AddTransient<IQuizThemeRepository, QuizThemeRepository>();
+            
+            //add services
+            services.AddTransient<IAnswerService, AnswerService>();
+            services.AddTransient<IAnswerTypeService, AnswerTypeService>();
+            services.AddTransient<IQuestionService, QuestionService>();
+            services.AddTransient<IQuestionTypeService, QuestionTypeService>();
+            services.AddTransient<IQuizService, QuizService.QuizService>();
+            services.AddTransient<IQuizThemeService, QuizThemeService>();
         }
 
 

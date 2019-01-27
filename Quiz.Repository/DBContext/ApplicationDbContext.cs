@@ -1,8 +1,8 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using QuizData;
 
 
-namespace QuizData.Models
+namespace QuizRepository
 {
     public class ApplicationDbContext : DbContext
     {

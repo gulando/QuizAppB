@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 
-namespace QuizData.Repository
+namespace QuizRepository
 {
-    interface IRepository<T> : IDisposable  where T : class
+    public interface IRepository<T> : IDisposable  where T : class
     {
         T GetObjByID(int objID);
         

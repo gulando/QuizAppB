@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using QuizData.EntityBase;
 
 
-namespace QuizData.Models
+namespace QuizData
 {
     
     public class Quiz : BussinessEntityBase

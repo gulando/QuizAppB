@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
+using QuizService;
+using QuizData;
 
 
 namespace QuizApi.Controllers
@@ -13,15 +14,15 @@ namespace QuizApi.Controllers
         
         #region properties
         
-        private readonly IQuizThemeRepository _quizThemeRepository;
+        private readonly IQuizThemeService _quizThemeService;
         
         #endregion
 
         #region ctor
         
-        public QuizThemeController(IQuizThemeRepository repo)
+        public QuizThemeController(IQuizThemeService service)
         {
-            _quizThemeRepository = repo;
+            _quizThemeService = service;
         }
         
         #endregion
@@ -31,12 +32,12 @@ namespace QuizApi.Controllers
         [HttpGet("{quizThemeID}")]
         [Produces("application/json")]
         [ActionName("GetQuizThemeByID")]
-        public JsonResult GetQuizTheme(int quizThemeID) => Json(_quizThemeRepository.GetQuizThemeByID(quizThemeID));
+        public JsonResult GetQuizTheme(int quizThemeID) => Json(_quizThemeService.GetQuizThemeByID(quizThemeID));
 
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllQuizThemes")]
-        public JsonResult GetAllQuizThemes() => Json(_quizThemeRepository.QuizeThemes.ToList());
+        public JsonResult GetAllQuizThemes() => Json(_quizThemeService.QuizeThemes.ToList());
 
         [HttpPost]
         [ActionName("AddQuizTheme")]
@@ -44,7 +45,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _quizThemeRepository.AddQuizTheme(new QuizTheme
+                _quizThemeService.AddQuizTheme(new QuizTheme
                 {
                     QuizID = res.QuizID,
                     QuizThemeName = res.QuizThemeName
@@ -64,7 +65,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _quizThemeRepository.UpdateQuizTheme(new QuizTheme
+                _quizThemeService.UpdateQuizTheme(new QuizTheme
                 {
                     ID =  quizThemeID,
                     QuizThemeName = res.QuizThemeName
@@ -84,7 +85,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _quizThemeRepository.DeleteQuizTheme(quizThemeID);
+                _quizThemeService.DeleteQuizTheme(quizThemeID);
                 return new OkResult();
             }
             catch (Exception e)

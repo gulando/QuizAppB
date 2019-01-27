@@ -1,17 +1,16 @@
-@model IEnumerable<QuizData.Models.Answer>
+@model IEnumerable<QuizData.AnswerSummary>
 @{
     ViewData["Title"] = "Answers";
     Layout = "_Layout";
 }
 <table class="table table-sm table-striped">
     <thead>
-    <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
+    <tr><th>Answer Type Name</th><th>Answer Text</th><th>Actions</th></tr>
     </thead>
     <tbody>
     @foreach (var answer in Model) {
         <tr>
-            <td>@answer.QuestionID</td>
-            <td>@answer.AnswerTypeID</td>
+            <td>@answer.AnswerTypeName</td>
             <td>@answer.AnswerText</td>
             <td>
                 <form asp-action="Delete" method="post">

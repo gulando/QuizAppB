@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Linq;
-using QuizData.Repository;
+using QuizData;
 
 
-namespace QuizData.Models
+namespace QuizRepository
 {
     public class QuizRepository : Repository<Quiz>, IQuizRepository
     {

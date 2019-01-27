@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuizData.EntityBase;
-using QuizData.Models;
+using QuizData;
 
 
-namespace QuizData.Repository
+namespace QuizRepository
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : BussinessEntityBase
     {

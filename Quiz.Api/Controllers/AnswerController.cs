@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
+using QuizService;
+using QuizData;
+
 
 namespace QuizApi.Controllers
 {
@@ -11,15 +13,15 @@ namespace QuizApi.Controllers
         
         #region properties
         
-        private readonly IAnswerRepository _answerRepository;
+        private readonly IAnswerService _answerService;
         
         #endregion
 
         #region ctor
         
-        public AnswerController(IAnswerRepository repo)
+        public AnswerController(IAnswerService service)
         {
-            _answerRepository = repo;
+            _answerService = service;
         }
         
         #endregion
@@ -29,12 +31,12 @@ namespace QuizApi.Controllers
         [HttpGet("{answerID}")]
         [Produces("application/json")]
         [ActionName("GetAnswerByID")]
-        public JsonResult GetAnswer(int answerID) => Json(_answerRepository.GetAnswerByID(answerID));
+        public JsonResult GetAnswer(int answerID) => Json(_answerService.GetAnswerByID(answerID));
 
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllAnswers")]
-        public JsonResult GetAllAnswers() => Json(_answerRepository.Answers.ToList());
+        public JsonResult GetAllAnswers() => Json(_answerService.Answers.ToList());
 
         [HttpPost]
         [ActionName("AddAnswer")]
@@ -42,7 +44,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _answerRepository.AddAnswer(new Answer
+                _answerService.AddAnswer(new Answer
                 {
                     QuestionID = res.QuestionID,
                     AnswerTypeID = res.AnswerTypeID,
@@ -64,7 +66,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _answerRepository.UpdateAnswer(new Answer
+                _answerService.UpdateAnswer(new Answer
                 {
                     ID = answerID,
                     QuestionID = res.QuestionID,
@@ -86,7 +88,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _answerRepository.DeleteAnswer(answerID);
+                _answerService.DeleteAnswer(answerID);
                 return new OkResult();
             }
             catch (Exception e)

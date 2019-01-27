@@ -1,7 +1,6 @@
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
+using QuizService;
+using QuizData;
 
 
 namespace QuizApi.Controllers
@@ -10,15 +9,15 @@ namespace QuizApi.Controllers
     {
         #region properties
         
-        private readonly IQuizThemeRepository _quizThemeRepository;
+        private readonly IQuizThemeService _quizThemeService;
         
         #endregion
 
         #region ctor
         
-        public QuizThemeController(IQuizThemeRepository repo)
+        public QuizThemeController(IQuizThemeService service)
         {
-            _quizThemeRepository = repo;
+            _quizThemeService = service;
         }
         
         #endregion
@@ -27,34 +26,34 @@ namespace QuizApi.Controllers
         
         public IActionResult Index()
         {
-            var quizThemes = _quizThemeRepository.GetQuizThemeSummary();
+            var quizThemes = _quizThemeService.GetQuizThemeSummary();
             return View(quizThemes);
         }
         
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            _quizThemeRepository.DeleteQuizTheme(id);
+            _quizThemeService.DeleteQuizTheme(id);
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         public IActionResult Edit(QuizTheme quizTheme)
         {
-            _quizThemeRepository.UpdateQuizTheme(quizTheme);
+            _quizThemeService.UpdateQuizTheme(quizTheme);
             return RedirectToAction(nameof(Index));
         }
         
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            return View("EditQuizTheme", _quizThemeRepository.GetQuizThemeByID(id));
+            return View("EditQuizTheme", _quizThemeService.GetQuizThemeByID(id));
         }
 
         [HttpPost]
         public IActionResult Create(QuizTheme quizTheme)
         {
-            _quizThemeRepository.AddQuizTheme(quizTheme);
+            _quizThemeService.AddQuizTheme(quizTheme);
             return RedirectToAction(nameof(Index));
         }
 

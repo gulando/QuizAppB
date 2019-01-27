@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace QuizData.EntityBase
+namespace QuizData
 {
     public class BussinessEntityBase
     {

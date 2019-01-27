@@ -1,7 +1,7 @@
-using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
+using QuizData;
+using QuizService;
 
 
 namespace QuizMvc.Controllers
@@ -10,15 +10,15 @@ namespace QuizMvc.Controllers
     {
         #region properties
         
-        private readonly IAnswerTypeRepository _answerTypeRepository;
+        private readonly IAnswerTypeService _answerTypeService;
         
         #endregion
 
         #region ctor
         
-        public AnswerTypeController(IAnswerTypeRepository repo)
+        public AnswerTypeController(IAnswerTypeService service)
         {
-            _answerTypeRepository = repo;
+            _answerTypeService = service;
         }
         
         #endregion
@@ -27,7 +27,7 @@ namespace QuizMvc.Controllers
         
         public IActionResult Index()
         {
-            var answerTypes = _answerTypeRepository.AnswerTypes;
+            var answerTypes = _answerTypeService.GetAnswerTypeSummary();
             return View(answerTypes);
 
         }
@@ -35,33 +35,33 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            _answerTypeRepository.DeleteAnswerType(id);
+            _answerTypeService.DeleteAnswerType(id);
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            return View("EditAnswerType", _answerTypeRepository.GetAnswerTypeByID(id));
+            return View("EditAnswerType", _answerTypeService.GetAnswerTypeSummary(id).First());
         }
 
         [HttpPost]
         public IActionResult Edit(AnswerType answerType)
         {
-            _answerTypeRepository.UpdateAnswerType(answerType);
+            _answerTypeService.UpdateAnswerType(answerType);
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            return View("EditAnswerType", new AnswerType());
+            return View("EditAnswerType", new AnswerTypeSummary());
         }
         
         [HttpPost]
         public IActionResult Create(AnswerType answerType)
         {
-            _answerTypeRepository.AddAnswerType(answerType);
+            _answerTypeService.AddAnswerType(answerType);
             return RedirectToAction(nameof(Index));
         }
         

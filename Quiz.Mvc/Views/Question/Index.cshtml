@@ -1,21 +1,19 @@
-@model IEnumerable<QuizData.Models.Question>
+@model IEnumerable<QuizData.QuestionSummary>
 @{
     ViewData["Title"] = "Questions";
     Layout = "_Layout";
 }
 <table class="table table-sm table-striped">
     <thead>
-    <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
+    <tr><th>Quiz Name</th><th>Quiz Theme Name</th><th>Question Type Name</th><th>Answer Type Name</th><th>Question Name</th><th>Actions</th></tr>
     </thead>
     <tbody>
     @foreach (var question in Model) {
         <tr>
-            <td>@question.QuizID</td>
-            <td>@question.QuizThemeID</td>
-            <td>@question.AnswerTypeID</td>
-            <td>@question.QuestionTypeID</td>
-            <td>@question.QuestionImage</td>
-            <td>@question.CorrectAnswer</td>
+            <td>@question.QuizName</td>
+            <td>@question.QuizThemeName</td>
+            <td>@question.QuestionTypeName</td>
+            <td>@question.AnswerTypeName</td>
             <td>
                 <form asp-action="Delete" method="post">
                     <a asp-action="Edit"

@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using QuizData.Models;
+using QuizService;
+using QuizData;
 
 
 namespace QuizApi.Controllers
@@ -12,15 +13,15 @@ namespace QuizApi.Controllers
         
         #region properties
         
-        private readonly IQuizRepository _quizRepository;
+        private readonly IQuizService _quizService;
         
         #endregion
 
         #region ctor
         
-        public QuizController(IQuizRepository repo)
+        public QuizController(IQuizService service)
         {
-            _quizRepository = repo;
+            _quizService = service;
         }
         
         #endregion
@@ -30,12 +31,12 @@ namespace QuizApi.Controllers
         [HttpGet("{quizID}")]
         [Produces("application/json")]
         [ActionName("GetQuizByID")]
-        public JsonResult GetQuizByID(int quizID) => Json(_quizRepository.GetQuizByID(quizID));
+        public JsonResult GetQuizByID(int quizID) => Json(_quizService.GetQuizByID(quizID));
 
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllQuizes")] 
-        public JsonResult GetAllQuizes() => Json(_quizRepository.Quizes.ToList());
+        public JsonResult GetAllQuizes() => Json(_quizService.Quizes.ToList());
 
         [HttpPost]
         [ActionName("AddQuiz")]
@@ -43,7 +44,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _quizRepository.AddQuiz(new Quiz
+                _quizService.AddQuiz(new Quiz
                 {
                     QuizName = res.QuizName
                 });
@@ -62,7 +63,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _quizRepository.UpdateQuiz(new Quiz
+                _quizService.UpdateQuiz(new Quiz
                 {
                     ID =  quizID,
                     QuizName = res.QuizName
@@ -82,7 +83,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _quizRepository.DeleteQuiz(quizID);
+                _quizService.DeleteQuiz(quizID);
                 return new OkResult();
             }
             catch (Exception e)
