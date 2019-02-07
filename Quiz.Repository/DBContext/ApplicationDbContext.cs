@@ -27,5 +27,7 @@ namespace QuizRepository
         public DbSet<QuestionType> QuestionTypes { get; set; }
         
         public DbSet<AnswerType> AnswerTypes { get; set; }
+        
+        public DbSet<User> Users { get; set; }
     }
 }
