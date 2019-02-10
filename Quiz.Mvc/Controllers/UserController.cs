@@ -94,7 +94,6 @@ namespace QuizMvc.Controllers
         }
         
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(UserData userData)
         {
             if (ModelState.IsValid)
