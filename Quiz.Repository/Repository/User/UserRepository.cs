@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using QuizData;
 
@@ -6,7 +7,7 @@ namespace QuizRepository
 {
     public class UserRepository : Repository<User>, IUserRepository
     {
-        protected UserRepository(ApplicationDbContext repositoryContext) : base(repositoryContext)
+        public UserRepository(ApplicationDbContext repositoryContext) : base(repositoryContext)
         {
             
         }
@@ -20,12 +21,12 @@ namespace QuizRepository
 
         public User Create(User user)
         {
-            throw new System.NotImplementedException();
+            return AddObj(user);
         }
 
         public void Update(User user)
         {
-            throw new System.NotImplementedException();
+            UpdateObj(user);
         }
 
         public void DeleteUser(int id)
