@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,7 @@ using QuizService;
 
 namespace QuizApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     public class UserController : Controller
     {
@@ -26,9 +28,7 @@ namespace QuizApi.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
-
-
-        
+                
         #endregion
 
         #region ctor
@@ -55,7 +55,7 @@ namespace QuizApi.Controllers
         public JsonResult GetAllUsers() => Json(_userService.Users.ToList());
 
         [HttpPost]
-        [ActionName("AddUser")]
+        [ActionName("RegisterUser")]
         public IActionResult AddUser([FromBody] UserData userData)
         {
             try
@@ -138,7 +138,5 @@ namespace QuizApi.Controllers
         }
         
         #endregion
-
-
     }
 }

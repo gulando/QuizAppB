@@ -77,7 +77,7 @@ namespace QuizMvc
                             if (user == null)
                             {
                                 // return unauthorized if user no longer exists
-                                context.Fail("Unauthorized TEST!!!");
+                                context.Fail("Unauthorized!!!");
                             }
                             return Task.CompletedTask;
                         }
@@ -125,12 +125,19 @@ namespace QuizMvc
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogService logger)
         {
-            //Custom Exception Handling.
-            app.ConfigureExceptionHandler(logger);
+            /*
+            if (env.IsDevelopment())
+            {
+               //app.UseDeveloperExceptionPage();
+                app.ConfigureExceptionHandler(logger);
+                app.UseStatusCodePages();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+            }*/
             
-            //.Net Standart Exception Handling.
-            //app.UseDeveloperExceptionPage();
-            
+            app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();

@@ -45,7 +45,6 @@ namespace QuizMvc.Controllers
         
         #region actions
 
-        [AllowAnonymous]
         public IActionResult Index()
         {
             var users = _userService.Users;
@@ -53,7 +52,6 @@ namespace QuizMvc.Controllers
             return View(userDataList);
         }
         
-        [AllowAnonymous]
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
@@ -93,21 +91,25 @@ namespace QuizMvc.Controllers
             return RedirectToAction(nameof(Index));
         }
         
+        [AllowAnonymous]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(UserData userData)
+        public IActionResult Login(UserData userData)
         {
             if (ModelState.IsValid)
-            {
                 Authenticate(userData);
-            }
 
-            return null;
+            return RedirectToAction("Index");
+        }
+
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return View();
         }
         
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            
             return RedirectToAction("Login", "User");
         }
         
