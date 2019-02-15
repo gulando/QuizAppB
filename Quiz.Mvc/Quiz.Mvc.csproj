@@ -6,6 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Folder Include="Views\RoleRight" />
+        <Folder Include="Views\UserRight" />
         <Folder Include="wwwroot\" />
     </ItemGroup>
 

@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizService;
 using QuizData;
 
+
 namespace QuizMvc.Controllers
 {
+    [Authorize]
     public class QuizController : Controller
     {
         

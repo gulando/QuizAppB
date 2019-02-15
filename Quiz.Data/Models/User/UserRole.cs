@@ -14,4 +14,11 @@ namespace QuizData
         [ForeignKey("Role")]
         public int RoleID { get; set; }
     }
+
+    public class UserRoleSummary : UserRole
+    {
+        public string UserName { get; set; }
+        
+        public string RoleName { get; set; }
+    }
 }

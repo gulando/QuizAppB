@@ -1,70 +1,77 @@
+using System;
+using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizData;
 using QuizService;
 
 
-namespace QuizMvc.Controllers
+namespace QuizApi.Controllers
 {
     [Authorize]
-    public class AnswerController : Controller
+    public class RoleController : Controller
     {
+        
         #region properties
         
-        private readonly IAnswerService _answerService;
-        
+        private readonly IRoleService _roleService;
+        private readonly IMapper _mapper;
+                
         #endregion
 
         #region ctor
         
-        public AnswerController(IAnswerService service)
+        public RoleController(IRoleService roleService, IMapper mapper)
         {
-            _answerService = service;
+            _roleService = roleService;
+            _mapper = mapper;
         }
         
         #endregion
-
+        
         #region actions
         
         public IActionResult Index()
         {
-            var answers = _answerService.GetAnswerSummary();
-            return View(answers); 
+            var roles = _roleService.Roles;
+            return View(roles);
         }
-
+                
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            _answerService.DeleteAnswer(id);
+            _roleService.DeleteRole(id);
             return RedirectToAction(nameof(Index));
         }
-
+        
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            return View("EditAnswer", _answerService.GetAnswerByID(id));
+            return View("EditRole", _roleService.GetRoleByID(id));
         }
-
+        
         [HttpPost]
-        public IActionResult Edit(Answer answer)
+        public IActionResult Edit(Role role)
         {
-            _answerService.UpdateAnswer(answer);
+            _roleService.Update(role);
             return RedirectToAction(nameof(Index));
         }
-
+        
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            return View("EditAnswer", new Answer());
+            return View("EditRole", new Role());
         }
         
         [HttpPost]
-        public IActionResult Create(Answer answer)
+        public IActionResult Create(Role role)
         {
-            _answerService.AddAnswer(answer);
+            _roleService.Create(role);
             return RedirectToAction(nameof(Index));
         }
-        
+                
         #endregion
+        
     }
 }

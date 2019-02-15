@@ -44,7 +44,7 @@ namespace QuizApi.Controllers
         
         #region api methods
         
-        [HttpGet("{quizID}")]
+        [HttpGet("{userID}")]
         [Produces("application/json")]
         [ActionName("GetUserByID")]
         public JsonResult GetUserByID(int userID) => Json(_userService.GetUserByID(userID));
@@ -62,7 +62,7 @@ namespace QuizApi.Controllers
             {
                 var user = _mapper.Map<User>(userData);
                 _userService.Create(user,userData.Password);
-                return new OkResult();
+                return new OkObjectResult(user);
             }
             catch (Exception e)
             {
@@ -71,9 +71,9 @@ namespace QuizApi.Controllers
             }
         }
 
-        [HttpPut("{userID}")]
+        [HttpPut]
         [ActionName("UpdateUser")]
-        public IActionResult UpdateUser(int userID, [FromBody] UserData userData)
+        public IActionResult UpdateUser([FromBody] UserData userData)
         {
             try
             {
@@ -105,8 +105,6 @@ namespace QuizApi.Controllers
             }
         }
         
-        [AllowAnonymous]
-        [HttpPost("authenticate")]
         public JsonResult Authenticate([FromBody]UserData userDto)
         {
             var user = _userService.Authenticate(userDto.Username, userDto.Password);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizService;
 using QuizData;
@@ -5,6 +6,7 @@ using QuizData;
 
 namespace QuizApi.Controllers
 {
+    [Authorize]
     public class QuizThemeController : Controller
     {
         #region properties

@@ -51,7 +51,7 @@ namespace QuizApi
             
             #endregion
             
-            #region appSettings
+            #region authentication part
             
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -105,6 +105,7 @@ namespace QuizApi
             services.AddTransient<IQuizRepository, QuizRepository.QuizRepository>();
             services.AddTransient<IQuizThemeRepository, QuizThemeRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             
             #endregion
             
@@ -119,6 +120,7 @@ namespace QuizApi
             services.AddTransient<IQuizThemeService, QuizThemeService>();
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<ILogService, LogService>();
+            services.AddTransient<IRoleService, RoleService>();
             
             #endregion
             
