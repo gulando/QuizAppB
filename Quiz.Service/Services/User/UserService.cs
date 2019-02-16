@@ -93,10 +93,12 @@ namespace QuizService
             user.FirstName = userParam.FirstName;
             user.LastName = userParam.LastName;
             user.Username = userParam.Username;
-
+            
             // update password if it was entered
             if (!string.IsNullOrWhiteSpace(password))
             {
+                user.Password = password;
+                
                 byte[] passwordHash, passwordSalt;
                 PasswordUtil.CreatePasswordHash(password, out passwordHash, out passwordSalt);
 

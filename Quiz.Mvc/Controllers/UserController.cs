@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
@@ -10,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using QuizData;
 using QuizMvc.Helpers;
 using QuizMvc.Models;
@@ -43,9 +40,8 @@ namespace QuizMvc.Controllers
         
         #endregion
         
-        #region actions
+        #region basic actions
 
-        [AllowAnonymous]
         public IActionResult Index()
         {
             var users = _userService.Users;
@@ -53,7 +49,6 @@ namespace QuizMvc.Controllers
             return View(userDataList);
         }
         
-        [AllowAnonymous]
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
@@ -70,14 +65,12 @@ namespace QuizMvc.Controllers
             return RedirectToAction(nameof(Index));
         }
         
-        [AllowAnonymous]
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
             return View("EditUser", new UserData());
         }
         
-        [AllowAnonymous]
         [HttpPost]
         public IActionResult Create(UserData userData)
         {
@@ -93,55 +86,82 @@ namespace QuizMvc.Controllers
             return RedirectToAction(nameof(Index));
         }
         
+        #endregion
+        
+        #region login/register
+        
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+        
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(UserData userData)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(userData);
+            
+            var user = _userService.Users.FirstOrDefault(u => u.Username == userData.Username && u.Password == userData.Password);
+            if (user != null)
             {
-                Authenticate(userData);
+                await Authenticate(userData.Username);
+                return RedirectToAction("Index", "Home");
+            }
+                
+            ModelState.AddModelError("", "Incorrect Login or Email");
+            return View(userData);
+        }
+        
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+        
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(UserData userData)
+        {
+            if (!ModelState.IsValid) return View(userData);
+            
+            var user = _userService.Users.FirstOrDefault(u => u.Username == userData.Username);
+            if (user == null)
+            {
+                var newUser = _mapper.Map<User>(userData);
+                _userService.Create(newUser,userData.Password);
+ 
+                await Authenticate(userData.Username);
+ 
+                return RedirectToAction("Index", "Home");
             }
 
-            return null;
+            ModelState.AddModelError("", "Incorrect Login or UserName");
+            return View(userData);
         }
         
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "User");
+            return RedirectToAction("Index", "Home");
         }
         
-        [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public JsonResult Authenticate([FromBody]UserData userDto)
+        private async Task Authenticate(string userName)
         {
-            var user = _userService.Authenticate(userDto.Username, userDto.Password);
-
-            if (user == null)
-                return new JsonResult(new {message = "Username or password is incorrect"});
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var claims = new List<Claim>
             {
-                Subject = new ClaimsIdentity(new[] 
-                {
-                    new Claim(ClaimTypes.Name, user.ID.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-            return new JsonResult(new {
-                Id = user.ID,
-                user.Username,
-                user.FirstName,
-                user.LastName,
-                Token = tokenString
-            });
+            
+            
+            var id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
         
         #endregion
+
     }
 }

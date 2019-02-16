@@ -1,6 +1,5 @@
-
-
 using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace QuizData
 {
@@ -18,5 +17,11 @@ namespace QuizData
         public byte[] PasswordHash { get; set; }
         
         public byte[] PasswordSalt { get; set; }
+        
+        /// <summary>
+        //This is only for Quiz.Mvc to check that all functional related with UserManagement works fine, for real application
+        // we will use Quiz.Api and for that we already have correct(JWT).
+        /// </summary>
+        public string Password { get; set; }
     }
 }

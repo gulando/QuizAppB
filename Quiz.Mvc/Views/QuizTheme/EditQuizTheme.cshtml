@@ -1,18 +1,18 @@
 @model QuizData.QuizTheme
-@{
-    ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
-    Layout = "_Layout";
-}
-
-<form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
-    <div class="form-group">
-        <label asp-for="QuizID"></label>
-        <input asp-for="QuizID" class="form-control" />
-        <label asp-for="QuizThemeName"></label>
-        <input asp-for="QuizThemeName" class="form-control" />
-    </div>
-    <div class="text-center">
-        <button class="btn btn-primary" type="submit">Save</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </div>
-</form>
+       @{
+           ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
+           Layout = "_Layout";
+       }
+       
+       <form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
+           <div class="form-group">
+               <label asp-for="QuizID"></label>
+               <input asp-for="QuizID" class="form-control" />
+               <label asp-for="QuizThemeName"></label>
+               <input asp-for="QuizThemeName" class="form-control" />
+           </div>
+           <div class="text-center">
+               <button class="btn btn-primary" type="submit">Save</button>
+               <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+           </div>
+       </form>

@@ -29,5 +29,17 @@ namespace QuizRepository
         public DbSet<AnswerType> AnswerTypes { get; set; }
         
         public DbSet<User> Users { get; set; }
+        
+        public DbSet<Role> Roles { get; set; }
+        
+        public DbSet<Right> Rights { get; set; }
+        
+        public DbSet<UserRole> UserRoles { get; set; }
+        
+        public DbSet<UserRight> UserRights { get; set; }
+        
+        public DbSet<RoleRight> RoleRights { get; set; }
+        
+                
     }
 }
