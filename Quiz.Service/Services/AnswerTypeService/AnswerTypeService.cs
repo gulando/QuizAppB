@@ -38,7 +38,7 @@ namespace QuizService
 
         public List<AnswerTypeSummary> GetAnswerTypeSummary(int answerTypeID = 0)
         {
-            return _answerTypeRepository.GetAnswerTypeSummary().OrderBy(answer => answer.QuizName).ToList();
+            return _answerTypeRepository.GetAnswerTypeSummary(answerTypeID).OrderBy(answer => answer.QuizName).ToList();
         }
     }
 }

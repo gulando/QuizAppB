@@ -1,7 +1,10 @@
+using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizService;
 using QuizData;
+using QuizMvc.Models;
 
 
 namespace QuizMvc.Controllers
@@ -12,14 +15,19 @@ namespace QuizMvc.Controllers
         #region properties
         
         private readonly IQuestionTypeService _questionTypeService;
+        private readonly IQuizService _quizService;
+        private readonly IMapper _mapper;
+        
         
         #endregion
 
         #region ctor
         
-        public QuestionTypeController(IQuestionTypeService service)
+        public QuestionTypeController(IQuestionTypeService service, IQuizService quizService, IMapper mapper)
         {
             _questionTypeService = service;
+            _quizService = quizService;
+            _mapper = mapper;
         }
         
         #endregion
@@ -42,7 +50,12 @@ namespace QuizMvc.Controllers
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            return View("EditQuestionType", _questionTypeService.GetQuestionTypeByID(id));
+            ViewData["Quizes"] = _quizService.Quizes.ToList();
+
+            var questionType = _questionTypeService.GetQuestionTypeSummary(id).First();
+            var questionTypeData = _mapper.Map<QuestionTypeData>(questionType);
+            
+            return View("EditQuestionType", questionTypeData);
         }
 
         [HttpPost]
@@ -55,7 +68,9 @@ namespace QuizMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            return View("EditQuestionType", new QuestionType());
+            ViewData["Quizes"] = _quizService.Quizes.ToList();
+
+            return View("EditQuestionType", new QuestionTypeData());
         }
         
         [HttpPost]

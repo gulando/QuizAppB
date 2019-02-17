@@ -35,5 +35,10 @@ namespace QuizService
         {
             _roleRightRepository.DeleteRoleRight(id);
         }
+
+        public List<RoleRightSummary> GetRoleRightSummary()
+        {
+            return _roleRightRepository.GetRoleRightSummary();
+        }
     }
 }

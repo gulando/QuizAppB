@@ -34,11 +34,12 @@ namespace QuizRepository
             return DeleteObj(questionTypeID);
         }
         
-        public List<QuestionTypeSummary> GetQuestionTypeSummary()
+        public List<QuestionTypeSummary> GetQuestionTypeSummary(int questionTypeID = 0)
         {
             var result = (from questionTypes in dbContext.QuestionTypes
                 join quizes in dbContext.Quizes on questionTypes.QuizID equals quizes.ID
                 orderby quizes.QuizName
+                where questionTypes.ID == questionTypeID || questionTypeID == 0
                 select new QuestionTypeSummary
                 {
                     ID = questionTypes.ID,

@@ -16,7 +16,7 @@ namespace QuizRepository
         
         QuestionType DeleteQuestionType(int questionTypeID);
 
-        List<QuestionTypeSummary> GetQuestionTypeSummary();
+        List<QuestionTypeSummary> GetQuestionTypeSummary(int questionTypeID = 0);
 
     }
 }

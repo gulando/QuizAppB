@@ -15,6 +15,6 @@ namespace QuizRepository
         
         QuizTheme DeleteQuizTheme(int quizThemeID);
 
-        List<QuizThemeSummary> GetQuizThemeSummary();
+        List<QuizThemeSummary> GetQuizThemeSummary(int quizThemeID = 0);
     }
 }

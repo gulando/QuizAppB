@@ -1,4 +1,7 @@
+@using System.Collections
 @model QuizMvc.Models.UserRoleData
+
+
 @{
     ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
     Layout = "_Layout";
@@ -7,12 +10,12 @@
 <form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
     <div class="form-group">
         <label for="sel1">Select User Name</label>
-        <select class="form-control" asp-for="UserID" asp-items="@(new SelectList(Model.Users, "ID", "Username"))"></select>
+        <select class="form-control" asp-for="UserID" asp-items="@(new SelectList((IEnumerable)ViewData["Users"], "ID", "Username"))"></select>
         
         <br/>
         
         <label for="sel1">Select Role Name</label>
-        <select class="form-control" asp-for="RoleID" asp-items="@(new SelectList(Model.Roles, "ID", "Name"))"></select>
+        <select class="form-control" asp-for="RoleID" asp-items="@(new SelectList((IEnumerable)ViewData["Roles"], "ID", "Name"))"></select>
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>

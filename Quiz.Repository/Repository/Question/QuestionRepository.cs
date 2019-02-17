@@ -34,13 +34,14 @@ namespace QuizRepository
             return DeleteObj(questionID);
         }
         
-        public List<QuestionSummary> GetQuestionSummary()
+        public List<QuestionSummary> GetQuestionSummary(int questionID = 0)
         {
             var result = (from questions in dbContext.Questions
                 join quizes in dbContext.Quizes on questions.QuizID equals quizes.ID
-                join quizThemes in dbContext.QuizThemes on quizes.ID equals quizThemes.QuizID
+                join quizThemes in dbContext.QuizThemes on questions.QuizThemeID equals quizThemes.ID
                 join answerTypes in dbContext.AnswerTypes on questions.AnswerTypeID equals answerTypes.ID
                 join questionTypes in dbContext.QuestionTypes on questions.QuestionTypeID equals questionTypes.ID
+                where questions.ID == questionID || questionID == 0
                 select new QuestionSummary 
                 {
                     ID = questions.ID,
@@ -51,7 +52,8 @@ namespace QuizRepository
                     QuizName = quizes.QuizName,
                     QuizThemeName = quizThemes.QuizThemeName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
-                    AnswerTypeName = answerTypes.AnswerTypeName
+                    AnswerTypeName = answerTypes.AnswerTypeName,
+                    CorrectAnswer = questions.CorrectAnswer
                 }).ToList();
 
             return result;     

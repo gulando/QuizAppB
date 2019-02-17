@@ -14,4 +14,11 @@ namespace QuizData
         public int RightID { get; set; }
         
     }
+
+    public class RoleRightSummary : RoleRight
+    {
+        public string RoleName { get; set; }
+        
+        public string RightName { get; set; }
+    }
 }

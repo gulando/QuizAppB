@@ -1,0 +1,24 @@
+@using System.Collections
+@model QuizMvc.Models.UserRightData
+
+
+@{
+    ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
+    Layout = "_Layout";
+}
+
+<form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
+    <div class="form-group">
+        <label for="sel1">Select User Name</label>
+        <select class="form-control" asp-for="UserID" asp-items="@(new SelectList((IEnumerable)ViewData["Users"], "ID", "Username"))"></select>
+        
+        <br/>
+        
+        <label for="sel1">Select Right Name</label>
+        <select class="form-control" asp-for="RightID" asp-items="@(new SelectList((IEnumerable)ViewData["Rights"], "ID", "Name"))"></select>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

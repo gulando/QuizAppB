@@ -1,7 +1,9 @@
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizData;
+using QuizMvc.Models;
 using QuizService;
 
 
@@ -13,14 +15,20 @@ namespace QuizMvc.Controllers
         #region properties
         
         private readonly IAnswerTypeService _answerTypeService;
+        private readonly IQuizService _quizService;
+        private readonly IQuestionTypeService _questionTypeService;
+        private readonly IMapper _mapper;
         
         #endregion
 
         #region ctor
         
-        public AnswerTypeController(IAnswerTypeService service)
+        public AnswerTypeController(IAnswerTypeService service, IQuizService quizService, IQuestionTypeService questionTypeService, IMapper mapper)
         {
             _answerTypeService = service;
+            _quizService = quizService;
+            _questionTypeService = questionTypeService;
+            _mapper = mapper;
         }
         
         #endregion
@@ -44,7 +52,13 @@ namespace QuizMvc.Controllers
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            return View("EditAnswerType", _answerTypeService.GetAnswerTypeSummary(id).First());
+            ViewData["Quizes"] = _quizService.Quizes.ToList();
+            ViewData["QuestionTypes"] = _questionTypeService.QuestionTypes.ToList();
+            var answerTypeSummary = _answerTypeService.GetAnswerTypeSummary(id).First();
+            
+            var answerTypeData = _mapper.Map<AnswerTypeData>(answerTypeSummary);
+            
+            return View("EditAnswerType", answerTypeData);
         }
 
         [HttpPost]
@@ -57,7 +71,10 @@ namespace QuizMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            return View("EditAnswerType", new AnswerTypeSummary());
+            ViewData["Quizes"] = _quizService.Quizes.ToList();
+            ViewData["QuestionTypes"] = _questionTypeService.QuestionTypes.ToList();
+            
+            return View("EditAnswerType", new AnswerTypeData());
         }
         
         [HttpPost]

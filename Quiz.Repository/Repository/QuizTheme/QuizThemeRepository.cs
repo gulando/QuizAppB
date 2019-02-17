@@ -34,10 +34,11 @@ namespace QuizRepository
             return DeleteObj(quizThemeID);
         }
 
-        public List<QuizThemeSummary> GetQuizThemeSummary()
+        public List<QuizThemeSummary> GetQuizThemeSummary(int quizThemeID = 0)
         {
             var result = (from quizes in dbContext.Quizes
                 join quizThemes in dbContext.QuizThemes on quizes.ID equals quizThemes.QuizID
+                where quizThemes.ID == quizThemeID || quizThemeID == 0
                 select new QuizThemeSummary
                 {
                     QuizID = quizes.ID,

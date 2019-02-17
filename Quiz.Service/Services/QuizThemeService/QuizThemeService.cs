@@ -37,9 +37,9 @@ namespace QuizService
             return _quizThemeRepository.DeleteQuizTheme(quizThemeID);
         }
 
-        public List<QuizThemeSummary> GetQuizThemeSummary()
+        public List<QuizThemeSummary> GetQuizThemeSummary(int quizThemeID = 0)
         {
-            var quizThemeList = _quizThemeRepository.GetQuizThemeSummary().OrderBy(quizTheme => quizTheme.QuizName).ToList();
+            var quizThemeList = _quizThemeRepository.GetQuizThemeSummary(quizThemeID).OrderBy(quizTheme => quizTheme.QuizName).ToList();
 
             return quizThemeList;
         }

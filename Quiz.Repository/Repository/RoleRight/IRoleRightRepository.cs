@@ -15,5 +15,7 @@ namespace QuizRepository
         void Update(RoleRight roleRight);
         
         void DeleteRoleRight(int id);
+        
+        List<RoleRightSummary> GetRoleRightSummary();
     }
 }

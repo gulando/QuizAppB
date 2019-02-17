@@ -14,4 +14,11 @@ namespace QuizData
         [ForeignKey("Right")]
         public int RightID { get; set; }
     }
+
+    public class UserRightSummary : UserRight
+    {
+        public string UserName { get; set; }
+        
+        public string RightName { get; set; }
+    }
 }

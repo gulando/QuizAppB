@@ -16,7 +16,7 @@ namespace QuizRepository
         
         Question DeleteQuestion(int questionID);
 
-        List<QuestionSummary> GetQuestionSummary();
+        List<QuestionSummary> GetQuestionSummary(int questionID = 0);
 
 
     }

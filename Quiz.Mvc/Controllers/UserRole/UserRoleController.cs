@@ -53,8 +53,8 @@ namespace QuizMvc.Controllers
             
             var userData = _mapper.Map<UserRoleData>(userRoleSummary);
 
-            userData.Users = _userService.Users.ToList();
-            userData.Roles = _roleService.Roles.ToList();
+            ViewData["Roles"] = _roleService.Roles.ToList();
+            ViewData["Users"] = _userService.Users.ToList();
             
             return View("EditUserRole", userData);
         }
@@ -72,10 +72,10 @@ namespace QuizMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            var userRoleData = new UserRoleData
-            {
-                Users = _userService.Users.ToList(), Roles = _roleService.Roles.ToList()
-            };
+            var userRoleData = new UserRoleData();
+            
+            ViewData["Roles"] = _roleService.Roles.ToList();
+            ViewData["Users"] = _userService.Users.ToList();
             
             return View("EditUserRole", userRoleData );
         }

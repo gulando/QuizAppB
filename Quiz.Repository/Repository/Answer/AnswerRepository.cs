@@ -49,13 +49,12 @@ namespace QuizRepository
             var result = (from answers in dbContext.Answers
                 join questions in dbContext.Questions on answers.QuestionID equals questions.ID
                 join answerTypes in dbContext.AnswerTypes on questions.AnswerTypeID equals answerTypes.ID
-                join quizes in dbContext.Quizes on questions.QuizID equals quizes.ID
-                join quizThemes in dbContext.QuizThemes on questions.QuizThemeID equals quizThemes.ID
-                where answers.ID == answerID || answers.ID == 0
-                select new AnswerSummary 
+                where answers.ID == answerID || answerID == 0
+                select new AnswerSummary
                 {
                     ID = answers.ID,
                     AnswerTypeID = answerTypes.ID,
+                    AnswerText = answers.AnswerText,
                     AnswerTypeName = answerTypes.AnswerTypeName,
                 }).ToList();
 

@@ -1,14 +1,19 @@
-@model QuizData.QuizTheme
-       @{
-           ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
-           Layout = "_Layout";
-       }
+@using System.Collections
+@model QuizMvc.Models.QuizThemeData
+
+@{
+    ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
+    Layout = "_Layout";
+}
        
        <form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
            <div class="form-group">
-               <label asp-for="QuizID"></label>
-               <input asp-for="QuizID" class="form-control" />
-               <label asp-for="QuizThemeName"></label>
+               <label for="sel1">Quiz Name</label>
+               <select class="form-control" asp-for="QuizID" asp-items="@(new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"))"></select>
+               
+               <br/>
+               
+               <label for="sel2">Quiz Theme</label>
                <input asp-for="QuizThemeName" class="form-control" />
            </div>
            <div class="text-center">

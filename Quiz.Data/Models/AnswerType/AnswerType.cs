@@ -21,8 +21,6 @@ namespace QuizData
     {
         public string QuizName { get; set; }
         
-        public string QuizThemeName { get; set; }
-        
         public string QuestionTypeName { get; set; }
         
     }

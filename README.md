@@ -1,7 +1,8 @@
-User Management workflow and dropdownList
-Authentication and Authorize
-QuestionImage as byteArray
+1 User Management
+2 Cashing
+3 QuestionImage and refactor
+4 
 
-https://stackoverflow.com/questions/34624034/select-tag-helper-in-asp-net-core-mvc
 
- "DefaultConnection": "Server=localhost;Database=QuizDB; User Id=sa; Password=*ando*1989; MultipleActiveResultSets=true"
+"DefaultConnection": "Server=localhost;Database=QuizDB; User Id=sa; Password=*ando*1989; MultipleActiveResultSets=true"
+"DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=QuizDB"

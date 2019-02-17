@@ -39,7 +39,7 @@ namespace QuizService
 
         public List<AnswerSummary> GetAnswerSummary(int answerID = 0)
         {
-            return _answerRepository.GetAnswerSummary();
+            return _answerRepository.GetAnswerSummary(answerID);
         }
     }
 }

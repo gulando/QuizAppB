@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using QuizData;
 
 
@@ -31,6 +32,23 @@ namespace QuizRepository
         public void DeleteUserRight(int id)
         {
             DeleteObj(id);
+        }
+        
+        public List<UserRightSummary> GetUserRightSummary()
+        {
+            var result = (from userRights in dbContext.UserRights
+                join users in dbContext.Users on userRights.UserID equals users.ID
+                join rights in dbContext.Rights on userRights.RightID equals rights.ID
+                select new UserRightSummary
+                {
+                    ID = userRights.ID,
+                    UserID = userRights.UserID,
+                    RightID = userRights.RightID,
+                    UserName = users.Username,
+                    RightName = rights.Name
+                }).ToList();
+
+            return result;     
         }
     }
 }

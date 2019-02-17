@@ -1,4 +1,6 @@
-@model QuizData.Answer
+@model QuizMvc.Models.AnswerData
+@using System.Collections
+
 @{
     ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
     Layout = "_Layout";
@@ -6,12 +8,18 @@
 
 <form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
     <div class="form-group">
-        <label asp-for="QuestionID"></label>
-        <input asp-for="QuestionID" class="form-control" />
-        <label asp-for="AnswerTypeID"></label>
-        <input asp-for="AnswerTypeID" class="form-control" />
-        <label asp-for="AnswerText"></label>
-        <input asp-for="AnswerText" class="form-control" />
+        <label for="sel1">Question</label>
+        <select class="form-control" asp-for="QuestionID" asp-items="@(new SelectList((IEnumerable)ViewData["Questions"], "ID", "CorrectAnswer"))"></select>
+               
+        <br/>
+        
+        <label for="sel1">Answer Type</label>
+        <select class="form-control" asp-for="AnswerTypeID" asp-items="@(new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"))"></select>
+               
+        <br/>
+
+        <label for="sel1">Answer Text</label>
+        <input asp-for="AnswerText" class="form-control"/>
     </div>
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>

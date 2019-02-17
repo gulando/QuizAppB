@@ -1,7 +1,10 @@
+using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizService;
 using QuizData;
+using QuizMvc.Models;
 
 
 namespace QuizApi.Controllers
@@ -12,14 +15,18 @@ namespace QuizApi.Controllers
         #region properties
         
         private readonly IQuizThemeService _quizThemeService;
+        private readonly IQuizService _quizService;
+        private readonly IMapper _mapper;
         
         #endregion
 
         #region ctor
         
-        public QuizThemeController(IQuizThemeService service)
+        public QuizThemeController(IQuizThemeService service, IQuizService quizService, IMapper mapper)
         {
             _quizThemeService = service;
+            _quizService = quizService;
+            _mapper = mapper;
         }
         
         #endregion
@@ -49,7 +56,12 @@ namespace QuizApi.Controllers
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            return View("EditQuizTheme", _quizThemeService.GetQuizThemeByID(id));
+            ViewData["Quizes"] = _quizService.Quizes.ToList();
+
+            var quizTheme = _quizThemeService.GetQuizThemeSummary(id).First();
+            var quizThemeData = _mapper.Map<QuizThemeData>(quizTheme);
+            
+            return View("EditQuizTheme", quizThemeData);
         }
 
         [HttpPost]
@@ -62,7 +74,9 @@ namespace QuizApi.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            return View("EditQuizTheme", new QuizTheme());
+            ViewData["Quizes"] = _quizService.Quizes.ToList();
+            
+            return View("EditQuizTheme", new QuizThemeData());
         }
         
         #endregion

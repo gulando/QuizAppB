@@ -37,9 +37,9 @@ namespace QuizService
             return _questionTypeRepository.DeleteQuestionType(questionTypeID);
         }
 
-        public List<QuestionTypeSummary> GetQuestionTypeSummary()
+        public List<QuestionTypeSummary> GetQuestionTypeSummary(int questionTypeID = 0)
         {
-            return _questionTypeRepository.GetQuestionTypeSummary();
+            return _questionTypeRepository.GetQuestionTypeSummary(questionTypeID);
         }
     }
 }

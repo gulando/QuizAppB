@@ -54,6 +54,10 @@ namespace QuizMvc
                 .AddCookie(options => { options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/User/Login");});
             #endregion
             
+            #region authorization part
+            
+            #endregion
+            
             #region repositories
             
             //add repositories
