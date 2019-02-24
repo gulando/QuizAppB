@@ -50,7 +50,7 @@ namespace QuizMvc.Controllers
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            ViewData["Quizes"] = _quizService.Quizes.ToList();
+            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
 
             var questionType = _questionTypeService.GetQuestionTypeSummary(id).First();
             var questionTypeData = _mapper.Map<QuestionTypeData>(questionType);
@@ -68,7 +68,7 @@ namespace QuizMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            ViewData["Quizes"] = _quizService.Quizes.ToList();
+            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
 
             return View("EditQuestionType", new QuestionTypeData());
         }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
 using QuizData;
 using QuizRepository;
 
@@ -8,40 +9,81 @@ namespace QuizService
 {
     public class QuizThemeService : IQuizThemeService
     {
-        private readonly IQuizThemeRepository _quizThemeRepository; 
+        #region properties
+        
+        private readonly IRepository<Quiz> _quizRepository;
+        private readonly IRepository<QuizTheme> _quizThemeRepository;
+        private readonly IMemoryCache _memoryCache;
 
-        public QuizThemeService(IQuizThemeRepository quizThemeRepository)
+        #endregion
+        
+        #region ctor
+
+        public QuizThemeService(IRepository<Quiz> quizRepository, IRepository<QuizTheme> quizThemeRepository,
+            IMemoryCache memoryCache)
         {
+            _quizRepository = quizRepository;
             _quizThemeRepository = quizThemeRepository;
+            _memoryCache = memoryCache;
         }
 
-        public IEnumerable<QuizTheme> QuizeThemes => _quizThemeRepository.QuizeThemes;
+        #endregion
+
+        #region methods
         
+        public List<QuizTheme> GetAllQuizThemes()
+        {
+            if (_memoryCache.TryGetValue(QuizThemeDefaults.QuizThemeAllCacheKey, out List<QuizTheme> quizThemes)) 
+                return quizThemes.ToList();
+                
+            quizThemes = _quizThemeRepository.Table.ToList();
+            _memoryCache.Set(QuizThemeDefaults.QuizThemeAllCacheKey, quizThemes);
+
+            return quizThemes.ToList();
+        }
+
         public QuizTheme GetQuizThemeByID(int quizThemeID)
         {
-            return _quizThemeRepository.GetQuizThemeByID(quizThemeID);
-        }
+            if (_memoryCache.TryGetValue(QuizDefaults.QuizIdCacheKey, out QuizTheme quizTheme)) 
+                return quizTheme;
+            
+            quizTheme = _quizThemeRepository.GetById(quizThemeID);
+            _memoryCache.Set(QuizDefaults.QuizIdCacheKey, quizTheme);
 
-        public void AddQuizTheme(QuizTheme quizTheme)
-        {
-            _quizThemeRepository.AddQuizTheme(quizTheme);
+            return quizTheme;
         }
 
         public void UpdateQuizTheme(QuizTheme quizTheme)
         {
-            _quizThemeRepository.UpdateQuizTheme(quizTheme);
+            _quizThemeRepository.Update(quizTheme);
         }
 
-        public QuizTheme DeleteQuizTheme(int quizThemeID)
+        public void AddQuizTheme(QuizTheme quizTheme)
         {
-            return _quizThemeRepository.DeleteQuizTheme(quizThemeID);
+            _quizThemeRepository.Insert(quizTheme);
+        }
+
+        public void DeleteQuizTheme(int quizThemeID)
+        {
+            _quizThemeRepository.Delete(quizThemeID);
         }
 
         public List<QuizThemeSummary> GetQuizThemeSummary(int quizThemeID = 0)
         {
-            var quizThemeList = _quizThemeRepository.GetQuizThemeSummary(quizThemeID).OrderBy(quizTheme => quizTheme.QuizName).ToList();
+            var result = (from quizes in _quizRepository.Table
+                join quizThemes in _quizThemeRepository.Table on quizes.ID equals quizThemes.QuizID
+                where quizThemes.ID == quizThemeID || quizThemeID == 0
+                select new QuizThemeSummary
+                {
+                    QuizID = quizes.ID,
+                    ID = quizThemes.ID,
+                    QuizName = quizes.QuizName,
+                    QuizThemeName = quizThemes.QuizThemeName
+                }).ToList();
 
-            return quizThemeList;
+            return result;     
         }
+        
+        #endregion
     }
 }

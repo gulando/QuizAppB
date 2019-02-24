@@ -56,7 +56,7 @@ namespace QuizApi.Controllers
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            ViewData["Quizes"] = _quizService.Quizes.ToList();
+            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
 
             var quizTheme = _quizThemeService.GetQuizThemeSummary(id).First();
             var quizThemeData = _mapper.Map<QuizThemeData>(quizTheme);
@@ -74,7 +74,7 @@ namespace QuizApi.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            ViewData["Quizes"] = _quizService.Quizes.ToList();
+            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
             
             return View("EditQuizTheme", new QuizThemeData());
         }

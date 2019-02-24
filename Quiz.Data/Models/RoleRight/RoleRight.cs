@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuizData
 {
-    public class RoleRight : BussinessEntityBase
+    public class RoleRight : EntityBase
     {
         [Column("RoleRightID")]
         public override int ID { get; set; }

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using QuizData;
 using QuizRepository;
 using QuizService;
 
@@ -19,18 +18,25 @@ namespace QuizMvc
         private IConfiguration Configuration { get; }
         
         public void ConfigureServices(IServiceCollection services)
-        {
+        {                                     
             #region mvc
             
             services.AddMvc();
             
             #endregion
             
+            #region cash
+            
+            services.AddMemoryCache();
+            
+            #endregion
+            
             #region database
             
-            var conString = Configuration["ConnectionStrings:DefaultConnection"];
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(conString));
-            
+            var conString = Configuration["ConnectionStrings:DefaultConnection"];            
+            services.AddDbContext<QuizDBContext>(options => options.UseSqlServer(conString));
+            services.AddScoped<IDbContext>(provider => provider.GetService<QuizDBContext>());
+
             #endregion
             
             #region mapping
@@ -58,26 +64,13 @@ namespace QuizMvc
             
             #endregion
             
-            #region repositories
+            #region repository
             
-            //add repositories
-            services.AddTransient<IAnswerRepository, AnswerRepository>();
-            services.AddTransient<IAnswerTypeRepository, AnswerTypeRepository>();
-            services.AddTransient<IQuestionRepository, QuestionRepository>();
-            services.AddTransient<IQuestionTypeRepository, QuestionTypeRepository>();
-            services.AddTransient<IQuizRepository, QuizRepository.QuizRepository>();
-            services.AddTransient<IQuizThemeRepository, QuizThemeRepository>();
-            
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IRightRepository, RightRepository>();
-            services.AddTransient<IRoleRepository, RoleRepository>();
-            
-            services.AddTransient<IUserRoleRepository, UserRoleRepository>();
-            services.AddTransient<IUserRightRepository, UserRightRepository>();
-            services.AddTransient<IRoleRightRepository, RoleRightRepository>();
+            //add repository
+            services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
             
             #endregion
-            
+                        
             #region services
             
             //add services
@@ -97,7 +90,8 @@ namespace QuizMvc
             services.AddTransient<IRoleRightService, RoleRightService>();
             
             services.AddTransient<ILogService, LogService>();
-            
+
+
             #endregion
         }
 

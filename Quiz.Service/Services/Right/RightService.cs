@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
 using QuizData;
 using QuizRepository;
 
@@ -7,33 +9,62 @@ namespace QuizService
 {
     public class RightService : IRightService
     {
-        private readonly IRightRepository _rightRepository; 
+        #region properties
 
-        public RightService(IRightRepository rightRepository)
+        private readonly IRepository<Right> _rightRepository;
+        private readonly IMemoryCache _memoryCache;
+
+        #endregion
+        
+        #region ctor
+        
+        public RightService(IRepository<Right> rightRepository, IMemoryCache memoryCache)
         {
             _rightRepository = rightRepository;
+            _memoryCache = memoryCache;
         }
 
-        public IEnumerable<Right> Rights => _rightRepository.Rights;
-       
-        public Right GetRightByID(int id)
+        #endregion
+
+        #region methods
+        
+        public List<Right> GetAllRights()
         {
-            return _rightRepository.GetRightByID(id);
+            if (_memoryCache.TryGetValue(RightDefaults.RightAllCacheKey, out List<Right> rights)) 
+                return rights.ToList();
+                
+            rights = _rightRepository.Table.ToList();
+            _memoryCache.Set(RightDefaults.RightAllCacheKey, rights);
+
+            return rights.ToList();
         }
 
-        public Right Create(Right right)
+        public Right GetRightByID(int rightID)
         {
-            return _rightRepository.Create(right);
+            if (_memoryCache.TryGetValue(RightDefaults.RightByIdCacheKey, out Right right)) 
+                return right;
+            
+            right = _rightRepository.GetById(rightID);
+            _memoryCache.Set(RightDefaults.RightByIdCacheKey, right);
+
+            return right;
         }
 
-        public void Update(Right right)
+        public void UpdateRight(Right right)
         {
             _rightRepository.Update(right);
         }
 
-        public void DeleteRight(int id)
+        public void AddRight(Right right)
         {
-            _rightRepository.DeleteRight(id);
+            _rightRepository.Insert(right);
         }
+
+        public void DeleteRight(int rightID)
+        {
+            _rightRepository.Delete(rightID);
+        }
+        
+        #endregion
     }
 }

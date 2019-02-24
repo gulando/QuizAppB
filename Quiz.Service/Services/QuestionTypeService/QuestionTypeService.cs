@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
 using QuizData;
 using QuizRepository;
 
@@ -8,38 +9,83 @@ namespace QuizService
 {
     public class QuestionTypeService : IQuestionTypeService
     {
-        private readonly IQuestionTypeRepository _questionTypeRepository; 
+        #region properties
+        
+        private readonly IRepository<Quiz> _quizRepository;
+        private readonly IRepository<QuestionType> _questionTypesRepository; 
+        private readonly IMemoryCache _memoryCache;
 
-        public QuestionTypeService(IQuestionTypeRepository questionTypeRepository)
+        #endregion
+        
+        #region ctor
+
+        public QuestionTypeService(IRepository<Quiz> quizRepository, IRepository<QuestionType> questionTypesRepository, 
+            IMemoryCache memoryCache)
         {
-            _questionTypeRepository = questionTypeRepository;
+            _quizRepository = quizRepository;
+            _questionTypesRepository = questionTypesRepository;
+            _memoryCache = memoryCache;
         }
 
-        public IEnumerable<QuestionType> QuestionTypes => _questionTypeRepository.QuestionTypes;
+        #endregion
+
+
+        #region methods
         
+        public List<QuestionType> GetAllQuestionTypes()
+        {
+            if (_memoryCache.TryGetValue(QuestionTypeDefaults.QuestionTypeAllCacheKey, out List<QuestionType> questionTypes))
+                return questionTypes;
+
+            questionTypes = _questionTypesRepository.Table.ToList();
+            _memoryCache.Set(QuestionDefaults.QuestionAllCacheKey, questionTypes);
+    
+            return questionTypes;
+        }
+
         public QuestionType GetQuestionTypeByID(int questionTypeID)
         {
-            return _questionTypeRepository.GetQuestionTypeByID(questionTypeID);
-        }
+            if (_memoryCache.TryGetValue(QuestionDefaults.QuestionyIdCacheKey, out QuestionType questionType)) 
+                return questionType;
 
-        public void AddQuestionType(QuestionType questionType)
-        {
-            _questionTypeRepository.AddQuestionType(questionType);
+            questionType = _questionTypesRepository.GetById(questionTypeID);
+            _memoryCache.Set(QuestionDefaults.QuestionyIdCacheKey, questionType);
+
+            return questionType;
         }
 
         public void UpdateQuestionType(QuestionType questionType)
         {
-            _questionTypeRepository.UpdateQuestionType(questionType);
+           _questionTypesRepository.Update(questionType);
         }
 
-        public QuestionType DeleteQuestionType(int questionTypeID)
+        public void AddQuestionType(QuestionType questionType)
         {
-            return _questionTypeRepository.DeleteQuestionType(questionTypeID);
+            _questionTypesRepository.Insert(questionType);
+        }
+
+        public void DeleteQuestionType(int questionTypeID)
+        {
+            _questionTypesRepository.Delete(questionTypeID);
         }
 
         public List<QuestionTypeSummary> GetQuestionTypeSummary(int questionTypeID = 0)
         {
-            return _questionTypeRepository.GetQuestionTypeSummary(questionTypeID);
+            var result = (from questionTypes in _questionTypesRepository.Table
+                join quizes in _quizRepository.Table on questionTypes.QuizID equals quizes.ID
+                orderby quizes.QuizName
+                where questionTypes.ID == questionTypeID || questionTypeID == 0
+                select new QuestionTypeSummary
+                {
+                    ID = questionTypes.ID,
+                    QuizID = quizes.ID,
+                    QuizName = quizes.QuizName,
+                    QuestionTypeName = questionTypes.QuestionTypeName
+                }).ToList();
+
+            return result;     
         }
+        
+        #endregion
     }
 }

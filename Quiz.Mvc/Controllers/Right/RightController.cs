@@ -32,7 +32,7 @@ namespace QuizApi.Controllers
         
         public IActionResult Index()
         {
-            var rights = _rightService.Rights;
+            var rights = _rightService.GetAllRights();
             return View(rights);
         }
                 
@@ -52,7 +52,7 @@ namespace QuizApi.Controllers
         [HttpPost]
         public IActionResult Edit(Right right)
         {
-            _rightService.Update(right);
+            _rightService.UpdateRight(right);
             return RedirectToAction(nameof(Index));
         }
         
@@ -65,7 +65,7 @@ namespace QuizApi.Controllers
         [HttpPost]
         public IActionResult Create(Right right)
         {
-            _rightService.Create(right);
+            _rightService.AddRight(right);
             return RedirectToAction(nameof(Index));
         }
         

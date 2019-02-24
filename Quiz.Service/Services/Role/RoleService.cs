@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
 using QuizData;
 using QuizRepository;
 
@@ -7,33 +9,62 @@ namespace QuizService
 {
     public class RoleService : IRoleService
     {
-        private readonly IRoleRepository _roleRepository; 
+        #region properties
 
-        public RoleService(IRoleRepository roleRepository)
+        private readonly IRepository<Role> _roleRepository;
+        private readonly IMemoryCache _memoryCache;
+
+        #endregion
+        
+        #region ctor
+        
+        public RoleService(IRepository<Role> roleRepository, IMemoryCache memoryCache)
         {
             _roleRepository = roleRepository;
+            _memoryCache = memoryCache;
         }
 
-        public IEnumerable<Role> Roles => _roleRepository.Roles;
-       
-        public Role GetRoleByID(int id)
+        #endregion
+
+        #region methods
+        
+        public List<Role> GetAllRoles()
         {
-            return _roleRepository.GetRoleByID(id);
+            if (_memoryCache.TryGetValue(RoleDefaults.RoleAllCacheKey, out List<Role> roles)) 
+                return roles.ToList();
+                
+            roles = _roleRepository.Table.ToList();
+            _memoryCache.Set(RoleDefaults.RoleAllCacheKey, roles);
+
+            return roles.ToList();
         }
 
-        public Role Create(Role role)
+        public Role GetRoleByID(int roleID)
         {
-            return _roleRepository.Create(role);
+            if (_memoryCache.TryGetValue(RoleDefaults.RoleByIdCacheKey, out Role role)) 
+                return role;
+            
+            role = _roleRepository.GetById(roleID);
+            _memoryCache.Set(RoleDefaults.RoleByIdCacheKey, role);
+
+            return role;
         }
 
-        public void Update(Role role)
+        public void UpdateRole(Role role)
         {
             _roleRepository.Update(role);
         }
 
-        public void DeleteRole(int id)
+        public void AddRole(Role role)
         {
-            _roleRepository.DeleteRole(id);
+            _roleRepository.Insert(role);
         }
+
+        public void DeleteRole(int roleID)
+        {
+            _roleRepository.Delete(roleID);
+        }
+        
+        #endregion
     }
 }

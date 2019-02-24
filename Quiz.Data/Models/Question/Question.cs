@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuizData
 {
-    public class Question : BussinessEntityBase
+    public class Question : EntityBase
     {
         [Column("QuestionID")]
         public override int ID { get; set; }

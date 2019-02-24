@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
 using QuizData;
 using QuizRepository;
 using QuizUtils;
@@ -10,33 +11,60 @@ namespace QuizService
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository; 
+        #region properties
 
-        public UserService(IUserRepository userRepository)
+        private readonly IRepository<User> _userRepository;
+        private readonly IMemoryCache _memoryCache;
+
+        #endregion
+        
+        #region ctor
+        
+        public UserService(IRepository<User> userRepository, IMemoryCache memoryCache)
         {
             _userRepository = userRepository;
+            _memoryCache = memoryCache;
         }
 
-        public IEnumerable<User> Users => _userRepository.Users;
+        #endregion
+        
+        #region methods
 
-        public User GetUserByID(int id)
+        public List<User> GetAllUsers()
         {
-            return _userRepository.GetUserByID(id);
+            if (_memoryCache.TryGetValue(UserDefaults.UserAllCacheKey, out List<User> users)) 
+                return users.ToList();
+                
+            users = _userRepository.Table.ToList();
+            _memoryCache.Set(UserDefaults.UserAllCacheKey, users);
+
+            return users.ToList();
         }
 
-        public User Create(User user)
+        public User GetUserByID(int userID)
         {
-            return _userRepository.Create(user);
+            if (_memoryCache.TryGetValue(UserDefaults.UserByIdCacheKey, out User user)) 
+                return user;
+            
+            user = _userRepository.GetById(userID);
+            _memoryCache.Set(UserDefaults.UserByIdCacheKey, user);
+
+            return user;
         }
 
-        public void Update(User user)
+        public void UpdateUser(User user)
         {
             _userRepository.Update(user);
         }
 
-        public void DeleteUser(int id)
+        public void AddUser(User user)
         {
-            _userRepository.DeleteUser(id);
+            _userRepository.Insert(user);
+        }
+
+        public void DeleteUser(int userID)
+        {
+            _userRepository.Delete(userID);
         }
 
         public User Authenticate(string username, string password)
@@ -44,7 +72,7 @@ namespace QuizService
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = _userRepository.Users.First(name => name.Username == username);
+            var user = _userRepository.Table.First(name => name.Username == username);
             // check if username exists
             if (user == null)
                 return null;
@@ -57,13 +85,13 @@ namespace QuizService
             return user;
         }
 
-        public User Create(User user, string password)
+        public void Create(User user, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password))
                 throw new ApplicationException("Password is required");
 
-            if (_userRepository.Users.Any(x => x.Username == user.Username))
+            if (_userRepository.Table.Any(x => x.Username == user.Username))
                 throw new ApplicationException("Username \"" + user.Username + "\" is already taken");
 
             byte[] passwordHash, passwordSalt;
@@ -72,12 +100,12 @@ namespace QuizService
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            return Create(user);
+            AddUser(user);
         }
 
         public void Update(User userParam, string password = null)
         {
-            var user = _userRepository.GetUserByID(userParam.ID);
+            var user = _userRepository.GetById(userParam.ID);
 
             if (user == null)
                 throw new ApplicationException("User not found");
@@ -85,7 +113,7 @@ namespace QuizService
             if (userParam.Username != user.Username)
             {
                 // username has changed so check if the new username is already taken
-                if (_userRepository.Users.Any(x => x.Username == userParam.Username))
+                if (_userRepository.Table.Any(x => x.Username == userParam.Username))
                     throw new ApplicationException("Username " + userParam.Username + " is already taken");
             }
 
@@ -106,7 +134,10 @@ namespace QuizService
                 user.PasswordSalt = passwordSalt;
             }
 
-            Update(user);
+            UpdateUser(user);
         }
+             
+        #endregion
+        
     }
 }

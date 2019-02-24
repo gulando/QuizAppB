@@ -34,7 +34,7 @@ namespace QuizApi.Controllers
         
         public IActionResult Index()
         {
-            var roles = _roleService.Roles;
+            var roles = _roleService.GetAllRoles();
             return View(roles);
         }
                 
@@ -54,7 +54,7 @@ namespace QuizApi.Controllers
         [HttpPost]
         public IActionResult Edit(Role role)
         {
-            _roleService.Update(role);
+            _roleService.UpdateRole(role);
             return RedirectToAction(nameof(Index));
         }
         
@@ -67,7 +67,7 @@ namespace QuizApi.Controllers
         [HttpPost]
         public IActionResult Create(Role role)
         {
-            _roleService.Create(role);
+            _roleService.AddRole(role);
             return RedirectToAction(nameof(Index));
         }
                 

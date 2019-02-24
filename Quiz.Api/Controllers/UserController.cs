@@ -52,7 +52,7 @@ namespace QuizApi.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllUsers")] 
-        public JsonResult GetAllUsers() => Json(_userService.Users.ToList());
+        public JsonResult GetAllUsers() => Json(_userService.GetAllUsers().ToList());
 
         [HttpPost]
         [ActionName("RegisterUser")]

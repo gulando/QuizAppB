@@ -38,7 +38,7 @@ namespace QuizMvc.Controllers
         
         public IActionResult Index()
         {
-            var userRoles = _userRoleService.GetUserRoleDataList();
+            var userRoles = _userRoleService.GetAllUserRoles();
             var userRoleDataList = _mapper.Map<IEnumerable<UserRoleData>>(userRoles);
             
             return View(userRoleDataList);
@@ -48,13 +48,13 @@ namespace QuizMvc.Controllers
         {
             ViewBag.CreateMode = false;
 
-            var userRoleSummaryList = _userRoleService.GetUserRoleDataList(); 
+            var userRoleSummaryList = _userRoleService.GetAllUserRoles(); 
             var userRoleSummary = userRoleSummaryList.First(userRole => userRole.ID == id);
             
             var userData = _mapper.Map<UserRoleData>(userRoleSummary);
 
-            ViewData["Roles"] = _roleService.Roles.ToList();
-            ViewData["Users"] = _userService.Users.ToList();
+            ViewData["Roles"] = _roleService.GetAllRoles().ToList();
+            ViewData["Users"] = _userService.GetAllUsers().ToList();
             
             return View("EditUserRole", userData);
         }
@@ -64,7 +64,7 @@ namespace QuizMvc.Controllers
         {
             var userRole = _mapper.Map<UserRole>(userRoleData);
             
-            _userRoleService.Update(userRole);
+            _userRoleService.UpdateUserRole(userRole);
             
             return RedirectToAction(nameof(Index));
         }
@@ -74,8 +74,8 @@ namespace QuizMvc.Controllers
             ViewBag.CreateMode = true;
             var userRoleData = new UserRoleData();
             
-            ViewData["Roles"] = _roleService.Roles.ToList();
-            ViewData["Users"] = _userService.Users.ToList();
+            ViewData["Roles"] = _roleService.GetAllRoles().ToList();
+            ViewData["Users"] = _userService.GetAllUsers().ToList();
             
             return View("EditUserRole", userRoleData );
         }
@@ -84,7 +84,7 @@ namespace QuizMvc.Controllers
         public IActionResult Create(UserRoleData userRoleData)
         {
             var userRole = _mapper.Map<UserRole>(userRoleData);
-            _userRoleService.Create(userRole);
+            _userRoleService.AddUserRole(userRole);
             
             return RedirectToAction(nameof(Index));
         }

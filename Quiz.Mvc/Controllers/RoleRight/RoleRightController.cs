@@ -51,8 +51,8 @@ namespace QuizMvc.Controllers
             var roleRightSummary = _roleRightService.GetRoleRightSummary().First(roleRight => roleRight.ID == id);
             var roleRightData = _mapper.Map<RoleRightData>(roleRightSummary);
             
-            ViewData["Roles"] = _roleService.Roles.ToList();
-            ViewData["Rights"] = _rightService.Rights.ToList();
+            ViewData["Roles"] = _roleService.GetAllRoles().ToList();
+            ViewData["Rights"] = _rightService.GetAllRights().ToList();
             
             return View("EditRoleRight", roleRightData);
         }
@@ -61,7 +61,7 @@ namespace QuizMvc.Controllers
         public IActionResult Edit(RoleRightData roleRightData)
         {
             var roleRight = _mapper.Map<RoleRight>(roleRightData);
-            _roleRightService.Update(roleRight);
+            _roleRightService.UpdateRoleRight(roleRight);
             
             return RedirectToAction(nameof(Index));
         }
@@ -69,8 +69,8 @@ namespace QuizMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            ViewData["Roles"] = _roleService.Roles.ToList();
-            ViewData["Rights"] = _rightService.Rights.ToList();
+            ViewData["Roles"] = _roleService.GetAllRoles().ToList();
+            ViewData["Rights"] = _rightService.GetAllRights().ToList();
 
             var roleRightData = new RoleRightData();
             
@@ -81,7 +81,7 @@ namespace QuizMvc.Controllers
         public IActionResult Create(RoleRightData roleRightData)
         {
             var roleRight = _mapper.Map<RoleRight>(roleRightData);
-            _roleRightService.Create(roleRight);
+            _roleRightService.AddRoleRight(roleRight);
             
             return RedirectToAction(nameof(Index));
         }

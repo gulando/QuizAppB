@@ -41,7 +41,7 @@ namespace QuizApi.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllRoles")] 
-        public JsonResult GetAllRoles() => Json(_roleService.Roles.ToList());
+        public JsonResult GetAllRoles() => Json(_roleService.GetAllRoles().ToList());
 
         [HttpPost]
         [ActionName("AddRole")]
@@ -49,13 +49,15 @@ namespace QuizApi.Controllers
         {
             try
             {
-                return new OkObjectResult(_roleService.Create(role));
+                _roleService.AddRole(role);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+
+            return null;
         }
 
         [HttpPut("{roleID}")]
@@ -64,7 +66,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _roleService.Update(new Role
+                _roleService.UpdateRole(new Role
                 {
                     ID =  roleID,
                     Name = role.Name,

@@ -29,7 +29,7 @@ namespace QuizMvc.Controllers
         
         public IActionResult Index()
         {
-            var quizes = _quizService.Quizes;
+            var quizes = _quizService.GetAllQuizes();
             return View(quizes);
 
         }

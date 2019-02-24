@@ -41,7 +41,7 @@ namespace QuizApi.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllRights")] 
-        public JsonResult GetAllRights() => Json(_rightService.Rights.ToList());
+        public JsonResult GetAllRights() => Json(_rightService.GetAllRights().ToList());
 
         [HttpPost]
         [ActionName("AddRight")]
@@ -49,13 +49,15 @@ namespace QuizApi.Controllers
         {
             try
             {
-                return new OkObjectResult(_rightService.Create(right));
+                _rightService.AddRight(right);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+
+            return null;
         }
 
         [HttpPut("{rightID}")]
@@ -64,7 +66,7 @@ namespace QuizApi.Controllers
         {
             try
             {
-                _rightService.Update(new Right
+                _rightService.UpdateRight(new Right
                 {
                     ID =  rightID,
                     Name = right.Name,

@@ -1,5 +1,5 @@
 using NLog;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
+
 
 namespace QuizService
 {

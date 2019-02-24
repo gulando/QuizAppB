@@ -51,8 +51,8 @@ namespace QuizMvc.Controllers
             var userRightSummaryList = _userRightService.GetUserRightSummary().First(userRight => userRight.ID == id);
             var userData = _mapper.Map<UserRightData>(userRightSummaryList);
             
-            ViewData["Users"] = _userService.Users.ToList();
-            ViewData["Rights"] = _rightService.Rights.ToList();
+            ViewData["Users"] = _userService.GetAllUsers().ToList();
+            ViewData["Rights"] = _rightService.GetAllRights().ToList();
             
             return View("EditUserRight", userData);
         }
@@ -61,7 +61,7 @@ namespace QuizMvc.Controllers
         public IActionResult Edit(UserRightData userRightData)
         {
             var userRight = _mapper.Map<UserRight>(userRightData);
-            _userRightService.Update(userRight);
+            _userRightService.UpdateUserRight(userRight);
             
             return RedirectToAction(nameof(Index));
         }
@@ -71,8 +71,8 @@ namespace QuizMvc.Controllers
             ViewBag.CreateMode = true;
             var userRightData = new UserRightData();
                 
-            ViewData["Users"] = _userService.Users.ToList();
-            ViewData["Rights"] = _rightService.Rights.ToList();
+            ViewData["Users"] = _userService.GetAllUsers().ToList();
+            ViewData["Rights"] = _rightService.GetAllRights().ToList();
             
             return View("EditUserRight", userRightData );
         }
@@ -81,7 +81,7 @@ namespace QuizMvc.Controllers
         public IActionResult Create(UserRightData userRightData)
         {
             var userRight = _mapper.Map<UserRight>(userRightData);
-            _userRightService.Create(userRight);
+            _userRightService.AddUserRight(userRight);
             
             return RedirectToAction(nameof(Index));
         }

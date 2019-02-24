@@ -44,7 +44,7 @@ namespace QuizMvc.Controllers
 
         public IActionResult Index()
         {
-            var users = _userService.Users;
+            var users = _userService.GetAllUsers();
             var userDataList = _mapper.Map<IEnumerable<UserData>>(users);
             return View(userDataList);
         }
@@ -103,7 +103,7 @@ namespace QuizMvc.Controllers
         {
             if (!ModelState.IsValid) return View(userData);
             
-            var user = _userService.Users.FirstOrDefault(u => u.Username == userData.Username && u.Password == userData.Password);
+            var user = _userService.GetAllUsers().FirstOrDefault(u => u.Username == userData.Username && u.Password == userData.Password);
             if (user != null)
             {
                 await Authenticate(userData.Username);
@@ -128,7 +128,7 @@ namespace QuizMvc.Controllers
         {
             if (!ModelState.IsValid) return View(userData);
             
-            var user = _userService.Users.FirstOrDefault(u => u.Username == userData.Username);
+            var user = _userService.GetAllUsers().FirstOrDefault(u => u.Username == userData.Username);
             if (user == null)
             {
                 var newUser = _mapper.Map<User>(userData);

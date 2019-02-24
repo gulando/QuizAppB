@@ -57,11 +57,10 @@ namespace QuizMvc.Controllers
         {
             ViewBag.CreateMode = false;
             
-            ViewData["Quizes"] = _quizService.Quizes.ToList();
-            ViewData["QuizThemes"] = _quizThemeService.QuizeThemes.ToList();
-            ViewData["AnswerTypes"] = _answerTypeService.AnswerTypes.ToList();
-            ViewData["QuestionTypes"] = _questionTypeService.QuestionTypes.ToList();
-            ViewData["Questions"] = _questionService.Questions.ToList();
+            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
+            ViewData["QuizThemes"] = _quizThemeService.GetAllQuizThemes().ToList();
+            ViewData["AnswerTypes"] = _answerTypeService.GetAllAnswerTypes().ToList();
+            ViewData["QuestionTypes"] = _questionTypeService.GetAllQuestionTypes().ToList();
 
             var question = _questionService.GetQuestionSummary(id).First();
             var questionData = _mapper.Map<QuestionData>(question);
@@ -81,11 +80,10 @@ namespace QuizMvc.Controllers
         {
             ViewBag.CreateMode = true;
             
-            ViewData["Quizes"] = _quizService.Quizes.ToList();
-            ViewData["QuizThemes"] = _quizThemeService.QuizeThemes.ToList();
-            ViewData["AnswerTypes"] = _answerTypeService.AnswerTypes.ToList();
-            ViewData["QuestionTypes"] = _questionTypeService.QuestionTypes.ToList();
-            ViewData["Questions"] = _questionService.Questions.ToList();
+            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
+            ViewData["QuizThemes"] = _quizThemeService.GetAllQuizThemes().ToList();
+            ViewData["AnswerTypes"] = _answerTypeService.GetAllAnswerTypes().ToList();
+            ViewData["QuestionTypes"] = _questionTypeService.GetAllQuestionTypes().ToList();
             
             return View("EditQuestion", new QuestionData());
         }

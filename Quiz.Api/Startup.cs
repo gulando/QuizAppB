@@ -31,8 +31,9 @@ namespace QuizApi
             
             #region database
             
-            var conString = Configuration["ConnectionStrings:DefaultConnection"];
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(conString));
+            var conString = Configuration["ConnectionStrings:DefaultConnection"];            
+            services.AddDbContext<QuizDBContext>(options => options.UseSqlServer(conString));
+            services.AddScoped<IDbContext>(provider => provider.GetService<QuizDBContext>());
             
             #endregion
             
@@ -97,15 +98,8 @@ namespace QuizApi
             
             #region repositories
             
-            //add repositories
-            services.AddTransient<IAnswerRepository, AnswerRepository>();
-            services.AddTransient<IAnswerTypeRepository, AnswerTypeRepository>();
-            services.AddTransient<IQuestionRepository, QuestionRepository>();
-            services.AddTransient<IQuestionTypeRepository, QuestionTypeRepository>();
-            services.AddTransient<IQuizRepository, QuizRepository.QuizRepository>();
-            services.AddTransient<IQuizThemeRepository, QuizThemeRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
+            //add repository
+            services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
             
             #endregion
             

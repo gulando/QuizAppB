@@ -37,7 +37,7 @@ namespace QuizApi.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllQuizThemes")]
-        public JsonResult GetAllQuizThemes() => Json(_quizThemeService.QuizeThemes.ToList());
+        public JsonResult GetAllQuizThemes() => Json(_quizThemeService.GetAllQuizThemes().ToList());
 
         [HttpPost]
         [ActionName("AddQuizTheme")]

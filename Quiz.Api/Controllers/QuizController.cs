@@ -36,7 +36,7 @@ namespace QuizApi.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllQuizes")] 
-        public JsonResult GetAllQuizes() => Json(_quizService.Quizes.ToList());
+        public JsonResult GetAllQuizes() => Json(_quizService.GetAllQuizes().ToList());
 
         [HttpPost]
         [ActionName("AddQuiz")]

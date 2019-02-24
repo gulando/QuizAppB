@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
 using QuizData;
 using QuizRepository;
 
@@ -7,38 +9,84 @@ namespace QuizService
 {
     public class RoleRightService : IRoleRightService
     {
-        private readonly IRoleRightRepository _roleRightRepository; 
+        #region properties
+        
+        private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<Right> _rightRepository;
+        private readonly IRepository<RoleRight> _roleRightRepository;
+        private readonly IMemoryCache _memoryCache;
 
-        public RoleRightService(IRoleRightRepository roleRightRepository)
+        #endregion
+        
+        #region ctor
+
+        public RoleRightService(IRepository<Role> roleRepository, IRepository<Right> rightRepository,
+            IRepository<RoleRight> roleRightRepository, IMemoryCache memoryCache)
         {
+            _roleRepository = roleRepository;
+            _rightRepository = rightRepository;
             _roleRightRepository = roleRightRepository;
+            _memoryCache = memoryCache;
         }
 
-        public IEnumerable<RoleRight> RoleRights => _roleRightRepository.RoleRights;
-       
-        public RoleRight GetRoleRightByID(int id)
+        #endregion
+
+        #region methods
+
+        public List<RoleRight> GetAllRoleRights()
         {
-            return _roleRightRepository.GetRoleRightByID(id);
+            if (_memoryCache.TryGetValue(RoleRightDefaults.RoleRightAllCacheKey, out List<RoleRight> roleRights)) 
+                return roleRights.ToList();
+                
+            roleRights = _roleRightRepository.Table.ToList();
+            _memoryCache.Set(RoleRightDefaults.RoleRightAllCacheKey, roleRights);
+
+            return roleRights;
         }
 
-        public RoleRight Create(RoleRight roleRight)
+        public RoleRight GetRoleRightByID(int roleRightID)
         {
-            return _roleRightRepository.Create(roleRight);
+            if (_memoryCache.TryGetValue(RoleRightDefaults.RoleRightByIdCacheKey, out RoleRight roleRight)) 
+                return roleRight;
+            
+            roleRight = _roleRightRepository.GetById(roleRightID);
+            _memoryCache.Set(RoleRightDefaults.RoleRightByIdCacheKey, roleRight);
+
+            return roleRight;
         }
 
-        public void Update(RoleRight roleRight)
+        public void UpdateRoleRight(RoleRight roleRight)
         {
             _roleRightRepository.Update(roleRight);
         }
 
-        public void DeleteRoleRight(int id)
+        public void AddRoleRight(RoleRight roleRight)
         {
-            _roleRightRepository.DeleteRoleRight(id);
+            _roleRightRepository.Insert(roleRight);
         }
 
-        public List<RoleRightSummary> GetRoleRightSummary()
+        public void DeleteRoleRight(int roleRightID)
         {
-            return _roleRightRepository.GetRoleRightSummary();
+            _roleRightRepository.Delete(roleRightID);
         }
+
+        public List<RoleRightSummary> GetRoleRightSummary(int roleRightID = 0)
+        {
+            var result = (from roleRights in _roleRightRepository.Table
+                join roles in _roleRepository.Table on roleRights.RoleID equals roles.ID
+                join rights in _rightRepository.Table on roleRights.RightID equals rights.ID
+                select new RoleRightSummary
+                {
+                    ID = roleRights.ID,
+                    RoleID = roles.ID,
+                    RightID = rights.ID,
+                    RoleName = roles.Name,
+                    RightName = rights.Name
+                }).ToList();
+
+            return result;     
+        }
+        
+        #endregion
     }
 }

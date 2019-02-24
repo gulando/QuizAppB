@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
+using QuizData;
 using QuizRepository;
 
 
@@ -7,33 +9,62 @@ namespace QuizService
 {
     public class QuizService : IQuizService
     {
-        private readonly IQuizRepository _quizRepository; 
+        #region properties
+        
+        private readonly IRepository<Quiz> _quizRepository;
+        private readonly IMemoryCache _memoryCache;
 
-        public QuizService(IQuizRepository quizRepository)
+        #endregion
+        
+        #region ctor
+        
+        public QuizService(IRepository<Quiz> quizRepository, IMemoryCache memoryCache)
         {
             _quizRepository = quizRepository;
+            _memoryCache = memoryCache;
         }
 
-        public IEnumerable<QuizData.Quiz> Quizes => _quizRepository.Quizes;
+        #endregion
+
+        #region methods 
         
-        public QuizData.Quiz GetQuizByID(int quizID)
+        public List<Quiz> GetAllQuizes()
         {
-            return _quizRepository.GetQuizByID(quizID);
+            if (_memoryCache.TryGetValue(QuizDefaults.QuizAllCacheKey, out List<Quiz> quizzes)) 
+                return quizzes.ToList();
+                
+            quizzes = _quizRepository.Table.ToList();
+            _memoryCache.Set(QuizDefaults.QuizAllCacheKey, quizzes);
+
+            return quizzes.ToList();
         }
 
-        public void AddQuiz(QuizData.Quiz quiz)
+        public Quiz GetQuizByID(int quizID)
         {
-            _quizRepository.AddQuiz(quiz);
+            if (_memoryCache.TryGetValue(QuizDefaults.QuizIdCacheKey, out Quiz quiz)) 
+                return quiz;
+            
+            quiz = _quizRepository.GetById(quizID);
+            _memoryCache.Set(QuizDefaults.QuizIdCacheKey, quiz);
+
+            return quiz;
         }
 
-        public void UpdateQuiz(QuizData.Quiz quiz)
+        public void UpdateQuiz(Quiz quiz)
         {
-            _quizRepository.UpdateQuiz(quiz);
+            _quizRepository.Update(quiz);
         }
 
-        public QuizData.Quiz DeleteQuiz(int quizID)
+        public void AddQuiz(Quiz quiz)
         {
-            return _quizRepository.DeleteQuiz(quizID);
+            _quizRepository.Insert(quiz);
         }
+
+        public void DeleteQuiz(int quizID)
+        {
+            _quizRepository.Delete(quizID);
+        }
+        
+        #endregion
     }
 }
