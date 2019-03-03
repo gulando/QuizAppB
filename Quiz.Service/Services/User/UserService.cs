@@ -37,7 +37,7 @@ namespace QuizService
         public List<User> GetAllUsers()
         {
             if (_memoryCache.TryGetValue(UserDefaults.UserAllCacheKey, out List<User> users)) 
-                return users.ToList();
+            return users.ToList();
                 
             users = _userRepository.Table.ToList();
             _memoryCache.Set(UserDefaults.UserAllCacheKey, users);
@@ -47,9 +47,9 @@ namespace QuizService
 
         public User GetUserByID(int userID)
         {
-            if (_memoryCache.TryGetValue(UserDefaults.UserByIdCacheKey, out User user)) 
-                return user;
-            
+            if (_memoryCache.TryGetValue(UserDefaults.UserByIdCacheKey, out User user) && user.ID == userID)
+            return user;
+
             user = _userRepository.GetById(userID);
             _memoryCache.Set(UserDefaults.UserByIdCacheKey, user);
 
@@ -87,7 +87,7 @@ namespace QuizService
         public async Task<List<User>> GetAllUsersAsync()
         {
             if (_memoryCache.TryGetValue(UserDefaults.UserAllCacheKey, out List<User> users)) 
-                return users.ToList();
+            return users.ToList();
                 
             users = await _userRepositoryAsync.Table.ToListAsync();
             _memoryCache.Set(UserDefaults.UserAllCacheKey, users);
@@ -98,7 +98,7 @@ namespace QuizService
         public async Task<User> GetUserByIDAsync(int userID)
         {
             if (_memoryCache.TryGetValue(UserDefaults.UserByIdCacheKey, out User user)) 
-                return user;
+            return user;
             
             user = await _userRepositoryAsync.GetByIdAsync(userID);
             _memoryCache.Set(UserDefaults.UserByIdCacheKey, user);
@@ -173,7 +173,7 @@ namespace QuizService
 
         public async Task Update(User userParam, string password = null)
         {
-            var user = _userRepository.GetById(userParam.ID);
+            var user = await _userRepositoryAsync.GetByIdAsync(userParam.ID);
 
             if (user == null)
                 throw new ApplicationException("User not found");
@@ -181,7 +181,9 @@ namespace QuizService
             if (userParam.Username != user.Username)
             {
                 // username has changed so check if the new username is already taken
-                if (_userRepositoryAsync.Table.AnyAsync(x => x.Username == userParam.Username) != null)
+                var isUserAlreadyExists = await _userRepositoryAsync.Table.AnyAsync(x => x.Username == userParam.Username);
+                
+                if (isUserAlreadyExists)
                     throw new ApplicationException("Username " + userParam.Username + " is already taken");
             }
 
@@ -189,6 +191,7 @@ namespace QuizService
             user.FirstName = userParam.FirstName;
             user.LastName = userParam.LastName;
             user.Username = userParam.Username;
+            
             
             // update password if it was entered
             if (!string.IsNullOrWhiteSpace(password))

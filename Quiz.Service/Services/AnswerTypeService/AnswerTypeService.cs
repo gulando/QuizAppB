@@ -30,7 +30,7 @@ namespace QuizService
         public AnswerTypeService(IRepository<Quiz> quizRepository, IRepository<AnswerType> answerTypeRepository,
             IRepository<QuestionType> questionTypesRepository, IRepositoryAsync<Quiz> quizRepositoryAsync,
             IRepositoryAsync<AnswerType> answerTypeRepositoryAsync,
-            IRepositoryAsync<QuestionType> questionTypeRepositoryAsync,MemoryCache memoryCache)
+            IRepositoryAsync<QuestionType> questionTypeRepositoryAsync,IMemoryCache memoryCache)
         {
             _quizRepository = quizRepository;
             _answerTypeRepository = answerTypeRepository;

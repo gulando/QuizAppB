@@ -42,26 +42,26 @@ namespace QuizMvc.Controllers
         
         #region basic actions
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var users = _userService.GetAllUsers();
+            var users = await _userService.GetAllUsersAsync();
             var userDataList = _mapper.Map<IEnumerable<UserData>>(users);
             return View(userDataList);
         }
         
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             ViewBag.CreateMode = false;
-            var user = _userService.GetUserByID(id);
+            var user = await _userService.GetUserByIDAsync(id);
             var userData = _mapper.Map<UserData>(user);
             return View("EditUser", userData);
         }
         
         [HttpPost]
-        public IActionResult Edit(UserData userData)
+        public async Task<IActionResult> Edit(UserData userData)
         {
             var user = _mapper.Map<User>(userData);
-            _userService.Update(user, userData.Password);
+            await _userService.Update(user, userData.Password);
             return RedirectToAction(nameof(Index));
         }
         
@@ -72,17 +72,17 @@ namespace QuizMvc.Controllers
         }
         
         [HttpPost]
-        public IActionResult Create(UserData userData)
+        public async Task<IActionResult> Create(UserData userData)
         {
             var user = _mapper.Map<User>(userData);
-            _userService.Create(user,userData.Password);
+            await _userService.Create(user,userData.Password);
             return RedirectToAction(nameof(Index));
         }
         
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _userService.DeleteUser(id);
+            await _userService.DeleteUserAsync(id);
             return RedirectToAction(nameof(Index));
         }
         

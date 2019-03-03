@@ -38,7 +38,7 @@ namespace QuizMvc.Controllers
         
         public IActionResult Index()
         {
-            var userRoles = _userRoleService.GetAllUserRoles();
+            var userRoles = _userRoleService.GetUserRoleSummary();
             var userRoleDataList = _mapper.Map<IEnumerable<UserRoleData>>(userRoles);
             
             return View(userRoleDataList);
@@ -48,7 +48,7 @@ namespace QuizMvc.Controllers
         {
             ViewBag.CreateMode = false;
 
-            var userRoleSummaryList = _userRoleService.GetAllUserRoles(); 
+            var userRoleSummaryList = _userRoleService.GetUserRoleSummary(); 
             var userRoleSummary = userRoleSummaryList.First(userRole => userRole.ID == id);
             
             var userData = _mapper.Map<UserRoleData>(userRoleSummary);

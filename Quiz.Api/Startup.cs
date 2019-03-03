@@ -29,6 +29,12 @@ namespace QuizApi
             
             #endregion
             
+            #region cash
+            
+            services.AddMemoryCache();
+            
+            #endregion
+            
             #region database
             
             var conString = Configuration["ConnectionStrings:DefaultConnection"];            

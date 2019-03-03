@@ -69,28 +69,29 @@ namespace QuizMvc
             
             //add repository
             services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
+            services.AddScoped(typeof(IRepositoryAsync<>),typeof(RepositoryAsync<>));
             
             #endregion
                         
             #region services
             
             //add services
-            services.AddTransient<IAnswerService, AnswerService>();
-            services.AddTransient<IAnswerTypeService, AnswerTypeService>();
-            services.AddTransient<IQuestionService, QuestionService>();
-            services.AddTransient<IQuestionTypeService, QuestionTypeService>();
-            services.AddTransient<IQuizService, QuizService.QuizService>();
-            services.AddTransient<IQuizThemeService, QuizThemeService>();
+            services.AddScoped<IAnswerService, AnswerService>();
+            services.AddScoped<IAnswerTypeService, AnswerTypeService>();
+            services.AddScoped<IQuestionService, QuestionService>();
+            services.AddScoped<IQuestionTypeService, QuestionTypeService>();
+            services.AddScoped<IQuizService, QuizService.QuizService>();
+            services.AddScoped<IQuizThemeService, QuizThemeService>();
             
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IRightService, RightService>();
-            services.AddTransient<IRoleService, RoleService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRightService, RightService>();
+            services.AddScoped<IRoleService, RoleService>();
             
-            services.AddTransient<IUserRoleService, UserRoleService>();
-            services.AddTransient<IUserRightService, UserRightService>();
-            services.AddTransient<IRoleRightService, RoleRightService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
+            services.AddScoped<IUserRightService, UserRightService>();
+            services.AddScoped<IRoleRightService, RoleRightService>();
             
-            services.AddTransient<ILogService, LogService>();
+            services.AddScoped<ILogService, LogService>();
 
 
             #endregion
@@ -108,7 +109,8 @@ namespace QuizMvc
                 app.UseExceptionHandler("/Error");
             }*/
             
-            app.ConfigureExceptionHandler(logger);
+            app.UseDeveloperExceptionPage();
+            //app.ConfigureExceptionHandler(logger);
             
             app.UseStatusCodePages();
             app.UseStaticFiles();
