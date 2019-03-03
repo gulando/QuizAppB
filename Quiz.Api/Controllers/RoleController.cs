@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,69 +33,53 @@ namespace QuizApi.Controllers
         #endregion
         
         #region api methods
-        
+
         [HttpGet("{roleID}")]
         [Produces("application/json")]
         [ActionName("GetRoleByID")]
-        public JsonResult GetRoleByID(int roleID) => Json(_roleService.GetRoleByID(roleID));
+        public async Task<JsonResult> GetRoleByID(int roleID)
+        {
+            var role = await _roleService.GetRoleByIDAsync(roleID);
+            if (role != null)
+                return Json(role);
+            
+            return new JsonResult(null);
+        }
 
         [HttpGet]
         [Produces("application/json")]
-        [ActionName("GetAllRoles")] 
-        public JsonResult GetAllRoles() => Json(_roleService.GetAllRoles().ToList());
+        [ActionName("GetAllRoles")]
+        public async Task<JsonResult> GetAllRoles()
+        {
+            var roleList = await _roleService.GetAllRolesAsync();
+            if (roleList != null && roleList.Count > 0)
+                return Json(roleList);
+            
+            return new JsonResult(null);
+        }
 
         [HttpPost]
         [ActionName("AddRole")]
-        public IActionResult AddRole([FromBody] Role role)
+        public async Task<JsonResult> AddRole([FromBody] Role role)
         {
-            try
-            {
-                _roleService.AddRole(role);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            return null;
+            await _roleService.AddRoleAsync(role);
+            return new JsonResult(null);
         }
 
         [HttpPut("{roleID}")]
         [ActionName("UpdateRole")]
-        public IActionResult UpdateRole(int roleID, [FromBody] Role role)
+        public async Task<JsonResult> UpdateRole(int roleID, [FromBody] Role role)
         {
-            try
-            {
-                _roleService.UpdateRole(new Role
-                {
-                    ID =  roleID,
-                    Name = role.Name,
-                    Description =  role.Description
-                });
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            await _roleService.UpdateRoleAsync(role);
+            return new JsonResult(null);
         }
         
         [HttpDelete("{roleID}")]
         [ActionName("DeleteRole")]
-        public IActionResult DeleteRole(int roleID)
+        public async Task<JsonResult> DeleteRole(int roleID)
         {
-            try
-            {
-                _roleService.DeleteRole(roleID);
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            await _roleService.DeleteRoleAsync(roleID);
+            return new JsonResult(null);
         }
                 
         #endregion

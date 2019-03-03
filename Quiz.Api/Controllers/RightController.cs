@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,69 +33,53 @@ namespace QuizApi.Controllers
         #endregion
         
         #region api methods
-        
+
         [HttpGet("{rightID}")]
         [Produces("application/json")]
         [ActionName("GetRightByID")]
-        public JsonResult GetRightByID(int rightID) => Json(_rightService.GetRightByID(rightID));
+        public async Task<JsonResult> GetRightByID(int rightID)
+        {
+            var right = await _rightService.GetRightByIDAsync(rightID);
+            if (right != null)
+                return Json(right);
+            
+            return new JsonResult(null);
+        }
 
         [HttpGet]
         [Produces("application/json")]
-        [ActionName("GetAllRights")] 
-        public JsonResult GetAllRights() => Json(_rightService.GetAllRights().ToList());
+        [ActionName("GetAllRights")]
+        public async Task<JsonResult> GetAllRights()
+        {
+            var rightList = await _rightService.GetAllRightsAsync();
+            if (rightList != null && rightList.Count > 0)
+                return Json(rightList);
+            
+            return new JsonResult(null);
+        }
 
         [HttpPost]
         [ActionName("AddRight")]
-        public IActionResult AddRight([FromBody] Right right)
+        public async Task<JsonResult> AddRight([FromBody] Right right)
         {
-            try
-            {
-                _rightService.AddRight(right);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            return null;
+            await _rightService.AddRightAsync(right);
+            return new JsonResult(null);
         }
 
         [HttpPut("{rightID}")]
         [ActionName("UpdateRight")]
-        public IActionResult UpdateRight(int rightID, [FromBody] Right right)
+        public async Task<JsonResult> UpdateRight(int rightID, [FromBody] Right right)
         {
-            try
-            {
-                _rightService.UpdateRight(new Right
-                {
-                    ID =  rightID,
-                    Name = right.Name,
-                    Description =  right.Description
-                });
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            await _rightService.UpdateRightAsync(right);
+            return new JsonResult(null);
         }
         
         [HttpDelete("{rightID}")]
         [ActionName("DeleteRight")]
-        public IActionResult DeleteRight(int rightID)
+        public async Task<JsonResult> DeleteRight(int rightID)
         {
-            try
-            {
-                _rightService.DeleteRight(rightID);
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            await _rightService.DeleteRightAsync(rightID);
+            return new JsonResult(null);
         }
                 
         #endregion

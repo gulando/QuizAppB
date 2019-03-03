@@ -1,9 +1,11 @@
 using System.Net;
+using Exceptionless;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using QuizData;
 using QuizService;
+
 
 namespace QuizMvc.Helpers
 {
@@ -19,6 +21,7 @@ namespace QuizMvc.Helpers
                     context.Response.ContentType = "application/json";
  
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    
                     if(contextFeature != null)
                     { 
                         logger.LogError($"Something went wrong: {contextFeature.Error}");
@@ -29,6 +32,15 @@ namespace QuizMvc.Helpers
                             Message = contextFeature.Error.Message
                         }.ToString());
                     }
+
+                    #region log exception
+
+                    app.UseExceptionless("7BJduNBtKDMcLkqx9knwGNmcCNRQK5MyyWkZxrro");
+                    var exceptionLess = contextFeature.Error.ToExceptionless();
+                    exceptionLess.Submit();
+                    
+                    #endregion
+                    
                 });
             });
         }

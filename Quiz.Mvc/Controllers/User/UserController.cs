@@ -132,7 +132,7 @@ namespace QuizMvc.Controllers
             if (user == null)
             {
                 var newUser = _mapper.Map<User>(userData);
-                _userService.Create(newUser,userData.Password);
+                await _userService.Create(newUser,userData.Password);
  
                 await Authenticate(userData.Username);
  

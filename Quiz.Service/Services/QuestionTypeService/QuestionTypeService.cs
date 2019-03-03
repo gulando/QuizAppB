@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using QuizData;
 using QuizRepository;
@@ -13,22 +15,30 @@ namespace QuizService
         
         private readonly IRepository<Quiz> _quizRepository;
         private readonly IRepository<QuestionType> _questionTypesRepository; 
+        
+        private readonly IRepositoryAsync<Quiz> _quizRepositoryAsync;
+        private readonly IRepositoryAsync<QuestionType> _questionTypesRepositoryAsync; 
+        
         private readonly IMemoryCache _memoryCache;
 
         #endregion
         
         #region ctor
 
-        public QuestionTypeService(IRepository<Quiz> quizRepository, IRepository<QuestionType> questionTypesRepository, 
+        public QuestionTypeService(IRepository<Quiz> quizRepository, IRepository<QuestionType> questionTypesRepository,
+            IRepositoryAsync<Quiz> quizRepositoryAsync, IRepositoryAsync<QuestionType> questionTypesRepositoryAsync,
             IMemoryCache memoryCache)
         {
             _quizRepository = quizRepository;
             _questionTypesRepository = questionTypesRepository;
+            
+            _quizRepositoryAsync = quizRepositoryAsync;
+            _questionTypesRepositoryAsync = questionTypesRepositoryAsync;
+            
             _memoryCache = memoryCache;
         }
 
         #endregion
-
 
         #region methods
         
@@ -38,35 +48,9 @@ namespace QuizService
                 return questionTypes;
 
             questionTypes = _questionTypesRepository.Table.ToList();
-            _memoryCache.Set(QuestionDefaults.QuestionAllCacheKey, questionTypes);
+            _memoryCache.Set(QuestionTypeDefaults.QuestionTypeAllCacheKey, questionTypes);
     
             return questionTypes;
-        }
-
-        public QuestionType GetQuestionTypeByID(int questionTypeID)
-        {
-            if (_memoryCache.TryGetValue(QuestionDefaults.QuestionyIdCacheKey, out QuestionType questionType)) 
-                return questionType;
-
-            questionType = _questionTypesRepository.GetById(questionTypeID);
-            _memoryCache.Set(QuestionDefaults.QuestionyIdCacheKey, questionType);
-
-            return questionType;
-        }
-
-        public void UpdateQuestionType(QuestionType questionType)
-        {
-           _questionTypesRepository.Update(questionType);
-        }
-
-        public void AddQuestionType(QuestionType questionType)
-        {
-            _questionTypesRepository.Insert(questionType);
-        }
-
-        public void DeleteQuestionType(int questionTypeID)
-        {
-            _questionTypesRepository.Delete(questionTypeID);
         }
 
         public List<QuestionTypeSummary> GetQuestionTypeSummary(int questionTypeID = 0)
@@ -84,6 +68,108 @@ namespace QuizService
                 }).ToList();
 
             return result;     
+        }
+        
+        public QuestionType GetQuestionTypeByID(int questionTypeID)
+        {
+            if (_memoryCache.TryGetValue(QuestionTypeDefaults.QuestionTypeIdCacheKey, out QuestionType questionType)) 
+                return questionType;
+
+            questionType = _questionTypesRepository.GetById(questionTypeID);
+            _memoryCache.Set(QuestionTypeDefaults.QuestionTypeIdCacheKey, questionType);
+
+            return questionType;
+        }
+
+        public void UpdateQuestionType(QuestionType questionType)
+        {
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeAllCacheKey);
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeIdCacheKey);
+            
+           _questionTypesRepository.Update(questionType);
+        }
+
+        public void AddQuestionType(QuestionType questionType)
+        {
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeAllCacheKey);
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeIdCacheKey);
+            
+            _questionTypesRepository.Insert(questionType);
+        }
+
+        public void DeleteQuestionType(int questionTypeID)
+        {
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeAllCacheKey);
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeIdCacheKey);
+            
+            _questionTypesRepository.Delete(questionTypeID);
+        }
+
+        #endregion
+        
+        #region async methods
+        
+        public async Task<List<QuestionType>> GetAllQuestionTypesAsync()
+        {
+            if (_memoryCache.TryGetValue(QuestionTypeDefaults.QuestionTypeAllCacheKey, out List<QuestionType> questionTypes))
+                return questionTypes;
+
+            questionTypes = await _questionTypesRepositoryAsync.Table.ToListAsync();
+            _memoryCache.Set(QuestionTypeDefaults.QuestionTypeAllCacheKey, questionTypes);
+    
+            return questionTypes;
+        }
+
+        public async Task<List<QuestionTypeSummary>> GetQuestionTypeSummaryAsync(int questionTypeID = 0)
+        {
+            var result = (from questionTypes in _questionTypesRepositoryAsync.Table
+                join quizes in _quizRepositoryAsync.Table on questionTypes.QuizID equals quizes.ID
+                orderby quizes.QuizName
+                where questionTypes.ID == questionTypeID || questionTypeID == 0
+                select new QuestionTypeSummary
+                {
+                    ID = questionTypes.ID,
+                    QuizID = quizes.ID,
+                    QuizName = quizes.QuizName,
+                    QuestionTypeName = questionTypes.QuestionTypeName
+                }).ToListAsync();
+
+            return await result;   
+        }
+
+        public async Task<QuestionType> GetQuestionTypeByIDAsync(int questionTypeID)
+        {
+            if (_memoryCache.TryGetValue(QuestionTypeDefaults.QuestionTypeIdCacheKey, out QuestionType questionType)) 
+                return questionType;
+
+            questionType = await _questionTypesRepositoryAsync.GetByIdAsync(questionTypeID);
+            _memoryCache.Set(QuestionTypeDefaults.QuestionTypeIdCacheKey, questionType);
+
+            return questionType;
+        }
+
+        public async Task AddQuestionTypeAsync(QuestionType questionType)
+        {
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeAllCacheKey);
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeIdCacheKey);
+            
+            await _questionTypesRepositoryAsync.InsertAsync(questionType);
+        }
+
+        public async Task UpdateQuestionTypeAsync(QuestionType questionType)
+        {
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeAllCacheKey);
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeIdCacheKey);
+            
+            await _questionTypesRepositoryAsync.UpdateAsync(questionType);
+        }
+
+        public async Task DeleteQuestionTypeAsync(int questionTypeID)
+        {
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeAllCacheKey);
+            _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeIdCacheKey);
+            
+            await _questionTypesRepositoryAsync.DeleteAsync(questionTypeID);
         }
         
         #endregion

@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -43,71 +44,65 @@ namespace QuizApi.Controllers
         #endregion
         
         #region api methods
-        
+
         [HttpGet("{userID}")]
         [Produces("application/json")]
         [ActionName("GetUserByID")]
-        public JsonResult GetUserByID(int userID) => Json(_userService.GetUserByID(userID));
+        public async Task<JsonResult> GetUserByID(int userID)
+        {
+            var user = await _userService.GetUserByIDAsync(userID);
+            if (user != null )
+            {
+                var userData = _mapper.Map<UserData>(user);
+                return Json(userData);                
+            }
+            return new JsonResult(null);
+        }
 
         [HttpGet]
         [Produces("application/json")]
-        [ActionName("GetAllUsers")] 
-        public JsonResult GetAllUsers() => Json(_userService.GetAllUsers().ToList());
+        [ActionName("GetAllUsers")]
+        public async Task<JsonResult> GetAllUsers()
+        {
+            var userList = await _userService.GetAllUsersAsync();
+            if (userList != null && userList.Count > 0)
+            {
+                var userListData = _mapper.Map<List<User>, List<UserData>>(userList);
+                return Json(userListData);
+            }
+            return new JsonResult(null);
+        }
 
         [HttpPost]
         [ActionName("RegisterUser")]
-        public IActionResult AddUser([FromBody] UserData userData)
+        public async Task<JsonResult> AddUser([FromBody] UserData userData)
         {
-            try
-            {
-                var user = _mapper.Map<User>(userData);
-                _userService.Create(user,userData.Password);
-                return new OkObjectResult(user);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var user = _mapper.Map<User>(userData);
+            await _userService.Create(user,userData.Password);
+            return new JsonResult(null);
         }
 
         [HttpPut]
         [ActionName("UpdateUser")]
-        public IActionResult UpdateUser([FromBody] UserData userData)
+        public async Task<JsonResult> UpdateUser([FromBody] UserData userData)
         {
-            try
-            {
-                var user = _mapper.Map<User>(userData);
-                _userService.Update(user, userData.Password);
-                
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var user = _mapper.Map<User>(userData);
+            await _userService.Update(user, userData.Password);
+            return new JsonResult(null);
         }
         
         [HttpDelete("{userID}")]
         [ActionName("DeleteUser")]
-        public IActionResult DeleteUser(int userID)
+        public async Task<JsonResult> DeleteUser(int userID)
         {
-            try
-            {
-                _userService.DeleteUser(userID);
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            await _userService.DeleteUserAsync(userID);
+            return new JsonResult(null);
         }
         
-        public JsonResult Authenticate([FromBody]UserData userDto)
+        [AllowAnonymous]
+        public async Task<JsonResult> Authenticate([FromBody]UserData userDto)
         {
-            var user = _userService.Authenticate(userDto.Username, userDto.Password);
+            var user = await _userService.Authenticate(userDto.Username, userDto.Password);
 
             if (user == null)
                 return new JsonResult(new {message = "Username or password is incorrect"});

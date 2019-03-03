@@ -11,9 +11,6 @@ using QuizRepository;
 
 namespace QuizRepository
 {
-    /// <summary>
-    /// Represents base object context
-    /// </summary>
     public class QuizDBContext : DbContext, IDbContext
     {
         #region Ctor
@@ -27,15 +24,8 @@ namespace QuizRepository
 
         #region Utilities
 
-        /// <summary>
-        /// Modify the input SQL query by adding passed parameters
-        /// </summary>
-        /// <param name="sql">The raw SQL query</param>
-        /// <param name="parameters">The values to be assigned to parameters</param>
-        /// <returns>Modified raw SQL query</returns>
         protected virtual string CreateSqlWithParameters(string sql, params object[] parameters)
         {
-            //add parameters to sql
             for (var i = 0; i <= (parameters?.Length ?? 0) - 1; i++)
             {
                 if (!(parameters[i] is DbParameter parameter))
@@ -43,7 +33,6 @@ namespace QuizRepository
 
                 sql = $"{sql}{(i > 0 ? "," : string.Empty)} @{parameter.ParameterName}";
 
-                //whether parameter is output
                 if (parameter.Direction == ParameterDirection.InputOutput || parameter.Direction == ParameterDirection.Output)
                     sql = $"{sql} output";
             }
@@ -55,11 +44,6 @@ namespace QuizRepository
 
         #region Methods
 
-        /// <summary>
-        /// Creates a DbSet that can be used to query and save instances of entity
-        /// </summary>
-        /// <typeparam name="TEntity">Entity type</typeparam>
-        /// <returns>A set for the given entity type</returns>
         public virtual new DbSet<TEntity> Set<TEntity>() where TEntity : EntityBase
         {
             return base.Set<TEntity>();
@@ -70,46 +54,21 @@ namespace QuizRepository
             return base.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Generate a script to create all tables for the current model
-        /// </summary>
-        /// <returns>A SQL script</returns>
         public virtual string GenerateCreateScript()
         {
             return this.Database.GenerateCreateScript();
         }
 
-        /// <summary>
-        /// Creates a LINQ query for the query type based on a raw SQL query
-        /// </summary>
-        /// <typeparam name="TQuery">Query type</typeparam>
-        /// <param name="sql">The raw SQL query</param>
-        /// <returns>An IQueryable representing the raw SQL query</returns>
         public virtual IQueryable<TQuery> QueryFromSql<TQuery>(string sql) where TQuery : class
         {
             return this.Query<TQuery>().FromSql(sql);
         }
-        
-        /// <summary>
-        /// Creates a LINQ query for the entity based on a raw SQL query
-        /// </summary>
-        /// <typeparam name="TEntity">Entity type</typeparam>
-        /// <param name="sql">The raw SQL query</param>
-        /// <param name="parameters">The values to be assigned to parameters</param>
-        /// <returns>An IQueryable representing the raw SQL query</returns>
+
         public virtual IQueryable<TEntity> EntityFromSql<TEntity>(string sql, params object[] parameters) where TEntity : EntityBase
         {
             return this.Set<TEntity>().FromSql(CreateSqlWithParameters(sql, parameters), parameters);
         }
 
-        /// <summary>
-        /// Executes the given SQL against the database
-        /// </summary>
-        /// <param name="sql">The SQL to execute</param>
-        /// <param name="doNotEnsureTransaction">true - the transaction creation is not ensured; false - the transaction creation is ensured.</param>
-        /// <param name="timeout">The timeout to use for command. Note that the command timeout is distinct from the connection timeout, which is commonly set on the database connection string</param>
-        /// <param name="parameters">Parameters to use with the SQL</param>
-        /// <returns>The number of rows affected</returns>
         public virtual int ExecuteSqlCommand(RawSqlString sql, bool doNotEnsureTransaction = false, int? timeout = null, params object[] parameters)
         {
             //set specific command timeout
@@ -135,11 +94,6 @@ namespace QuizRepository
             return result;
         }
 
-        /// <summary>
-        /// Detach an entity from the context
-        /// </summary>
-        /// <typeparam name="TEntity">Entity type</typeparam>
-        /// <param name="entity">Entity</param>
         public virtual void Detach<TEntity>(TEntity entity) where TEntity : EntityBase
         {
             if (entity == null)

@@ -6,10 +6,6 @@ using QuizData;
 
 namespace QuizRepository
 {
-    /// <summary>
-    /// Represents the Entity Framework repository
-    /// </summary>
-    /// <typeparam name="TEntity">Entity type</typeparam>
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : EntityBase
     {
         #region Fields
@@ -30,15 +26,9 @@ namespace QuizRepository
         #endregion
 
         #region Utilities
-        
-        /// <summary>
-        /// Rollback of entity changes and return full error message
-        /// </summary>
-        /// <param name="exception">Exception</param>
-        /// <returns>Error message</returns>
+
         protected string GetFullErrorTextAndRollbackEntityChanges(DbUpdateException exception)
         {
-            //rollback entity changes
             if (_context is DbContext dbContext)
             {
                 var entries = dbContext.ChangeTracker.Entries()
@@ -65,20 +55,11 @@ namespace QuizRepository
 
         #region Methods
 
-        /// <summary>
-        /// Get entity by identifier
-        /// </summary>
-        /// <param name="id">Identifier</param>
-        /// <returns>Entity</returns>
         public virtual TEntity GetById(object id)
         {
             return Entities.Find(id);
         }
 
-        /// <summary>
-        /// Insert entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
         public virtual void Insert(TEntity entity)
         {
             if (entity == null)
@@ -96,10 +77,6 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Insert entities
-        /// </summary>
-        /// <param name="entities">Entities</param>
         public virtual void Insert(IEnumerable<TEntity> entities)
         {
             if (entities == null)
@@ -117,10 +94,6 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Update entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
         public virtual void Update(TEntity entity)
         {
             if (entity == null)
@@ -138,10 +111,6 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Update entities
-        /// </summary>
-        /// <param name="entities">Entities</param>
         public virtual void Update(IEnumerable<TEntity> entities)
         {
             if (entities == null)
@@ -159,10 +128,6 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Delete entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
         public virtual void Delete(TEntity entity)
         {
             if (entity == null)
@@ -180,10 +145,6 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Delete entities
-        /// </summary>
-        /// <param name="entities">Entities</param>
         public virtual void Delete(IEnumerable<TEntity> entities)
         {
             if (entities == null)
@@ -209,6 +170,7 @@ namespace QuizRepository
                 throw new ArgumentNullException("There is no entity with specified id.");
 
             Entities.Remove(entity);
+            _context.SaveChanges();
 
         }
 
@@ -216,19 +178,10 @@ namespace QuizRepository
 
         #region Properties
 
-        /// <summary>
-        /// Gets a table
-        /// </summary>
         public virtual IQueryable<TEntity> Table => Entities;
 
-        /// <summary>
-        /// Gets a table with "no tracking" enabled (EF feature) Use it only when you load record(s) only for read-only operations
-        /// </summary>
         public virtual IQueryable<TEntity> TableNoTracking => Entities.AsNoTracking();
 
-        /// <summary>
-        /// Gets an entity set
-        /// </summary>
         protected virtual DbSet<TEntity> Entities
         {
             get

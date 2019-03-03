@@ -1,6 +1,9 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using QuizApi.Models;
 using QuizService;
 using QuizData;
 
@@ -14,88 +17,79 @@ namespace QuizApi.Controllers
         #region properties
         
         private readonly IAnswerService _answerService;
-        
+        private readonly IMapper _mapper;
+
         #endregion
 
         #region ctor
         
-        public AnswerController(IAnswerService service)
+        public AnswerController(IAnswerService service, IMapper mapper)
         {
             _answerService = service;
+            _mapper = mapper;
         }
         
         #endregion
         
         #region api methods
-        
+
         [HttpGet("{answerID}")]
         [Produces("application/json")]
         [ActionName("GetAnswerByID")]
-        public JsonResult GetAnswer(int answerID) => Json(_answerService.GetAnswerByID(answerID));
+        public async Task<JsonResult> GetAnswer(int answerID)
+        {
+            var answer = await _answerService.GetAnswerSummaryAsync(answerID);
+            if (answer != null && answer.Count > 0)
+            {
+                var answerData = _mapper.Map<AnswerData>(answer.First());
+                return Json(answerData);                
+            }
+            
+            return new JsonResult(null);
+
+        }
 
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllAnswers")]
-        public JsonResult GetAllAnswers() => Json(_answerService.GetAllAnswers().ToList());
+        public async Task<JsonResult> GetAllAnswers()
+        {
+            var answers = await _answerService.GetAnswerSummaryAsync();
+
+            if (answers != null && answers.Count > 0)
+            {
+                var answerDataList = _mapper.Map<List<AnswerSummary>, List<AnswerData>>(answers);
+                return Json(answerDataList);                
+            }
+            
+            return new JsonResult(null);
+
+        }
 
         [HttpPost]
         [ActionName("AddAnswer")]
-        public IActionResult AddAnswer([FromBody] Answer res)
+        public async Task<JsonResult> AddAnswer([FromBody] AnswerData answerData)
         {
-            try
-            {
-                _answerService.AddAnswer(new Answer
-                {
-                    QuestionID = res.QuestionID,
-                    AnswerTypeID = res.AnswerTypeID,
-                    AnswerText = res.AnswerText
-                });
-                
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var answer = _mapper.Map<Answer>(answerData);
+            await _answerService.AddAnswerAsync(answer);
+            return new JsonResult(null);
         }
 
-        [HttpPut("{answerID}")]
+        [HttpPut]
         [ActionName("UpdateAnswer")]
-        public IActionResult UpdateAnswer(int answerID, [FromBody] Answer res)
+        public async Task<JsonResult> UpdateAnswer([FromBody] AnswerData answerData)
         {
-            try
-            {
-                _answerService.UpdateAnswer(new Answer
-                {
-                    ID = answerID,
-                    QuestionID = res.QuestionID,
-                    AnswerTypeID = res.AnswerTypeID,
-                    AnswerText = res.AnswerText
-                });
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var answer = _mapper.Map<Answer>(answerData);
+            await _answerService.UpdateAnswerAsync(answer);
+            return new JsonResult(null);
         }
         
         [HttpDelete("{answerID}")]
         [ActionName("DeleteAnswer")]
-        public IActionResult DeleteAnswer(int answerID)
+        public async Task<JsonResult> DeleteAnswer(int answerID)
         {
-            try
-            {
-                _answerService.DeleteAnswer(answerID);
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            await _answerService.DeleteAnswerAsync(answerID);
+            return new JsonResult(null);
         }
         
         #endregion

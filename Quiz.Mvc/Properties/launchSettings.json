@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "QuizApi": {
+    "Quiz.Mvc": {
       "commandName": "Project",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5000",

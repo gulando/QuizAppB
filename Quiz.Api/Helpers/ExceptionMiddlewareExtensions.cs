@@ -1,4 +1,5 @@
 using System.Net;
+using Exceptionless;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +31,15 @@ namespace QuizApi.Helpers
                             Message = "Internal Server Error."
                         }.ToString());
                     }
+                    
+                    #region log exception
+
+                    app.UseExceptionless("7BJduNBtKDMcLkqx9knwGNmcCNRQK5MyyWkZxrro");
+                    var exceptionLess = contextFeature.Error.ToExceptionless();
+                    exceptionLess.Submit();
+                    
+                    #endregion
+                    
                 });
             });
         }

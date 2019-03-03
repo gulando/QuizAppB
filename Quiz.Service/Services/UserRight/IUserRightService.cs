@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using QuizData;
 using QuizRepository;
 
@@ -7,8 +8,12 @@ namespace QuizService
 {
     public interface IUserRightService
     {
+        #region methods
+        
         List<UserRight> GetAllUserRights();
-
+        
+        List<UserRightSummary> GetUserRightSummary(int userRightID = 0);
+        
         UserRight GetUserRightByID(int userRightID);
 
         void UpdateUserRight(UserRight userRight);
@@ -17,6 +22,22 @@ namespace QuizService
 
         void DeleteUserRight(int userRightID);
         
-        List<UserRightSummary> GetUserRightSummary(int roleRightID = 0);
+        #endregion
+        
+        #region async methods
+        
+        Task<List<UserRight>> GetAllUserRightsAsync();
+
+        Task<List<UserRightSummary>> GetUserRightSummaryAsync(int userRightID = 0);
+        
+        Task<UserRight> GetUserRightByIDAsync(int userRightID);
+
+        Task AddUserRightAsync(UserRight userRight);
+        
+        Task UpdateUserRightAsync(UserRight userRight);
+
+        Task DeleteUserRightAsync(int userRightID);
+        
+        #endregion
     }
 }

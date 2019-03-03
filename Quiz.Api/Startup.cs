@@ -100,6 +100,7 @@ namespace QuizApi
             
             //add repository
             services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
+            services.AddScoped(typeof(IRepositoryAsync<>),typeof(RepositoryAsync<>));
             
             #endregion
             
@@ -112,9 +113,16 @@ namespace QuizApi
             services.AddTransient<IQuestionTypeService, QuestionTypeService>();
             services.AddTransient<IQuizService, QuizService.QuizService>();
             services.AddTransient<IQuizThemeService, QuizThemeService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddTransient<ILogService, LogService>();
+            
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IRightService, RightService>();
             services.AddTransient<IRoleService, RoleService>();
+            
+            services.AddTransient<IUserRoleService, UserRoleService>();
+            services.AddTransient<IUserRightService, UserRightService>();
+            services.AddTransient<IRoleRightService, RoleRightService>();
+            
+            services.AddTransient<ILogService, LogService>();
             
             #endregion
             
@@ -122,13 +130,22 @@ namespace QuizApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogService logger)
         {
-            app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+            {
+                //app.UseDeveloperExceptionPage();
+                
+                //Custom Exception Handling.
+                app.ConfigureExceptionHandler(logger);
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+            }
+            
             app.UseStatusCodePages();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-            
-            //Custom Exception Handling.
-            app.ConfigureExceptionHandler(logger);
         }
         
     }

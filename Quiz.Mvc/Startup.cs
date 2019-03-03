@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QuizMvc.Helpers;
 using QuizRepository;
 using QuizService;
 
@@ -97,19 +98,18 @@ namespace QuizMvc
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogService logger)
         {
-            /*
-            if (env.IsDevelopment())
+            /*if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.ConfigureExceptionHandler(logger);
-                app.UseStatusCodePages();
+                
             }
             else
             {
                 app.UseExceptionHandler("/Error");
             }*/
             
-            app.UseDeveloperExceptionPage();
+            app.ConfigureExceptionHandler(logger);
+            
             app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseAuthentication();

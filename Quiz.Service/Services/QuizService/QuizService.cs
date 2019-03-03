@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using QuizData;
 using QuizRepository;
@@ -12,15 +14,17 @@ namespace QuizService
         #region properties
         
         private readonly IRepository<Quiz> _quizRepository;
+        private readonly IRepositoryAsync<Quiz> _quizRepositoryAsync;
         private readonly IMemoryCache _memoryCache;
 
         #endregion
         
         #region ctor
         
-        public QuizService(IRepository<Quiz> quizRepository, IMemoryCache memoryCache)
+        public QuizService(IRepository<Quiz> quizRepository, IRepositoryAsync<Quiz> quizRepositoryAsync,IMemoryCache memoryCache)
         {
             _quizRepository = quizRepository;
+            _quizRepositoryAsync = quizRepositoryAsync;
             _memoryCache = memoryCache;
         }
 
@@ -52,19 +56,78 @@ namespace QuizService
 
         public void UpdateQuiz(Quiz quiz)
         {
+            _memoryCache.Remove(QuizDefaults.QuizAllCacheKey);
+            _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
+            
             _quizRepository.Update(quiz);
         }
 
         public void AddQuiz(Quiz quiz)
         {
+            _memoryCache.Remove(QuizDefaults.QuizAllCacheKey);
+            _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
+            
             _quizRepository.Insert(quiz);
         }
 
         public void DeleteQuiz(int quizID)
         {
+            _memoryCache.Remove(QuizDefaults.QuizAllCacheKey);
+            _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
+            
             _quizRepository.Delete(quizID);
         }
+
+        #endregion
         
+        #region async methods
+        
+        public async Task<List<Quiz>> GetAllQuizesAsync()
+        {
+            if (_memoryCache.TryGetValue(QuizDefaults.QuizAllCacheKey, out List<Quiz> quizzes)) 
+                return quizzes.ToList();
+                
+            quizzes = await _quizRepositoryAsync.Table.ToListAsync();
+            _memoryCache.Set(QuizDefaults.QuizAllCacheKey, quizzes);
+
+            return quizzes.ToList();
+        }
+
+        public async Task<Quiz> GetQuizByIDAsync(int quizID)
+        {
+            if (_memoryCache.TryGetValue(QuizDefaults.QuizIdCacheKey, out Quiz quiz)) 
+                return quiz;
+            
+            quiz = await _quizRepositoryAsync.GetByIdAsync(quizID);
+            _memoryCache.Set(QuizDefaults.QuizIdCacheKey, quiz);
+
+            return quiz;
+        }
+
+        public async Task AddQuizAsync(Quiz quiz)
+        {
+            _memoryCache.Remove(QuizDefaults.QuizAllCacheKey);
+            _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
+            
+            await _quizRepositoryAsync.InsertAsync(quiz);
+        }
+
+        public async Task UpdateQuizAsync(Quiz quiz)
+        {
+            _memoryCache.Remove(QuizDefaults.QuizAllCacheKey);
+            _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
+            
+            await _quizRepositoryAsync.UpdateAsync(quiz);
+        }
+
+        public async Task DeleteQuizAsync(int quizID)
+        {
+            _memoryCache.Remove(QuizDefaults.QuizAllCacheKey);
+            _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
+            
+            await _quizRepositoryAsync.DeleteAsync(quizID);
+        }
+
         #endregion
     }
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using QuizData;
 using QuizRepository;
@@ -14,21 +16,23 @@ namespace QuizService
         #region properties
 
         private readonly IRepository<User> _userRepository;
+        private readonly IRepositoryAsync<User> _userRepositoryAsync;
         private readonly IMemoryCache _memoryCache;
 
         #endregion
         
         #region ctor
         
-        public UserService(IRepository<User> userRepository, IMemoryCache memoryCache)
+        public UserService(IRepository<User> userRepository, IRepositoryAsync<User> userRepositoryAsync, IMemoryCache memoryCache)
         {
             _userRepository = userRepository;
+            _userRepositoryAsync = userRepositoryAsync;
             _memoryCache = memoryCache;
         }
 
         #endregion
         
-        #region methods
+        #region basic methods
 
         public List<User> GetAllUsers()
         {
@@ -54,25 +58,89 @@ namespace QuizService
 
         public void UpdateUser(User user)
         {
+            _memoryCache.Remove(UserDefaults.UserAllCacheKey);
+            _memoryCache.Remove(UserDefaults.UserByIdCacheKey);
+            
             _userRepository.Update(user);
         }
 
         public void AddUser(User user)
         {
+            _memoryCache.Remove(UserDefaults.UserAllCacheKey);
+            _memoryCache.Remove(UserDefaults.UserByIdCacheKey);
+            
             _userRepository.Insert(user);
         }
 
         public void DeleteUser(int userID)
         {
+            _memoryCache.Remove(UserDefaults.UserAllCacheKey);
+            _memoryCache.Remove(UserDefaults.UserByIdCacheKey);
+            
             _userRepository.Delete(userID);
         }
 
-        public User Authenticate(string username, string password)
+        #endregion
+        
+        #region async basic methods
+        
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            if (_memoryCache.TryGetValue(UserDefaults.UserAllCacheKey, out List<User> users)) 
+                return users.ToList();
+                
+            users = await _userRepositoryAsync.Table.ToListAsync();
+            _memoryCache.Set(UserDefaults.UserAllCacheKey, users);
+
+            return users.ToList();
+        }
+
+        public async Task<User> GetUserByIDAsync(int userID)
+        {
+            if (_memoryCache.TryGetValue(UserDefaults.UserByIdCacheKey, out User user)) 
+                return user;
+            
+            user = await _userRepositoryAsync.GetByIdAsync(userID);
+            _memoryCache.Set(UserDefaults.UserByIdCacheKey, user);
+
+            return user;
+        }
+
+        public async Task AddUserAsync(User user)
+        {
+            _memoryCache.Remove(UserDefaults.UserAllCacheKey);
+            _memoryCache.Remove(UserDefaults.UserByIdCacheKey);
+            
+            await _userRepositoryAsync.InsertAsync(user);
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            _memoryCache.Remove(UserDefaults.UserAllCacheKey);
+            _memoryCache.Remove(UserDefaults.UserByIdCacheKey);
+            
+            await _userRepositoryAsync.UpdateAsync(user);
+        }
+
+        public async Task DeleteUserAsync(int userID)
+        {
+            _memoryCache.Remove(UserDefaults.UserAllCacheKey);
+            _memoryCache.Remove(UserDefaults.UserByIdCacheKey);
+            
+            await _userRepositoryAsync.DeleteAsync(userID);
+        }
+        
+        #endregion
+        
+        #region api async methods
+        
+        public async Task<User> Authenticate(string username, string password)
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 return null;
 
-            var user = _userRepository.Table.First(name => name.Username == username);
+            var user = await _userRepositoryAsync.Table.FirstAsync(name => name.Username == username);
+            
             // check if username exists
             if (user == null)
                 return null;
@@ -85,7 +153,7 @@ namespace QuizService
             return user;
         }
 
-        public void Create(User user, string password)
+        public async Task Create(User user, string password)
         {
             // validation
             if (string.IsNullOrWhiteSpace(password))
@@ -100,10 +168,10 @@ namespace QuizService
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            AddUser(user);
+            await AddUserAsync(user);
         }
 
-        public void Update(User userParam, string password = null)
+        public async Task Update(User userParam, string password = null)
         {
             var user = _userRepository.GetById(userParam.ID);
 
@@ -113,7 +181,7 @@ namespace QuizService
             if (userParam.Username != user.Username)
             {
                 // username has changed so check if the new username is already taken
-                if (_userRepository.Table.Any(x => x.Username == userParam.Username))
+                if (_userRepositoryAsync.Table.AnyAsync(x => x.Username == userParam.Username) != null)
                     throw new ApplicationException("Username " + userParam.Username + " is already taken");
             }
 
@@ -134,10 +202,9 @@ namespace QuizService
                 user.PasswordSalt = passwordSalt;
             }
 
-            UpdateUser(user);
+            await UpdateUserAsync(user);
         }
-             
-        #endregion
         
+        #endregion
     }
 }

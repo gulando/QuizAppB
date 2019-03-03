@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using QuizApi.Models;
 using QuizService;
 using QuizData;
 
@@ -15,84 +19,74 @@ namespace QuizApi.Controllers
         #region properties
         
         private readonly IQuizThemeService _quizThemeService;
+        private readonly IMapper _mapper;
         
         #endregion
 
         #region ctor
         
-        public QuizThemeController(IQuizThemeService service)
+        public QuizThemeController(IQuizThemeService service, IMapper mapper)
         {
             _quizThemeService = service;
+            _mapper = mapper;
         }
         
         #endregion
         
         #region api methods
-        
+
         [HttpGet("{quizThemeID}")]
         [Produces("application/json")]
         [ActionName("GetQuizThemeByID")]
-        public JsonResult GetQuizTheme(int quizThemeID) => Json(_quizThemeService.GetQuizThemeByID(quizThemeID));
+        public async Task<JsonResult> GetQuizTheme(int quizThemeID)
+        {
+            var quizTheme = await _quizThemeService.GetQuizThemeSummaryAsync(quizThemeID);
+            if (quizTheme != null && quizTheme.Count > 0)
+            {
+                var quizThemeData = _mapper.Map<QuizTheme>(quizTheme.First());
+                return Json(quizThemeData);                
+            }
+            return new JsonResult(null);
+        }
 
         [HttpGet]
         [Produces("application/json")]
         [ActionName("GetAllQuizThemes")]
-        public JsonResult GetAllQuizThemes() => Json(_quizThemeService.GetAllQuizThemes().ToList());
+        public async Task<JsonResult> GetAllQuizThemes()
+        {
+            var quizThemeList = await _quizThemeService.GetQuizThemeSummaryAsync();
+            if (quizThemeList != null && quizThemeList.Count > 0)
+            {
+                var quizThemeData = _mapper.Map<List<QuizThemeSummary>, List<QuizThemeData>>(quizThemeList);
+                return Json(quizThemeData);
+            }
+            return new JsonResult(null);
+        }
 
         [HttpPost]
         [ActionName("AddQuizTheme")]
-        public IActionResult AddQuizTheme([FromBody] QuizTheme res)
+        public async Task<JsonResult> AddQuizTheme([FromBody] QuizThemeData quizThemeData)
         {
-            try
-            {
-                _quizThemeService.AddQuizTheme(new QuizTheme
-                {
-                    QuizID = res.QuizID,
-                    QuizThemeName = res.QuizThemeName
-                });
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var quizTheme = _mapper.Map<QuizTheme>(quizThemeData);
+            await _quizThemeService.AddQuizThemeAsync(quizTheme);
+            return new JsonResult(null);
         }
 
         [HttpPut("{quizThemeID}")]
         [ActionName("UpdateQuizTheme")]
-        public IActionResult UpdateQuizTheme(int quizThemeID, [FromBody] QuizTheme res)
+        public async Task<JsonResult> UpdateQuizTheme(int quizThemeID, [FromBody] QuizThemeData quizThemeData)
         {
-            try
-            {
-                _quizThemeService.UpdateQuizTheme(new QuizTheme
-                {
-                    ID =  quizThemeID,
-                    QuizThemeName = res.QuizThemeName
-                });
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            var quizTheme = _mapper.Map<QuizTheme>(quizThemeData);
+            await _quizThemeService.UpdateQuizThemeAsync(quizTheme);
+            return new JsonResult(null);
         }
         
         [HttpDelete("{quizThemeID}")]
         [ActionName("DeleteQuizTheme")]
-        public IActionResult DeleteQuizTheme(int quizThemeID)
+        public async Task<JsonResult> DeleteQuizTheme(int quizThemeID)
         {
-            try
-            {
-                _quizThemeService.DeleteQuizTheme(quizThemeID);
-                return new OkResult();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            await _quizThemeService.DeleteQuizThemeAsync(quizThemeID);
+            return new JsonResult(null);
         }
         
         #endregion

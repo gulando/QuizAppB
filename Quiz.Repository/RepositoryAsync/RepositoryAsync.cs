@@ -7,10 +7,6 @@ using QuizData;
 
 namespace QuizRepository
 {
-    /// <summary>
-    /// Represents the Entity Framework repository
-    /// </summary>
-    /// <typeparam name="TEntity">Entity type</typeparam>
     public class RepositoryAsync<TEntity> : IRepositoryAsync<TEntity> where TEntity : EntityBase
     {
         #region Fields
@@ -31,12 +27,7 @@ namespace QuizRepository
         #endregion
 
         #region Utilities
-        
-        /// <summary>
-        /// Rollback of entity changes and return full error message
-        /// </summary>
-        /// <param name="exception">Exception</param>
-        /// <returns>Error message</returns>
+
         protected string GetFullErrorTextAndRollbackEntityChanges(DbUpdateException exception)
         {
             //rollback entity changes
@@ -58,7 +49,7 @@ namespace QuizRepository
                 });
             }
 
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
             return exception.ToString();
         }
 
@@ -66,21 +57,12 @@ namespace QuizRepository
 
         #region Methods
 
-        /// <summary>
-        /// Get entity by identifier
-        /// </summary>
-        /// <param name="id">Identifier</param>
-        /// <returns>Entity</returns>
         public virtual async Task<TEntity> GetByIdAsync(object id)
         {
             return await Entities.FindAsync(id);
         }
 
-        /// <summary>
-        /// Insert entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual async void  InsertAsync(TEntity entity)
+        public virtual async Task  InsertAsync(TEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -97,11 +79,7 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Insert entities
-        /// </summary>
-        /// <param name="entities">Entities</param>
-        public virtual async void InsertAsync(IEnumerable<TEntity> entities)
+        public virtual async Task InsertAsync(IEnumerable<TEntity> entities)
         {
             if (entities == null)
                 throw new ArgumentNullException(nameof(entities));
@@ -118,11 +96,7 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Update entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual async void UpdateAsync(TEntity entity)
+        public virtual async Task UpdateAsync(TEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -139,11 +113,7 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Update entities
-        /// </summary>
-        /// <param name="entities">Entities</param>
-        public virtual async void UpdateAsync(IEnumerable<TEntity> entities)
+        public virtual async Task UpdateAsync(IEnumerable<TEntity> entities)
         {
             if (entities == null)
                 throw new ArgumentNullException(nameof(entities));
@@ -160,11 +130,7 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Delete entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        public virtual async void DeleteAsync(TEntity entity)
+        public virtual async Task DeleteAsync(TEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
@@ -181,11 +147,7 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Delete entities
-        /// </summary>
-        /// <param name="entities">Entities</param>
-        public virtual async void DeleteAsync(IEnumerable<TEntity> entities)
+        public virtual async Task DeleteAsync(IEnumerable<TEntity> entities)
         {
             if (entities == null)
                 throw new ArgumentNullException(nameof(entities));
@@ -202,11 +164,7 @@ namespace QuizRepository
             }
         }
 
-        /// <summary>
-        /// Delete entity by ID
-        /// </summary>
-        /// <param name="entities">Entities</param>
-        public virtual async void DeleteAsync(int id)
+        public virtual async Task DeleteAsync(int id)
         {
             var entity = Entities.Find(id);
             
@@ -221,19 +179,10 @@ namespace QuizRepository
 
         #region Properties
 
-        /// <summary>
-        /// Gets a table
-        /// </summary>
         public virtual IQueryable<TEntity> Table => Entities;
 
-        /// <summary>
-        /// Gets a table with "no tracking" enabled (EF feature) Use it only when you load record(s) only for read-only operations
-        /// </summary>
         public virtual IQueryable<TEntity> TableNoTracking => Entities.AsNoTracking();
 
-        /// <summary>
-        /// Gets an entity set
-        /// </summary>
         protected virtual DbSet<TEntity> Entities
         {
             get
