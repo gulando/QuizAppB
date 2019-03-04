@@ -1,10 +1,13 @@
-﻿using AutoMapper;
+﻿using System;
+using System.IO;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NLog;
 using QuizMvc.Helpers;
 using QuizRepository;
 using QuizService;
@@ -14,7 +17,11 @@ namespace QuizMvc
 {
     public class Startup
     {
-        public Startup(IConfiguration config) => Configuration = config;
+        public Startup(IConfiguration config)
+        {
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+            Configuration = config;
+        }
 
         private IConfiguration Configuration { get; }
         
@@ -91,32 +98,21 @@ namespace QuizMvc
             services.AddScoped<IUserRightService, UserRightService>();
             services.AddScoped<IRoleRightService, RoleRightService>();
             
-            services.AddScoped<ILogService, LogService>();
+            services.AddSingleton<ILogService, LogService>();
 
 
             #endregion
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogService logger)
+        public void Configure(IApplicationBuilder app, ILogService logger)
         {
-            /*if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }*/
-            
-            app.UseDeveloperExceptionPage();
-            //app.ConfigureExceptionHandler(logger);
+            //Custom Exception Handling.
+            app.ConfigureExceptionHandler(logger);
             
             app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
-
         }
         
     }

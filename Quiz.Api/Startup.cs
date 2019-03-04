@@ -1,7 +1,7 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +10,7 @@ using QuizService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using NLog;
 using QuizApi.Helpers;
 
 
@@ -17,10 +18,14 @@ namespace QuizApi
 {
     public class Startup
     {
-        public Startup(IConfiguration config) => Configuration = config;
-
         private IConfiguration Configuration { get; }
         
+        public Startup(IConfiguration config)
+        {
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+            Configuration = config;
+        }
+            
         public void ConfigureServices(IServiceCollection services)
         {
             #region mvc
@@ -113,40 +118,31 @@ namespace QuizApi
             #region services
             
             //add services
-            services.AddTransient<IAnswerService, AnswerService>();
-            services.AddTransient<IAnswerTypeService, AnswerTypeService>();
-            services.AddTransient<IQuestionService, QuestionService>();
-            services.AddTransient<IQuestionTypeService, QuestionTypeService>();
-            services.AddTransient<IQuizService, QuizService.QuizService>();
-            services.AddTransient<IQuizThemeService, QuizThemeService>();
+            services.AddScoped<IAnswerService, AnswerService>();
+            services.AddScoped<IAnswerTypeService, AnswerTypeService>();
+            services.AddScoped<IQuestionService, QuestionService>();
+            services.AddScoped<IQuestionTypeService, QuestionTypeService>();
+            services.AddScoped<IQuizService, QuizService.QuizService>();
+            services.AddScoped<IQuizThemeService, QuizThemeService>();
             
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IRightService, RightService>();
-            services.AddTransient<IRoleService, RoleService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRightService, RightService>();
+            services.AddScoped<IRoleService, RoleService>();
             
-            services.AddTransient<IUserRoleService, UserRoleService>();
-            services.AddTransient<IUserRightService, UserRightService>();
-            services.AddTransient<IRoleRightService, RoleRightService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
+            services.AddScoped<IUserRightService, UserRightService>();
+            services.AddScoped<IRoleRightService, RoleRightService>();
             
-            services.AddTransient<ILogService, LogService>();
+            services.AddSingleton<ILogService, LogService>();
             
             #endregion
             
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILogService logger)
-        {
-            if (env.IsDevelopment())
-            {
-                //app.UseDeveloperExceptionPage();
-                
-                //Custom Exception Handling.
-                app.ConfigureExceptionHandler(logger);
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
+        public void Configure(IApplicationBuilder app, ILogService logger)
+        {    
+            //Custom Exception Handling.
+            app.ConfigureExceptionHandler(logger);
             
             app.UseStatusCodePages();
             app.UseStaticFiles();
