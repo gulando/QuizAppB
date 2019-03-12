@@ -34,7 +34,7 @@ namespace QuizApi.Helpers
                     
                     #region log exception
 
-                    app.UseExceptionless("7BJduNBtKDMcLkqx9knwGNmcCNRQK5MyyWkZxrro");
+                    app.UseExceptionless("jWD5J6z5bAhRROVzXQYETeaqvg6yMtOnyh1JqFhi");
                     var exceptionLess = contextFeature.Error.ToExceptionless();
                     exceptionLess.Submit();
                     

@@ -17,10 +17,6 @@ namespace QuizService
         private readonly IRepository<AnswerType> _answerTypeRepository;
         private readonly IRepository<QuestionType> _questionTypesRepository; 
         
-        private readonly IRepositoryAsync<Quiz> _quizRepositoryAsync;
-        private readonly IRepositoryAsync<AnswerType> _answerTypeRepositoryAsync;
-        private readonly IRepositoryAsync<QuestionType> _questionTypesRepositoryAsync; 
-        
         private readonly IMemoryCache _memoryCache;
 
         #endregion
@@ -28,17 +24,11 @@ namespace QuizService
         #region ctor
 
         public AnswerTypeService(IRepository<Quiz> quizRepository, IRepository<AnswerType> answerTypeRepository,
-            IRepository<QuestionType> questionTypesRepository, IRepositoryAsync<Quiz> quizRepositoryAsync,
-            IRepositoryAsync<AnswerType> answerTypeRepositoryAsync,
-            IRepositoryAsync<QuestionType> questionTypeRepositoryAsync,IMemoryCache memoryCache)
+            IRepository<QuestionType> questionTypesRepository, IMemoryCache memoryCache)
         {
             _quizRepository = quizRepository;
             _answerTypeRepository = answerTypeRepository;
             _questionTypesRepository = questionTypesRepository;
-
-            _quizRepositoryAsync = quizRepositoryAsync;
-            _answerTypeRepositoryAsync = answerTypeRepositoryAsync;
-            _questionTypesRepositoryAsync = questionTypeRepositoryAsync;
             
             _memoryCache = memoryCache;
         }
@@ -122,7 +112,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(AnswerTypeDefaults.AnswerTypeAllCacheKey, out List<AnswerType> answerTypes))
                 return answerTypes;
 
-            answerTypes = await _answerTypeRepositoryAsync.Table.ToListAsync();
+            answerTypes = await _answerTypeRepository.Table.ToListAsync();
             _memoryCache.Set(AnswerTypeDefaults.AnswerTypeAllCacheKey, answerTypes);
     
             return answerTypes;
@@ -133,7 +123,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(AnswerTypeDefaults.AnswerTypeByIdCacheKey, out AnswerType answerType)) 
                 return answerType;
 
-            answerType = await _answerTypeRepositoryAsync.GetByIdAsync(answerTypeID);
+            answerType = await _answerTypeRepository.GetByIdAsync(answerTypeID);
             _memoryCache.Set(AnswerTypeDefaults.AnswerTypeByIdCacheKey, answerType);
 
             return answerType;
@@ -141,9 +131,9 @@ namespace QuizService
         
         public async Task<List<AnswerTypeSummary>> GetAnswerTypeSummaryAsync(int answerTypeID = 0)
         {
-            var result = (from answerTypes in _answerTypeRepositoryAsync.Table
-                join quizes in _quizRepositoryAsync.Table on answerTypes.QuizID equals quizes.ID
-                join questionTypes in _questionTypesRepositoryAsync.Table on answerTypes.QuestionTypeID equals questionTypes.ID
+            var result = (from answerTypes in _answerTypeRepository.Table
+                join quizes in _quizRepository.Table on answerTypes.QuizID equals quizes.ID
+                join questionTypes in _questionTypesRepository.Table on answerTypes.QuestionTypeID equals questionTypes.ID
                 where answerTypes.ID == answerTypeID || answerTypeID == 0
                 select new AnswerTypeSummary()
                 {
@@ -163,7 +153,7 @@ namespace QuizService
             _memoryCache.Remove(AnswerTypeDefaults.AnswerTypeAllCacheKey);
             _memoryCache.Remove(AnswerTypeDefaults.AnswerTypeByIdCacheKey);
                 
-            await _answerTypeRepositoryAsync.InsertAsync(answerType);
+            await _answerTypeRepository.InsertAsync(answerType);
         }
 
         public async Task UpdateAnswerTypeAsync(AnswerType answerType)
@@ -171,7 +161,7 @@ namespace QuizService
             _memoryCache.Remove(AnswerTypeDefaults.AnswerTypeAllCacheKey);
             _memoryCache.Remove(AnswerTypeDefaults.AnswerTypeByIdCacheKey);
             
-            await _answerTypeRepositoryAsync.UpdateAsync(answerType);
+            await _answerTypeRepository.UpdateAsync(answerType);
         }
 
         public async Task DeleteAnswerTypeAsync(int answerTypeID)
@@ -179,7 +169,7 @@ namespace QuizService
             _memoryCache.Remove(AnswerTypeDefaults.AnswerTypeAllCacheKey);
             _memoryCache.Remove(AnswerTypeDefaults.AnswerTypeByIdCacheKey);
             
-            await _answerTypeRepositoryAsync.DeleteAsync(answerTypeID);
+            await _answerTypeRepository.DeleteAsync(answerTypeID);
         }
 
         #endregion

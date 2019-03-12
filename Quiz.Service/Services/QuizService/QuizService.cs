@@ -14,17 +14,15 @@ namespace QuizService
         #region properties
         
         private readonly IRepository<Quiz> _quizRepository;
-        private readonly IRepositoryAsync<Quiz> _quizRepositoryAsync;
         private readonly IMemoryCache _memoryCache;
 
         #endregion
         
         #region ctor
         
-        public QuizService(IRepository<Quiz> quizRepository, IRepositoryAsync<Quiz> quizRepositoryAsync,IMemoryCache memoryCache)
+        public QuizService(IRepository<Quiz> quizRepository,IMemoryCache memoryCache)
         {
             _quizRepository = quizRepository;
-            _quizRepositoryAsync = quizRepositoryAsync;
             _memoryCache = memoryCache;
         }
 
@@ -87,7 +85,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuizDefaults.QuizAllCacheKey, out List<Quiz> quizzes)) 
                 return quizzes.ToList();
                 
-            quizzes = await _quizRepositoryAsync.Table.ToListAsync();
+            quizzes = await _quizRepository.Table.ToListAsync();
             _memoryCache.Set(QuizDefaults.QuizAllCacheKey, quizzes);
 
             return quizzes.ToList();
@@ -98,7 +96,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuizDefaults.QuizIdCacheKey, out Quiz quiz)) 
                 return quiz;
             
-            quiz = await _quizRepositoryAsync.GetByIdAsync(quizID);
+            quiz = await _quizRepository.GetByIdAsync(quizID);
             _memoryCache.Set(QuizDefaults.QuizIdCacheKey, quiz);
 
             return quiz;
@@ -109,7 +107,7 @@ namespace QuizService
             _memoryCache.Remove(QuizDefaults.QuizAllCacheKey);
             _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
             
-            await _quizRepositoryAsync.InsertAsync(quiz);
+            await _quizRepository.InsertAsync(quiz);
         }
 
         public async Task UpdateQuizAsync(Quiz quiz)
@@ -117,7 +115,7 @@ namespace QuizService
             _memoryCache.Remove(QuizDefaults.QuizAllCacheKey);
             _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
             
-            await _quizRepositoryAsync.UpdateAsync(quiz);
+            await _quizRepository.UpdateAsync(quiz);
         }
 
         public async Task DeleteQuizAsync(int quizID)
@@ -125,7 +123,7 @@ namespace QuizService
             _memoryCache.Remove(QuizDefaults.QuizAllCacheKey);
             _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
             
-            await _quizRepositoryAsync.DeleteAsync(quizID);
+            await _quizRepository.DeleteAsync(quizID);
         }
 
         #endregion

@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using QuizApi.Models;
 using QuizService;
 using QuizData;
@@ -23,9 +25,9 @@ namespace QuizApi.Controllers
 
         #region ctor
         
-        public AnswerController(IAnswerService service, IMapper mapper)
+        public AnswerController(IMapper mapper, IServiceProvider serviceProvider)
         {
-            _answerService = service;
+            _answerService = ActivatorUtilities.CreateInstance<AnswerService>(serviceProvider);
             _mapper = mapper;
         }
         

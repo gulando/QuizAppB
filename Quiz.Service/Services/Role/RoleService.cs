@@ -14,17 +14,15 @@ namespace QuizService
         #region properties
 
         private readonly IRepository<Role> _roleRepository;
-        private readonly IRepositoryAsync<Role> _roleRepositoryAsync;
         private readonly IMemoryCache _memoryCache;
 
         #endregion
         
         #region ctor
         
-        public RoleService(IRepository<Role> roleRepository,IRepositoryAsync<Role> roleRepositoryAsync, IMemoryCache memoryCache)
+        public RoleService(IRepository<Role> roleRepository, IMemoryCache memoryCache)
         {
             _roleRepository = roleRepository;
-            _roleRepositoryAsync = roleRepositoryAsync;
             _memoryCache = memoryCache;
         }
 
@@ -87,7 +85,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(RoleDefaults.RoleAllCacheKey, out List<Role> roles)) 
                 return roles.ToList();
                 
-            roles = await _roleRepositoryAsync.Table.ToListAsync();
+            roles = await _roleRepository.Table.ToListAsync();
             _memoryCache.Set(RoleDefaults.RoleAllCacheKey, roles);
 
             return roles.ToList();
@@ -98,7 +96,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(RoleDefaults.RoleByIdCacheKey, out Role role)) 
                 return role;
             
-            role = await _roleRepositoryAsync.GetByIdAsync(roleID);
+            role = await _roleRepository.GetByIdAsync(roleID);
             _memoryCache.Set(RoleDefaults.RoleByIdCacheKey, role);
 
             return role;
@@ -109,7 +107,7 @@ namespace QuizService
             _memoryCache.Remove(RoleDefaults.RoleAllCacheKey);
             _memoryCache.Remove(RoleDefaults.RoleByIdCacheKey);
             
-            await _roleRepositoryAsync.InsertAsync(role);
+            await _roleRepository.InsertAsync(role);
         }
 
         public async Task UpdateRoleAsync(Role role)
@@ -117,7 +115,7 @@ namespace QuizService
             _memoryCache.Remove(RoleDefaults.RoleAllCacheKey);
             _memoryCache.Remove(RoleDefaults.RoleByIdCacheKey);
             
-            await _roleRepositoryAsync.UpdateAsync(role);
+            await _roleRepository.UpdateAsync(role);
         }
 
         public async Task DeleteRoleAsync(int roleID)
@@ -125,7 +123,7 @@ namespace QuizService
             _memoryCache.Remove(RoleDefaults.RoleAllCacheKey);
             _memoryCache.Remove(RoleDefaults.RoleByIdCacheKey);
             
-            await _roleRepositoryAsync.DeleteAsync(roleID);
+            await _roleRepository.DeleteAsync(roleID);
         }
 
         #endregion

@@ -16,9 +16,6 @@ namespace QuizService
         private readonly IRepository<Quiz> _quizRepository;
         private readonly IRepository<QuestionType> _questionTypesRepository; 
         
-        private readonly IRepositoryAsync<Quiz> _quizRepositoryAsync;
-        private readonly IRepositoryAsync<QuestionType> _questionTypesRepositoryAsync; 
-        
         private readonly IMemoryCache _memoryCache;
 
         #endregion
@@ -26,14 +23,10 @@ namespace QuizService
         #region ctor
 
         public QuestionTypeService(IRepository<Quiz> quizRepository, IRepository<QuestionType> questionTypesRepository,
-            IRepositoryAsync<Quiz> quizRepositoryAsync, IRepositoryAsync<QuestionType> questionTypesRepositoryAsync,
             IMemoryCache memoryCache)
         {
             _quizRepository = quizRepository;
             _questionTypesRepository = questionTypesRepository;
-            
-            _quizRepositoryAsync = quizRepositoryAsync;
-            _questionTypesRepositoryAsync = questionTypesRepositoryAsync;
             
             _memoryCache = memoryCache;
         }
@@ -114,7 +107,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuestionTypeDefaults.QuestionTypeAllCacheKey, out List<QuestionType> questionTypes))
                 return questionTypes;
 
-            questionTypes = await _questionTypesRepositoryAsync.Table.ToListAsync();
+            questionTypes = await _questionTypesRepository.Table.ToListAsync();
             _memoryCache.Set(QuestionTypeDefaults.QuestionTypeAllCacheKey, questionTypes);
     
             return questionTypes;
@@ -122,8 +115,8 @@ namespace QuizService
 
         public async Task<List<QuestionTypeSummary>> GetQuestionTypeSummaryAsync(int questionTypeID = 0)
         {
-            var result = (from questionTypes in _questionTypesRepositoryAsync.Table
-                join quizes in _quizRepositoryAsync.Table on questionTypes.QuizID equals quizes.ID
+            var result = (from questionTypes in _questionTypesRepository.Table
+                join quizes in _quizRepository.Table on questionTypes.QuizID equals quizes.ID
                 orderby quizes.QuizName
                 where questionTypes.ID == questionTypeID || questionTypeID == 0
                 select new QuestionTypeSummary
@@ -142,7 +135,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuestionTypeDefaults.QuestionTypeIdCacheKey, out QuestionType questionType)) 
                 return questionType;
 
-            questionType = await _questionTypesRepositoryAsync.GetByIdAsync(questionTypeID);
+            questionType = await _questionTypesRepository.GetByIdAsync(questionTypeID);
             _memoryCache.Set(QuestionTypeDefaults.QuestionTypeIdCacheKey, questionType);
 
             return questionType;
@@ -153,7 +146,7 @@ namespace QuizService
             _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeAllCacheKey);
             _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeIdCacheKey);
             
-            await _questionTypesRepositoryAsync.InsertAsync(questionType);
+            await _questionTypesRepository.InsertAsync(questionType);
         }
 
         public async Task UpdateQuestionTypeAsync(QuestionType questionType)
@@ -161,7 +154,7 @@ namespace QuizService
             _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeAllCacheKey);
             _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeIdCacheKey);
             
-            await _questionTypesRepositoryAsync.UpdateAsync(questionType);
+            await _questionTypesRepository.UpdateAsync(questionType);
         }
 
         public async Task DeleteQuestionTypeAsync(int questionTypeID)
@@ -169,7 +162,7 @@ namespace QuizService
             _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeAllCacheKey);
             _memoryCache.Remove(QuestionTypeDefaults.QuestionTypeIdCacheKey);
             
-            await _questionTypesRepositoryAsync.DeleteAsync(questionTypeID);
+            await _questionTypesRepository.DeleteAsync(questionTypeID);
         }
         
         #endregion

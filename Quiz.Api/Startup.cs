@@ -39,13 +39,14 @@ namespace QuizApi
             services.AddMemoryCache();
             
             #endregion
-            
+
             #region database
-            
-            var conString = Configuration["ConnectionStrings:DefaultConnection"];            
-            services.AddDbContext<QuizDBContext>(options => options.UseSqlServer(conString));
-            services.AddScoped<IDbContext>(provider => provider.GetService<QuizDBContext>());
-            
+
+            var conString = Configuration["ConnectionStrings:DefaultConnection"];
+            //services.AddDbContext<QuizDBContext>(options => options.UseSqlServer(conString));
+            services.AddScoped<IDbContext>(provider => provider.GetService<QuizDBContext>())
+                .AddDbContext<QuizDBContext>(options => options.UseSqlServer(conString));
+
             #endregion
             
             #region mapping
@@ -107,11 +108,11 @@ namespace QuizApi
 
             #endregion
             
-            #region repositories
+            #region generic repository and service
             
-            //add repository
+            //add generic repository and service
             services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
-            services.AddScoped(typeof(IRepositoryAsync<>),typeof(RepositoryAsync<>));
+            services.AddScoped(typeof(IService<>),typeof(Service<>));
             
             #endregion
             

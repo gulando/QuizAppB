@@ -1,17 +1,18 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using QuizData;
 
 
-namespace QuizRepository
+namespace QuizService
 {
-    public interface IRepository<TEntity> where TEntity : EntityBase
+    public interface IService<TEntity> where TEntity : EntityBase
     {
         #region Methods
 
         TEntity GetById(object id);
-
+        
+        List<TEntity> GetAll();
+        
         void Insert(TEntity entity);
 
         void Insert(IEnumerable<TEntity> entities);
@@ -27,19 +28,13 @@ namespace QuizRepository
         void Delete(int id);
         
         #endregion
-
-        #region Properties
-
-        IQueryable<TEntity> Table { get; }
-
-        IQueryable<TEntity> TableNoTracking { get; }
-
-        #endregion
         
-        #region Async Methods
+        #region async Methods
 
         Task<TEntity> GetByIdAsync(object id);
 
+        Task<List<TEntity>> GetAllAsync();
+        
         Task InsertAsync(TEntity entity);
 
         Task InsertAsync(IEnumerable<TEntity> entities);

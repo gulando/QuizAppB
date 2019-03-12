@@ -16,16 +16,6 @@ namespace QuizRepository
 
         Task<int> SaveChangesAsync();
 
-        string GenerateCreateScript();
-
-        IQueryable<TQuery> QueryFromSql<TQuery>(string sql) where TQuery : class;
-
-        IQueryable<TEntity> EntityFromSql<TEntity>(string sql, params object[] parameters) where TEntity : EntityBase;
-
-        int ExecuteSqlCommand(RawSqlString sql, bool doNotEnsureTransaction = false, int? timeout = null, params object[] parameters);
-
-        void Detach<TEntity>(TEntity entity) where TEntity : EntityBase;
-
         #endregion
     }
 }

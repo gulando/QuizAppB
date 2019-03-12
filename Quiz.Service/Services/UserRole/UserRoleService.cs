@@ -17,10 +17,6 @@ namespace QuizService
         private readonly IRepository<Role> _roleRepository;
         private readonly IRepository<UserRole> _userRoleRepository;
         
-        private readonly IRepositoryAsync<User> _userRepositoryAsync;
-        private readonly IRepositoryAsync<Role> _roleRepositoryAsync;
-        private readonly IRepositoryAsync<UserRole> _userRoleRepositoryAsync;
-        
         private readonly IMemoryCache _memoryCache;
 
         #endregion
@@ -28,17 +24,11 @@ namespace QuizService
         #region ctor
 
         public UserRoleService(IRepository<User> userRepository, IRepository<Role> roleRepository,
-            IRepository<UserRole> userRoleRepository, IRepositoryAsync<User> userRepositoryAsync,
-            IRepositoryAsync<Role> roleRepositoryAsync,IRepositoryAsync<UserRole> userRoleRepositoryAsync, 
-            IMemoryCache memoryCache)
+            IRepository<UserRole> userRoleRepository,IMemoryCache memoryCache)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _userRoleRepository = userRoleRepository;
-
-            _userRepositoryAsync = userRepositoryAsync;
-            _roleRepositoryAsync = roleRepositoryAsync;
-            _userRoleRepositoryAsync = userRoleRepositoryAsync;
             
             _memoryCache = memoryCache;
         }
@@ -119,7 +109,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(UserRoleDefaults.UserRoleAllCacheKey, out List<UserRole> userRoles)) 
                 return userRoles.ToList();
                 
-            userRoles = await _userRoleRepositoryAsync.Table.ToListAsync();
+            userRoles = await _userRoleRepository.Table.ToListAsync();
             _memoryCache.Set(UserRoleDefaults.UserRoleAllCacheKey, userRoles);
 
             return userRoles;
@@ -127,9 +117,9 @@ namespace QuizService
 
         public async Task<List<UserRoleSummary>> GetUserRoleSummaryAsync(int userRoleID = 0)
         {
-            var result = (from userRoles in _userRoleRepositoryAsync.Table
-                join users in _userRepositoryAsync.Table on userRoles.UserID equals users.ID
-                join roles in _roleRepositoryAsync.Table on userRoles.RoleID equals roles.ID
+            var result = (from userRoles in _userRoleRepository.Table
+                join users in _userRepository.Table on userRoles.UserID equals users.ID
+                join roles in _roleRepository.Table on userRoles.RoleID equals roles.ID
                 select new UserRoleSummary
                 {
                     ID = userRoles.ID,
@@ -147,7 +137,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(UserRoleDefaults.UserRoleByIdCacheKey, out UserRole userRole)) 
                 return userRole;
             
-            userRole = await _userRoleRepositoryAsync.GetByIdAsync(userRoleID);
+            userRole = await _userRoleRepository.GetByIdAsync(userRoleID);
             _memoryCache.Set(UserRoleDefaults.UserRoleByIdCacheKey, userRole);
 
             return userRole;
@@ -158,7 +148,7 @@ namespace QuizService
             _memoryCache.Remove(UserRoleDefaults.UserRoleAllCacheKey);
             _memoryCache.Remove(UserRoleDefaults.UserRoleByIdCacheKey);
             
-            await _userRoleRepositoryAsync.InsertAsync(userRole);
+            await _userRoleRepository.InsertAsync(userRole);
         }
 
         public async Task UpdateUserRoleAsync(UserRole userRole)
@@ -166,7 +156,7 @@ namespace QuizService
             _memoryCache.Remove(UserRoleDefaults.UserRoleAllCacheKey);
             _memoryCache.Remove(UserRoleDefaults.UserRoleByIdCacheKey);
             
-            await _userRoleRepositoryAsync.UpdateAsync(userRole);
+            await _userRoleRepository.UpdateAsync(userRole);
         }
 
         public async Task DeleteUserRoleAsync(int userRoleID)
@@ -174,7 +164,7 @@ namespace QuizService
             _memoryCache.Remove(UserRoleDefaults.UserRoleAllCacheKey);
             _memoryCache.Remove(UserRoleDefaults.UserRoleByIdCacheKey);
             
-            await _userRoleRepositoryAsync.DeleteAsync(userRoleID);
+            await _userRoleRepository.DeleteAsync(userRoleID);
         }
         
         #endregion

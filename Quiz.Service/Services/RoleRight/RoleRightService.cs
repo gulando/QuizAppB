@@ -17,10 +17,6 @@ namespace QuizService
         private readonly IRepository<Right> _rightRepository;
         private readonly IRepository<RoleRight> _roleRightRepository;
         
-        private readonly IRepositoryAsync<Role> _roleRepositoryAsync;
-        private readonly IRepositoryAsync<Right> _rightRepositoryAsync;
-        private readonly IRepositoryAsync<RoleRight> _roleRightRepositoryAsync;
-        
         private readonly IMemoryCache _memoryCache;
 
         #endregion
@@ -28,17 +24,11 @@ namespace QuizService
         #region ctor
 
         public RoleRightService(IRepository<Role> roleRepository, IRepository<Right> rightRepository,
-            IRepository<RoleRight> roleRightRepository, IRepositoryAsync<Role> roleRepositoryAsync,
-            IRepositoryAsync<Right> rightRepositoryAsync,IRepositoryAsync<RoleRight> roleRightRepositoryAsync, 
-            IMemoryCache memoryCache)
+            IRepository<RoleRight> roleRightRepository,IMemoryCache memoryCache)
         {
             _roleRepository = roleRepository;
             _rightRepository = rightRepository;
             _roleRightRepository = roleRightRepository;
-
-            _roleRepositoryAsync = roleRepositoryAsync;
-            _rightRepositoryAsync = rightRepositoryAsync;
-            _roleRightRepositoryAsync = roleRightRepositoryAsync;
             
             _memoryCache = memoryCache;
         }
@@ -119,7 +109,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(RoleRightDefaults.RoleRightAllCacheKey, out List<RoleRight> roleRights)) 
                 return roleRights.ToList();
                 
-            roleRights = await _roleRightRepositoryAsync.Table.ToListAsync();
+            roleRights = await _roleRightRepository.Table.ToListAsync();
             _memoryCache.Set(RoleRightDefaults.RoleRightAllCacheKey, roleRights);
 
             return roleRights;
@@ -127,9 +117,9 @@ namespace QuizService
 
         public async Task<List<RoleRightSummary>> GetRoleRightSummaryAsync(int roleRightID = 0)
         {
-            var result = (from roleRights in _roleRightRepositoryAsync.Table
-                join roles in _roleRepositoryAsync.Table on roleRights.RoleID equals roles.ID
-                join rights in _rightRepositoryAsync.Table on roleRights.RightID equals rights.ID
+            var result = (from roleRights in _roleRightRepository.Table
+                join roles in _roleRepository.Table on roleRights.RoleID equals roles.ID
+                join rights in _rightRepository.Table on roleRights.RightID equals rights.ID
                 select new RoleRightSummary
                 {
                     ID = roleRights.ID,
@@ -147,7 +137,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(RoleRightDefaults.RoleRightByIdCacheKey, out RoleRight roleRight)) 
                 return roleRight;
             
-            roleRight = await _roleRightRepositoryAsync.GetByIdAsync(roleRightID);
+            roleRight = await _roleRightRepository.GetByIdAsync(roleRightID);
             _memoryCache.Set(RoleRightDefaults.RoleRightByIdCacheKey, roleRight);
 
             return roleRight;
@@ -158,7 +148,7 @@ namespace QuizService
             _memoryCache.Remove(RoleRightDefaults.RoleRightAllCacheKey);
             _memoryCache.Remove(RoleRightDefaults.RoleRightByIdCacheKey);
             
-            await _roleRightRepositoryAsync.InsertAsync(roleRight);
+            await _roleRightRepository.InsertAsync(roleRight);
         }
 
         public async Task UpdateRoleRightAsync(RoleRight roleRight)
@@ -166,7 +156,7 @@ namespace QuizService
             _memoryCache.Remove(RoleRightDefaults.RoleRightAllCacheKey);
             _memoryCache.Remove(RoleRightDefaults.RoleRightByIdCacheKey);
             
-            await _roleRightRepositoryAsync.UpdateAsync(roleRight);
+            await _roleRightRepository.UpdateAsync(roleRight);
         }
 
         public async Task DeleteRoleRightAsync(int roleRightID)
@@ -174,7 +164,7 @@ namespace QuizService
             _memoryCache.Remove(RoleRightDefaults.RoleRightAllCacheKey);
             _memoryCache.Remove(RoleRightDefaults.RoleRightByIdCacheKey);
             
-            await _roleRightRepositoryAsync.DeleteAsync(roleRightID);
+            await _roleRightRepository.DeleteAsync(roleRightID);
         }
 
         #endregion

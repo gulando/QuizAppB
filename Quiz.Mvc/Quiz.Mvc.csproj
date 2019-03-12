@@ -21,5 +21,21 @@
     <ItemGroup>
       <ProjectReference Include="..\Quiz.Service\Quiz.Service.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Log\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Log\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Log\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Log\**" />
+    </ItemGroup>
     
 </Project>

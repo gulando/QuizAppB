@@ -17,10 +17,6 @@ namespace QuizService
         private readonly IRepository<Right> _rightRepository;
         private readonly IRepository<UserRight> _userRightRepository;
         
-        private readonly IRepositoryAsync<User> _userRepositoryAsync;
-        private readonly IRepositoryAsync<Right> _rightRepositoryAsync;
-        private readonly IRepositoryAsync<UserRight> _userRightRepositoryAsync;
-        
         private readonly IMemoryCache _memoryCache;
 
         #endregion
@@ -28,17 +24,11 @@ namespace QuizService
         #region ctor
 
         public UserRightService(IRepository<User> userRepository, IRepository<Right> rightRepository,
-            IRepository<UserRight> userRightRepository, IRepositoryAsync<User> userRepositoryAsync,
-            IRepositoryAsync<Right> rightRepositoryAsync, IRepositoryAsync<UserRight> userRightRepositoryAsync, 
-            IMemoryCache memoryCache)
+            IRepository<UserRight> userRightRepository,IMemoryCache memoryCache)
         {
             _userRepository = userRepository;
             _rightRepository = rightRepository;
             _userRightRepository = userRightRepository;
-
-            _userRepositoryAsync = userRepositoryAsync;
-            _rightRepositoryAsync = rightRepositoryAsync;
-            _userRightRepositoryAsync = userRightRepositoryAsync;
             
             _memoryCache = memoryCache;
         }
@@ -119,7 +109,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(UserRightDefaults.UserRightAllCacheKey, out List<UserRight> userRights)) 
                 return userRights.ToList();
                 
-            userRights = await _userRightRepositoryAsync.Table.ToListAsync();
+            userRights = await _userRightRepository.Table.ToListAsync();
             _memoryCache.Set(UserRightDefaults.UserRightAllCacheKey, userRights);
 
             return userRights;
@@ -127,9 +117,9 @@ namespace QuizService
 
         public async Task<List<UserRightSummary>> GetUserRightSummaryAsync(int userRightID = 0)
         {
-            var result = (from userRights in _userRightRepositoryAsync.Table
-                join users in _userRepositoryAsync.Table on userRights.UserID equals users.ID
-                join rights in _rightRepositoryAsync.Table on userRights.RightID equals rights.ID
+            var result = (from userRights in _userRightRepository.Table
+                join users in _userRepository.Table on userRights.UserID equals users.ID
+                join rights in _rightRepository.Table on userRights.RightID equals rights.ID
                 select new UserRightSummary
                 {
                     ID = userRights.ID,
@@ -147,7 +137,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(UserRightDefaults.UserRightByIdCacheKey, out UserRight userRight)) 
                 return userRight;
             
-            userRight = await _userRightRepositoryAsync.GetByIdAsync(userRightID);
+            userRight = await _userRightRepository.GetByIdAsync(userRightID);
             _memoryCache.Set(UserRightDefaults.UserRightByIdCacheKey, userRight);
 
             return userRight;
@@ -158,7 +148,7 @@ namespace QuizService
             _memoryCache.Remove(UserRightDefaults.UserRightAllCacheKey);
             _memoryCache.Remove(UserRightDefaults.UserRightByIdCacheKey);
             
-            await _userRightRepositoryAsync.InsertAsync(userRight);
+            await _userRightRepository.InsertAsync(userRight);
         }
 
         public async Task UpdateUserRightAsync(UserRight userRight)
@@ -166,7 +156,7 @@ namespace QuizService
             _memoryCache.Remove(UserRightDefaults.UserRightAllCacheKey);
             _memoryCache.Remove(UserRightDefaults.UserRightByIdCacheKey);
             
-            await _userRightRepositoryAsync.UpdateAsync(userRight);
+            await _userRightRepository.UpdateAsync(userRight);
         }
 
         public async Task DeleteUserRightAsync(int userRightID)
@@ -174,7 +164,7 @@ namespace QuizService
             _memoryCache.Remove(UserRightDefaults.UserRightAllCacheKey);
             _memoryCache.Remove(UserRightDefaults.UserRightByIdCacheKey);
             
-            await _userRightRepositoryAsync.DeleteAsync(userRightID);
+            await _userRightRepository.DeleteAsync(userRightID);
         }
 
         #endregion

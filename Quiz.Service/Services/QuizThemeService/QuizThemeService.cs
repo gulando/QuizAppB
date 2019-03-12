@@ -16,23 +16,16 @@ namespace QuizService
         private readonly IRepository<Quiz> _quizRepository;
         private readonly IRepository<QuizTheme> _quizThemeRepository;
         
-        private readonly IRepositoryAsync<Quiz> _quizRepositoryAsync;
-        private readonly IRepositoryAsync<QuizTheme> _quizThemeRepositoryAsync;
-        
         private readonly IMemoryCache _memoryCache;
 
         #endregion
         
         #region ctor
 
-        public QuizThemeService(IRepository<Quiz> quizRepository, IRepository<QuizTheme> quizThemeRepository,
-            IRepositoryAsync<Quiz> quizRepositoryAsync, IRepositoryAsync<QuizTheme> quizThemeRepositoryAsync, IMemoryCache memoryCache)
+        public QuizThemeService(IRepository<Quiz> quizRepository, IRepository<QuizTheme> quizThemeRepository,IMemoryCache memoryCache)
         {
             _quizRepository = quizRepository;
             _quizThemeRepository = quizThemeRepository;
-            
-            _quizRepositoryAsync = quizRepositoryAsync;
-            _quizThemeRepositoryAsync = quizThemeRepositoryAsync;
             
             _memoryCache = memoryCache;
         }
@@ -112,7 +105,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuizThemeDefaults.QuizThemeAllCacheKey, out List<QuizTheme> quizThemes)) 
                 return quizThemes.ToList();
                 
-            quizThemes = await _quizThemeRepositoryAsync.Table.ToListAsync();
+            quizThemes = await _quizThemeRepository.Table.ToListAsync();
             _memoryCache.Set(QuizThemeDefaults.QuizThemeAllCacheKey, quizThemes);
 
             return quizThemes.ToList();
@@ -120,8 +113,8 @@ namespace QuizService
 
         public async Task<List<QuizThemeSummary>> GetQuizThemeSummaryAsync(int quizThemeID = 0)
         {
-            var result = (from quizes in _quizRepositoryAsync.Table
-                join quizThemes in _quizThemeRepositoryAsync.Table on quizes.ID equals quizThemes.QuizID
+            var result = (from quizes in _quizRepository.Table
+                join quizThemes in _quizThemeRepository.Table on quizes.ID equals quizThemes.QuizID
                 where quizThemes.ID == quizThemeID || quizThemeID == 0
                 select new QuizThemeSummary
                 {
@@ -139,7 +132,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuizThemeDefaults.QuizThemeIdCacheKey, out QuizTheme quizTheme)) 
                 return quizTheme;
             
-            quizTheme = await _quizThemeRepositoryAsync.GetByIdAsync(quizThemeID);
+            quizTheme = await _quizThemeRepository.GetByIdAsync(quizThemeID);
             _memoryCache.Set(QuizThemeDefaults.QuizThemeIdCacheKey, quizTheme);
 
             return quizTheme;
@@ -150,7 +143,7 @@ namespace QuizService
             _memoryCache.Remove(QuizThemeDefaults.QuizThemeAllCacheKey);
             _memoryCache.Remove(QuizThemeDefaults.QuizThemeIdCacheKey);
             
-            await _quizThemeRepositoryAsync.InsertAsync(quizTheme);
+            await _quizThemeRepository.InsertAsync(quizTheme);
         }
 
         public async Task UpdateQuizThemeAsync(QuizTheme quizTheme)
@@ -158,7 +151,7 @@ namespace QuizService
             _memoryCache.Remove(QuizThemeDefaults.QuizThemeAllCacheKey);
             _memoryCache.Remove(QuizThemeDefaults.QuizThemeIdCacheKey);
             
-            await _quizThemeRepositoryAsync.UpdateAsync(quizTheme);
+            await _quizThemeRepository.UpdateAsync(quizTheme);
         }
 
         public async Task DeleteQuizThemeAsync(int quizThemeID)
@@ -166,7 +159,7 @@ namespace QuizService
             _memoryCache.Remove(QuizThemeDefaults.QuizThemeAllCacheKey);
             _memoryCache.Remove(QuizThemeDefaults.QuizThemeIdCacheKey);
             
-            await _quizThemeRepositoryAsync.DeleteAsync(quizThemeID);
+            await _quizThemeRepository.DeleteAsync(quizThemeID);
         }
         
         #endregion

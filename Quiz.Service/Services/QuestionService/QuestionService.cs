@@ -19,12 +19,6 @@ namespace QuizService
         private readonly IRepository<AnswerType> _answerTypeRepository;
         private readonly IRepository<QuestionType> _questionTypesRepository;
         
-        private readonly IRepositoryAsync<Question> _questionRepositoryAsync;
-        private readonly IRepositoryAsync<Quiz> _quizRepositoryAsync;
-        private readonly IRepositoryAsync<QuizTheme> _quizThemeRepositoryAsync;
-        private readonly IRepositoryAsync<AnswerType> _answerTypeRepositoryAsync;
-        private readonly IRepositoryAsync<QuestionType> _questionTypesRepositoryAsync; 
-        
         private readonly IMemoryCache _memoryCache;
 
         #endregion
@@ -33,24 +27,13 @@ namespace QuizService
 
         public QuestionService(IRepository<Quiz> quizRepository, IRepository<QuizTheme> quizThemeRepository,
             IRepository<AnswerType> answerTypeRepository, IRepository<QuestionType> questionTypesRepository,
-            IRepository<Question> questionRepository,IRepositoryAsync<Question> questionRepositoryAsync, 
-            IRepositoryAsync<Quiz> quizRepositoryAsync,
-            IRepositoryAsync<QuizTheme> quizThemeRepositoryAsync,
-            IRepositoryAsync<AnswerType> answerTypeRepositoryAsync,
-            IRepositoryAsync<QuestionType> questionTypesRepositoryAsync,
-            IMemoryCache memoryCache)
+            IRepository<Question> questionRepository,IMemoryCache memoryCache)
         {
             _questionRepository = questionRepository;
             _quizRepository = quizRepository;
             _quizThemeRepository = quizThemeRepository;
             _answerTypeRepository = answerTypeRepository;
             _questionTypesRepository = questionTypesRepository;
-            
-            _questionRepositoryAsync = questionRepositoryAsync;
-            _quizRepositoryAsync = quizRepositoryAsync;
-            _quizThemeRepositoryAsync = quizThemeRepositoryAsync;
-            _answerTypeRepositoryAsync = answerTypeRepositoryAsync;
-            _questionTypesRepositoryAsync = questionTypesRepositoryAsync;
             
             _memoryCache = memoryCache;
         }
@@ -139,7 +122,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuestionDefaults.QuestionAllCacheKey, out List<Question> questions))
                 return questions;
 
-            questions = await _questionRepositoryAsync.Table.ToListAsync();
+            questions = await _questionRepository.Table.ToListAsync();
             _memoryCache.Set(QuestionDefaults.QuestionAllCacheKey, questions);
     
             return questions;
@@ -147,11 +130,11 @@ namespace QuizService
 
         public async Task<List<QuestionSummary>> GetQuestionSummaryAsync(int questionID = 0)
         {
-            var result = (from questions in _questionRepositoryAsync.Table
-                join quizes in _quizRepositoryAsync.Table on questions.QuizID equals quizes.ID
-                join quizThemes in _quizThemeRepositoryAsync.Table on questions.QuizThemeID equals quizThemes.ID
-                join answerTypes in _answerTypeRepositoryAsync.Table on questions.AnswerTypeID equals answerTypes.ID
-                join questionTypes in _questionTypesRepositoryAsync.Table on questions.QuestionTypeID equals questionTypes.ID
+            var result = (from questions in _questionRepository.Table
+                join quizes in _quizRepository.Table on questions.QuizID equals quizes.ID
+                join quizThemes in _quizThemeRepository.Table on questions.QuizThemeID equals quizThemes.ID
+                join answerTypes in _answerTypeRepository.Table on questions.AnswerTypeID equals answerTypes.ID
+                join questionTypes in _questionTypesRepository.Table on questions.QuestionTypeID equals questionTypes.ID
                 where questions.ID == questionID || questionID == 0
                 select new QuestionSummary 
                 {
@@ -175,7 +158,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuestionDefaults.QuestionyIdCacheKey, out Question question)) 
                 return question;
 
-            question = await _questionRepositoryAsync.GetByIdAsync(questionID);
+            question = await _questionRepository.GetByIdAsync(questionID);
             _memoryCache.Set(QuestionDefaults.QuestionyIdCacheKey, question);
 
             return question;
@@ -186,7 +169,7 @@ namespace QuizService
             _memoryCache.Remove(QuestionDefaults.QuestionAllCacheKey);
             _memoryCache.Remove(QuestionDefaults.QuestionyIdCacheKey);
             
-            await _questionRepositoryAsync.InsertAsync(question);
+            await _questionRepository.InsertAsync(question);
         }
 
         public async Task UpdateQuestionAsync(Question question)
@@ -194,7 +177,7 @@ namespace QuizService
             _memoryCache.Remove(QuestionDefaults.QuestionAllCacheKey);
             _memoryCache.Remove(QuestionDefaults.QuestionyIdCacheKey);
             
-            await _questionRepositoryAsync.UpdateAsync(question);
+            await _questionRepository.UpdateAsync(question);
         }
 
         public async Task DeleteQuestionAsync(int questionID)
@@ -202,7 +185,7 @@ namespace QuizService
             _memoryCache.Remove(QuestionDefaults.QuestionAllCacheKey);
             _memoryCache.Remove(QuestionDefaults.QuestionyIdCacheKey);
             
-            await _questionRepositoryAsync.DeleteAsync(questionID);
+            await _questionRepository.DeleteAsync(questionID);
         }
         
         #endregion

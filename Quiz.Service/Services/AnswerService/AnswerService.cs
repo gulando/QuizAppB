@@ -17,10 +17,6 @@ namespace QuizService
         private readonly IRepository<AnswerType> _answerTypeRepository;
         private readonly IRepository<Question> _questionRepository;
         
-        private readonly IRepositoryAsync<Answer> _answerRepositoryAsync;
-        private readonly IRepositoryAsync<AnswerType> _answerTypeRepositoryAsync;
-        private readonly IRepositoryAsync<Question> _questionRepositoryAsync; 
-        
         private readonly IMemoryCache _memoryCache;
 
         #endregion
@@ -28,16 +24,11 @@ namespace QuizService
         #region ctor
 
         public AnswerService(IRepository<Answer> answerRepository, IRepository<AnswerType> answerTypeRepository,
-            IRepository<Question> questionRepository, IMemoryCache memoryCache,
-            IRepositoryAsync<Answer> answerRepositoryAsync, IRepositoryAsync<AnswerType> answerTypeRepositoryAsync,
-            IRepositoryAsync<Question> questionRepositoryAsync)
+            IRepository<Question> questionRepository, IMemoryCache memoryCache)
         {
             _answerRepository = answerRepository;
             _answerTypeRepository = answerTypeRepository;
             _questionRepository = questionRepository;
-            _answerRepositoryAsync = answerRepositoryAsync;
-            _answerTypeRepositoryAsync = answerTypeRepositoryAsync;
-            _questionRepositoryAsync = questionRepositoryAsync;
             _memoryCache = memoryCache;
         }
 
@@ -101,6 +92,7 @@ namespace QuizService
                 {
                     ID = answers.ID,
                     AnswerTypeID = answerTypes.ID,
+                    QuestionID = questions.ID,
                     AnswerText = answers.AnswerText,
                     AnswerTypeName = answerTypes.AnswerTypeName,
                 }).ToList();
@@ -118,7 +110,7 @@ namespace QuizService
             if(_memoryCache.TryGetValue(AnswerDefaults.AnswerAllCacheKey, out List<Answer> answers))
                 return answers;
             
-            answers = await _answerRepositoryAsync.Table.ToListAsync();
+            answers = await _answerRepository.Table.ToListAsync();
             _memoryCache.Set(AnswerDefaults.AnswerAllCacheKey, answers);
             
             return answers;
@@ -130,7 +122,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(AnswerDefaults.AnswerByIdCacheKey, out Answer answer)) 
                 return answer;
             
-            answer = await _answerRepositoryAsync.GetByIdAsync(answerID);
+            answer = await _answerRepository.GetByIdAsync(answerID);
             _memoryCache.Set(AnswerDefaults.AnswerByIdCacheKey, answer);
 
             return answer;
@@ -141,7 +133,7 @@ namespace QuizService
             _memoryCache.Remove(AnswerDefaults.AnswerByIdCacheKey);
             _memoryCache.Remove(AnswerDefaults.AnswerAllCacheKey);
             
-            await _answerRepositoryAsync.InsertAsync(answer);
+            await _answerRepository.InsertAsync(answer);
         }
         
         public async Task UpdateAnswerAsync(Answer answer) 
@@ -149,7 +141,7 @@ namespace QuizService
             _memoryCache.Remove(AnswerDefaults.AnswerByIdCacheKey);
             _memoryCache.Remove(AnswerDefaults.AnswerAllCacheKey);
             
-            await _answerRepositoryAsync.UpdateAsync(answer);
+            await _answerRepository.UpdateAsync(answer);
         }
         
         public async Task DeleteAnswerAsync(int answerID)
@@ -157,14 +149,14 @@ namespace QuizService
             _memoryCache.Remove(AnswerDefaults.AnswerByIdCacheKey);
             _memoryCache.Remove(AnswerDefaults.AnswerAllCacheKey);
             
-            await _answerRepositoryAsync.DeleteAsync(answerID);
+            await _answerRepository.DeleteAsync(answerID);
         }
         
         public async Task<List<AnswerSummary>> GetAnswerSummaryAsync(int answerID = 0)
         {
-            var result = (from answers in _answerRepositoryAsync.Table
-                join questions in _questionRepositoryAsync.Table on answers.QuestionID equals questions.ID
-                join answerTypes in _answerTypeRepositoryAsync.Table on questions.AnswerTypeID equals answerTypes.ID
+            var result = (from answers in _answerRepository.Table
+                join questions in _questionRepository.Table on answers.QuestionID equals questions.ID
+                join answerTypes in _answerTypeRepository.Table on questions.AnswerTypeID equals answerTypes.ID
                 where answers.ID == answerID || answerID == 0
                 select new AnswerSummary
                 {
