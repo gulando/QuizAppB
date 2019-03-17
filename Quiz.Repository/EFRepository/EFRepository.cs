@@ -7,7 +7,7 @@ using QuizData;
 
 namespace QuizRepository
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : EntityBase
+    public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : EntityBase
     {
         #region Fields
 
@@ -19,7 +19,7 @@ namespace QuizRepository
 
         #region Ctor
         
-        public Repository(IDbContext context)
+        public EfRepository(IDbContext context)
         {
             _context = context;
         }

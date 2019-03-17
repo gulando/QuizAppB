@@ -111,7 +111,7 @@ namespace QuizApi
             #region generic repository and service
             
             //add generic repository and service
-            services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
+            services.AddScoped(typeof(IRepository<>),typeof(EfRepository<>));
             services.AddScoped(typeof(IService<>),typeof(Service<>));
             
             #endregion
@@ -135,6 +135,12 @@ namespace QuizApi
             services.AddScoped<IRoleRightService, RoleRightService>();
             
             services.AddSingleton<ILogService, LogService>();
+            
+            #endregion
+
+            #region elasticsearch
+            
+            services.AddElasticSearch(Configuration);
             
             #endregion
             

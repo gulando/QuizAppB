@@ -75,7 +75,7 @@ namespace QuizMvc
             #region generic repository and service
             
             //add generic repository and service
-            services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
+            services.AddScoped(typeof(IRepository<>),typeof(EfRepository<>));
             services.AddScoped(typeof(IService<>),typeof(Service<>));
             
             #endregion
