@@ -1,4 +1,5 @@
 @using System.Collections
+@using Microsoft.AspNetCore.Mvc.Rendering
 @model QuizMvc.Models.AnswerTypeData
 
 @{
@@ -6,15 +7,26 @@
     Layout = "_Layout";
 }
 
+<script language="javascript" type="text/javascript">
+    
+    function quizNameChange() {
+        console.log('test1');
+    }
+    
+    function questionTypeChange() {
+        console.log('test2');
+    }
+    
+</script>
+
 <form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
     <div class="form-group">
-        <label for="sel1">Quiz Name</label>
-        <select class="form-control" asp-for="QuizID" asp-items="@(new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"))"></select>
-               
+        <label for="sel1">Quiz Name</label>             
+        @Html.DropDownList("QuizName",new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"),new { @class = "form-control", onchange="quizNameChange()"})
+        
         <br/>
         <label for="sel1">Question Type Name</label>
-        <select class="form-control" asp-for="QuestionTypeID" asp-items="@(new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"))"></select>
-               
+        @Html.DropDownList("QuizName",new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"),new { @class = "form-control", onchange = "questionTypeChange()" })              
         <br/>
 
         <label for="sel1">Answer Type Name</label>
