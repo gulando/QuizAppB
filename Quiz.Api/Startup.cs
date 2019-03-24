@@ -112,7 +112,10 @@ namespace QuizApi
             
             //add generic repository and service
             services.AddScoped(typeof(IRepository<>),typeof(EfRepository<>));
+            services.AddScoped(typeof(IElasticSearchRepository<>), typeof(ElasticSearchRepository<>));
+            
             services.AddScoped(typeof(IService<>),typeof(Service<>));
+            services.AddScoped(typeof(ISearchService<>),typeof(SearchService<>));
             
             #endregion
             
@@ -133,6 +136,7 @@ namespace QuizApi
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IUserRightService, UserRightService>();
             services.AddScoped<IRoleRightService, RoleRightService>();
+            
             
             services.AddSingleton<ILogService, LogService>();
             

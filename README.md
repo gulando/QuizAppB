@@ -2,8 +2,7 @@
 
 1 Authentication and Authorization
 2 Unit Testing
-3 ElasticSearchRepository
-4 isDevelopment
+3 isDevelopment
 
 --------------Tasks---------------------
 
@@ -16,11 +15,7 @@ application will filter Question Type by QuizName
 
 3 Answer Type must be checkBoxes ??? 4/2 ??
 
-4 ElasticSearchRepository
-
-5 QuestionImage
-
-
+4 QuestionImage
 
 ------------------------------------------------------------------------------------------------------------------------------
 "DefaultConnection": "Server=localhost;Database=QuizDB; User Id=sa; Password=*ando*1989; MultipleActiveResultSets=true"

@@ -8,24 +8,24 @@
 
 <form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
     <div class="form-group">
-        <label for="sel1">Quiz Name</label>
+        <label for="sel1">Quiz</label>
         <select class="form-control" asp-for="QuizID" asp-items="@(new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"))"></select>
                
         <br/>
         
-        <label for="sel1">Quiz Theme Name</label>
+        <label for="sel1">Quiz Theme</label>
         <select class="form-control" asp-for="QuizThemeID" asp-items="@(new SelectList((IEnumerable)ViewData["QuizThemes"], "ID", "QuizThemeName"))"></select>
                
         <br/>
 
-        <label for="sel1">Answer Type Name</label>
-        <select class="form-control" asp-for="AnswerTypeID" asp-items="@(new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"))"></select>
-               
+        <label for="sel1">Question Type</label>
+        <select class="form-control" asp-for="QuestionTypeID" asp-items="@(new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"))"></select>
+        
         <br/>
         
-        <label for="sel1">Question Type Name</label>
-        <select class="form-control" asp-for="QuestionTypeID" asp-items="@(new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"))"></select>
-               
+        <label for="sel1">Answer Type</label>
+        <select class="form-control" asp-for="AnswerTypeID" asp-items="@(new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"))"></select>
+       
         <br/>
 
         <label for="sel1">Question Image</label>
