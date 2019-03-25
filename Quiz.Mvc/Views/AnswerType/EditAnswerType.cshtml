@@ -7,15 +7,27 @@
     Layout = "_Layout";
 }
 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
 <script language="javascript" type="text/javascript">
     
     function quizNameChange() {
-        console.log('test1');
+        var quizID = $('#QuizName').val();
+        $.ajax({
+            url: '/QuestionType/GetQuestionTypesByQuiz',
+            type: "GET",
+            dataType: "JSON",
+            data: { QuizID: quizID },
+            success: function (response) {
+                console.log(response);
+                $.each(response, function (quizID, questionTypeName) {
+                    $("#QuizName").append(
+                        $('<option></option>').val(quizID).html(questionTypeName));
+                });
+            }
+        });
     }
     
-    function questionTypeChange() {
-        console.log('test2');
-    }
     
 </script>
 
@@ -26,7 +38,7 @@
         
         <br/>
         <label for="sel1">Question Type Name</label>
-        @Html.DropDownList("QuizName",new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"),new { @class = "form-control", onchange = "questionTypeChange()" })              
+        @Html.DropDownList("QuizName",new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"),new { @class = "form-control"})              
         <br/>
 
         <label for="sel1">Answer Type Name</label>

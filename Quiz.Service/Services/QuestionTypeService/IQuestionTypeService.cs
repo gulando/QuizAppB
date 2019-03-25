@@ -12,7 +12,7 @@ namespace QuizService
         
         List<QuestionType> GetAllQuestionTypes();
 
-        List<QuestionTypeSummary> GetQuestionTypeSummary(int questionTypeID = 0);
+        List<QuestionTypeSummary> GetQuestionTypeSummary(int questionTypeID = 0, int quizID = 0);
         
         QuestionType GetQuestionTypeByID(int questionTypeID);
 
@@ -39,5 +39,7 @@ namespace QuizService
         Task DeleteQuestionTypeAsync(int questionTypeID);
         
         #endregion
+
+
     }
 }

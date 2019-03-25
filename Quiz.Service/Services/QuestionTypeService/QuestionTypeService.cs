@@ -46,12 +46,12 @@ namespace QuizService
             return questionTypes;
         }
 
-        public List<QuestionTypeSummary> GetQuestionTypeSummary(int questionTypeID = 0)
+        public List<QuestionTypeSummary> GetQuestionTypeSummary(int questionTypeID = 0, int quizID = 0)
         {
             var result = (from questionTypes in _questionTypesRepository.Table
                 join quizes in _quizRepository.Table on questionTypes.QuizID equals quizes.ID
                 orderby quizes.QuizName
-                where questionTypes.ID == questionTypeID || questionTypeID == 0
+                where (questionTypes.ID == questionTypeID || questionTypeID == 0) && (quizes.ID == quizID || quizID == 0)
                 select new QuestionTypeSummary
                 {
                     ID = questionTypes.ID,
