@@ -6,38 +6,64 @@
     Layout = "_Layout";
 }
 
-<form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
+<script src="@Url.Content("~/Scripts/jquery.min.js")"></script>
+
+<script language="javascript" type="text/javascript">
+ 
+    function quizNameChange() {
+        var quizID = window.$('#QuizName').val();
+        window.$("#QuestionTypeName").empty();
+        window.$.ajax({
+            url: '/QuestionType/GetQuestionTypesByQuiz',
+            type: "GET",
+            dataType: "JSON",
+            data: { QuizID: quizID },
+            success: function (response) {
+                console.log(response);
+                window.$.each(response, function (index, item) {
+                    window.$("#QuestionTypeName").append(window.$('<option/>', {
+                        value: item.id,
+                        text: item.questionTypeName
+                    }));
+                });
+            }
+        });
+    }
+    
+</script>
+
+
+@using (Html.BeginForm(ViewBag.CreateMode ? "Create" : "Edit", "Question"))
+{
     <div class="form-group">
-        <label for="sel1">Quiz</label>
-        <select class="form-control" asp-for="QuizID" asp-items="@(new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"))"></select>
-               
-        <br/>
-        
-        <label for="sel1">Quiz Theme</label>
-        <select class="form-control" asp-for="QuizThemeID" asp-items="@(new SelectList((IEnumerable)ViewData["QuizThemes"], "ID", "QuizThemeName"))"></select>
-               
-        <br/>
-
-        <label for="sel1">Question Type</label>
-        <select class="form-control" asp-for="QuestionTypeID" asp-items="@(new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"))"></select>
+        <label>Quiz</label>
+        @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"), new { @class = "form-control", onchange="quizNameChange()", @id = "QuizName"})
         
         <br/>
         
-        <label for="sel1">Answer Type</label>
-        <select class="form-control" asp-for="AnswerTypeID" asp-items="@(new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"))"></select>
-       
+        <label>Quiz Theme</label>
+        @Html.DropDownListFor(x => Model.QuizThemeID, new SelectList((IEnumerable)ViewData["QuizThemes"], "ID", "QuizThemeName"), new { @class = "form-control", @id = "QuizThemeName"})               
         <br/>
 
-        <label for="sel1">Question Image</label>
-        <input asp-for="QuestionImage" class="form-control"/>
-        
+        <label>Question Type</label>
+        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), new { @class = "form-control", @id = "QuestionTypeName"})                
         <br/>
         
-        <label for="sel1">Correct Answer</label>
+        <label>Answer Type</label>
+        @Html.DropDownListFor(x => Model.AnswerTypeID, new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"), new { @class = "form-control", @id = "AnswerTypeName"})
+        <br/>
+
+        <label for="file">Upload Image:</label> 
+        <input type="file" name="file" id="file" style="width: 100%;" /> 
+        
+        <br/><br/>
+        
+        <label>Correct Answer</label>
         <input asp-for="CorrectAnswer" class="form-control"/>
     </div>
+    
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
     </div>
-</form>
+}

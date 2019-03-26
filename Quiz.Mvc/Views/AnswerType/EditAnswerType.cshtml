@@ -41,7 +41,7 @@
         
         <br/>
         <label for="sel1">Question Type Name</label>
-        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), new { @class = "form-control", @id = "QuestionTypeName"})            
+        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), new { @class = "form-control",   @id = "QuestionTypeName"})            
         <br/>
 
         <label for="sel1">Answer Type Name</label>

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -18,6 +19,9 @@ namespace QuizMvc.Controllers
         private readonly IQuizService _quizService;
         private readonly IQuestionTypeService _questionTypeService;
         private readonly IMapper _mapper;
+        
+        private List<Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
+        private List<QuestionType> QuestionTypes => _questionTypeService.GetAllQuestionTypes().ToList();
         
         #endregion
 
@@ -52,12 +56,12 @@ namespace QuizMvc.Controllers
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            
-            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
-            ViewData["QuestionTypes"] = _questionTypeService.GetAllQuestionTypes().ToList();
-            
+                        
             var answerTypeSummary = _answerTypeService.GetAnswerTypeSummary(id).First();
             var answerTypeData = _mapper.Map<AnswerTypeData>(answerTypeSummary);
+
+            ViewData["Quizes"] = Quizzes;
+            ViewData["QuestionTypes"] = QuestionTypes.Where(questionType => questionType.QuizID == answerTypeData.QuizID);
             
             return View("EditAnswerType", answerTypeData);
         }
@@ -72,12 +76,12 @@ namespace QuizMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            
-            var quizList =  _quizService.GetAllQuizes().ToList();
+
+            var quizList = Quizzes;
             quizList.Insert(0, new Quiz());
             ViewData["Quizes"] = quizList;
-            
-            var questionTypes = _questionTypeService.GetAllQuestionTypes().ToList();
+
+            var questionTypes = QuestionTypes;
             questionTypes.Insert(0, new QuestionType());
             ViewData["QuestionTypes"] = questionTypes;
             
