@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizService;
@@ -14,14 +16,16 @@ namespace QuizMvc.Controllers
         #region properties
         
         private readonly IQuizService _quizService;
+        private readonly IMapper _mapper;
         
         #endregion
 
         #region ctor
         
-        public QuizController(IQuizService service)
+        public QuizController(IQuizService service, IMapper mapper)
         {
             _quizService = service;
+            _mapper = mapper;
         }
         
         #endregion
@@ -66,6 +70,15 @@ namespace QuizMvc.Controllers
         {
             _quizService.AddQuiz(quiz);
             return RedirectToAction(nameof(Index));
+        }
+        
+        [HttpGet]
+        public ActionResult GetQuizSummary(int quizID)
+        {
+            var quizSummary = _quizService.GetQuizSummary(quizID);
+            var quizData = _mapper.Map<List<QuizSummary>, List<Models.QuizData>>(quizSummary);
+            
+            return Json(quizData);
         }
         
         #endregion

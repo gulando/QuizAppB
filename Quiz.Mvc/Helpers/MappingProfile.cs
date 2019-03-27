@@ -36,6 +36,9 @@ namespace QuizMvc.Helpers
             
             CreateMap<AnswerData, AnswerSummary>();
             CreateMap<AnswerSummary, AnswerData>();
+            
+            CreateMap<Models.QuizData, QuizSummary>();
+            CreateMap<QuizSummary, Models.QuizData>();
         }
     }
 }

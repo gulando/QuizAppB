@@ -1,26 +1,16 @@
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-
-
-namespace QuizData
+namespace QuizMvc.Models
 {
-    
-    public class Quiz : EntityBase
+    public class QuizData
     {
-        [Column("QuizID")]
-        public override int ID { get; set; }
-        
-        public string QuizName { get; set; }
-        
-    }
-
-    public class QuizSummary : Quiz
-    {
+        public int ID { get; set; }
+                
         public int QuizThemeID { get; set; }
         
         public int QuestionTypeID { get; set; }
         
         public int AnswerTypeID { get; set; }
+        
+        public string QuizName { get; set; }
         
         public string QuizThemeName { get; set; }
         

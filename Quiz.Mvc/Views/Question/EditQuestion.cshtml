@@ -14,17 +14,34 @@
         var quizID = window.$('#QuizName').val();
         window.$("#QuestionTypeName").empty();
         window.$.ajax({
-            url: '/QuestionType/GetQuestionTypesByQuiz',
+            url: '/Quiz/GetQuizSummary',
             type: "GET",
             dataType: "JSON",
             data: { QuizID: quizID },
             success: function (response) {
                 console.log(response);
                 window.$.each(response, function (index, item) {
-                    window.$("#QuestionTypeName").append(window.$('<option/>', {
-                        value: item.id,
-                        text: item.questionTypeName
-                    }));
+                    
+                    if (window.$("#QuizThemeName option:contains('" + item.quizThemeName + "')").length === 0)
+                    {
+                        window.$("#QuizThemeName").append(window.$('<option/>', {
+                            value: item.quizThemeID,
+                            text: item.quizThemeName
+                        }));
+                    }
+                    
+                    if (window.$("#QuestionTypeName option:contains('" + item.questionTypeName + "')").length === 0)
+                    {
+                        window.$("#QuestionTypeName").append(window.$('<option/>', {
+                            value: item.questionTypeID,
+                            text: item.questionTypeName
+                        }));
+                    }
+                    
+                    
+                    
+                    
+                    
                 });
             }
         });

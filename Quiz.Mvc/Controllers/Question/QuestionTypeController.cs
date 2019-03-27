@@ -79,13 +79,6 @@ namespace QuizMvc.Controllers
             _questionTypeService.AddQuestionType(questionType);
             return RedirectToAction(nameof(Index));
         }
-
-        [HttpGet]
-        public ActionResult GetQuestionTypesByQuiz(int quizID)
-        {
-            var questionTypes = _questionTypeService.GetQuestionTypeSummary(0,quizID);
-            return Json(questionTypes);
-        }
         
         #endregion
     }

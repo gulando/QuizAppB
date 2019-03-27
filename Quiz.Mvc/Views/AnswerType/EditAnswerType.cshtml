@@ -12,20 +12,23 @@
 <script language="javascript" type="text/javascript">
  
     function quizNameChange() {
-        var quizID = $('#QuizName').val();
-        $("#QuestionTypeName").empty();
-        $.ajax({
-            url: '/QuestionType/GetQuestionTypesByQuiz',
+        var quizID = window.$('#QuizName').val();
+        window.$("#QuestionTypeName").empty();
+        window.$.ajax({
+            url: '/Quiz/GetQuizSummary',
             type: "GET",
             dataType: "JSON",
             data: { QuizID: quizID },
             success: function (response) {
                 console.log(response);
-                $.each(response, function (index, item) {
-                    $("#QuestionTypeName").append($('<option/>', {
-                        value: item.id,
-                        text: item.questionTypeName
-                    }));
+                window.$.each(response, function (index, item) {
+                    if (window.$("#QuestionTypeName option:contains('" + item.questionTypeName + "')").length === 0)
+                    {
+                        window.$("#QuestionTypeName").append(window.$('<option/>', {
+                            value: item.questionTypeID,
+                            text: item.questionTypeName
+                        }));
+                    }
                 });
             }
         });

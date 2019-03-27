@@ -14,15 +14,24 @@ namespace QuizService
         #region properties
         
         private readonly IRepository<Quiz> _quizRepository;
+        private readonly IRepository<AnswerType> _answerTypeRepository;
+        private readonly IRepository<QuizTheme> _quizThemeRepository;
+        private readonly IRepository<QuestionType> _questionTypeRepository;
         private readonly IMemoryCache _memoryCache;
 
         #endregion
         
         #region ctor
         
-        public QuizService(IRepository<Quiz> quizRepository,IMemoryCache memoryCache)
+        public QuizService(IRepository<Quiz> quizRepository, IRepository<QuizTheme> quizThemeRepository,
+            IRepository<QuestionType> questionTypesRepository,
+            IRepository<AnswerType> answerTypeRepository,IMemoryCache memoryCache)
         {
+            _answerTypeRepository = answerTypeRepository;
             _quizRepository = quizRepository;
+            _quizThemeRepository = quizThemeRepository;
+            _questionTypeRepository = questionTypesRepository;
+            
             _memoryCache = memoryCache;
         }
 
@@ -74,6 +83,28 @@ namespace QuizService
             _memoryCache.Remove(QuizDefaults.QuizIdCacheKey);
             
             _quizRepository.Delete(quizID);
+        }
+
+        public List<QuizSummary> GetQuizSummary(int quizID)
+        {
+            var result = (from quizzes in _quizRepository.Table
+                join quizThemes in _quizThemeRepository.Table on quizzes.ID equals quizThemes.QuizID
+                join questionTypes in _questionTypeRepository.Table on quizzes.ID equals questionTypes.QuizID
+                join answerTypes in _answerTypeRepository.Table on questionTypes.ID equals answerTypes.QuestionTypeID
+                where quizzes.ID == quizID || quizID == 0
+                select new QuizSummary 
+                {
+                    ID = quizzes.ID,
+                    QuizThemeID =  quizThemes.ID,
+                    QuestionTypeID = questionTypes.ID,
+                    AnswerTypeID = answerTypes.ID,
+                    QuizName = quizzes.QuizName,
+                    QuizThemeName = quizThemes.QuizThemeName,
+                    QuestionTypeName = questionTypes.QuestionTypeName,
+                    AnswerTypeName = answerTypes.AnswerTypeName,
+                }).ToList();
+
+            return result;     
         }
 
         #endregion

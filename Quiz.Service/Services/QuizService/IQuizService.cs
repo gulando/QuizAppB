@@ -20,6 +20,8 @@ namespace QuizService
 
         void DeleteQuiz(int quizID);
         
+        List<QuizSummary> GetQuizSummary(int quizID);
+        
         #endregion
         
         #region methods async
@@ -35,6 +37,6 @@ namespace QuizService
         Task DeleteQuizAsync(int quizID);
         
         #endregion
-        
+
     }
 }
