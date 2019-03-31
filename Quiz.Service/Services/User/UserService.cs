@@ -45,13 +45,7 @@ namespace QuizService
 
         public User GetUserByID(int userID)
         {
-            if (_memoryCache.TryGetValue(UserDefaults.UserByIdCacheKey, out User user) && user.ID == userID)
-            return user;
-
-            user = _userRepository.GetById(userID);
-            _memoryCache.Set(UserDefaults.UserByIdCacheKey, user);
-
-            return user;
+            return _userRepository.GetById(userID);
         }
 
         public void UpdateUser(User user)
@@ -95,13 +89,7 @@ namespace QuizService
 
         public async Task<User> GetUserByIDAsync(int userID)
         {
-            if (_memoryCache.TryGetValue(UserDefaults.UserByIdCacheKey, out User user)) 
-            return user;
-            
-            user = await _userRepository.GetByIdAsync(userID);
-            _memoryCache.Set(UserDefaults.UserByIdCacheKey, user);
-
-            return user;
+            return await _userRepository.GetByIdAsync(userID);
         }
 
         public async Task AddUserAsync(User user)

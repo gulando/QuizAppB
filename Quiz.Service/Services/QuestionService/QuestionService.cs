@@ -55,13 +55,7 @@ namespace QuizService
 
         public Question GetQuestionByID(int questionID)
         {
-            if (_memoryCache.TryGetValue(QuestionDefaults.QuestionyIdCacheKey, out Question question)) 
-                return question;
-
-            question = _questionRepository.GetById(questionID);
-            _memoryCache.Set(QuestionDefaults.QuestionyIdCacheKey, question);
-
-            return question;
+            return _questionRepository.GetById(questionID);
         }
 
         public List<QuestionSummary> GetQuestionSummary(int questionID = 0)
@@ -155,13 +149,7 @@ namespace QuizService
 
         public async Task<Question> GetQuestionByIDAsync(int questionID)
         {
-            if (_memoryCache.TryGetValue(QuestionDefaults.QuestionyIdCacheKey, out Question question)) 
-                return question;
-
-            question = await _questionRepository.GetByIdAsync(questionID);
-            _memoryCache.Set(QuestionDefaults.QuestionyIdCacheKey, question);
-
-            return question;
+            return await _questionRepository.GetByIdAsync(questionID);
         }
 
         public async Task AddQuestionAsync(Question question)

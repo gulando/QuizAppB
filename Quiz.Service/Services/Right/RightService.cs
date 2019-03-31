@@ -43,13 +43,7 @@ namespace QuizService
 
         public Right GetRightByID(int rightID)
         {
-            if (_memoryCache.TryGetValue(RightDefaults.RightByIdCacheKey, out Right right)) 
-                return right;
-            
-            right = _rightRepository.GetById(rightID);
-            _memoryCache.Set(RightDefaults.RightByIdCacheKey, right);
-
-            return right;
+            return _rightRepository.GetById(rightID);
         }
 
         public void UpdateRight(Right right)
@@ -93,13 +87,7 @@ namespace QuizService
 
         public async Task<Right> GetRightByIDAsync(int rightID)
         {
-            if (_memoryCache.TryGetValue(RightDefaults.RightByIdCacheKey, out Right right)) 
-                return right;
-            
-            right = await _rightRepository.GetByIdAsync(rightID);
-            _memoryCache.Set(RightDefaults.RightByIdCacheKey, right);
-
-            return right;
+            return await _rightRepository.GetByIdAsync(rightID);
         }
 
         public async Task AddRightAsync(Right right)

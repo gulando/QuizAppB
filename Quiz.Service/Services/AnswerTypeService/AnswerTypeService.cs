@@ -51,13 +51,7 @@ namespace QuizService
         
         public AnswerType GetAnswerTypeByID(int answerTypeID)
         {
-            if (_memoryCache.TryGetValue(AnswerTypeDefaults.AnswerTypeByIdCacheKey, out AnswerType answerType)) 
-                return answerType;
-
-            answerType = _answerTypeRepository.GetById(answerTypeID);
-            _memoryCache.Set(AnswerTypeDefaults.AnswerTypeByIdCacheKey, answerType);
-
-            return answerType;
+            return _answerTypeRepository.GetById(answerTypeID);
         }
 
         public void AddAnswerType(AnswerType answerType)
@@ -120,13 +114,7 @@ namespace QuizService
 
         public async Task<AnswerType> GetAnswerTypeByIDAsync(int answerTypeID)
         {
-            if (_memoryCache.TryGetValue(AnswerTypeDefaults.AnswerTypeByIdCacheKey, out AnswerType answerType)) 
-                return answerType;
-
-            answerType = await _answerTypeRepository.GetByIdAsync(answerTypeID);
-            _memoryCache.Set(AnswerTypeDefaults.AnswerTypeByIdCacheKey, answerType);
-
-            return answerType;
+            return await _answerTypeRepository.GetByIdAsync(answerTypeID);
         }
         
         public async Task<List<AnswerTypeSummary>> GetAnswerTypeSummaryAsync(int answerTypeID = 0)

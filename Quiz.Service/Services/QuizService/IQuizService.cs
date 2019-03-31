@@ -20,7 +20,7 @@ namespace QuizService
 
         void DeleteQuiz(int quizID);
         
-        List<QuizSummary> GetQuizSummary(int quizID);
+        List<QuizSummary> GetQuizSummary(int quizID, int questionTypeID);
         
         #endregion
         

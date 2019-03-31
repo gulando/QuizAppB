@@ -18,7 +18,7 @@
             url: '/Quiz/GetQuizSummary',
             type: "GET",
             dataType: "JSON",
-            data: { QuizID: quizID },
+            data: { QuizID: quizID, QuestionTypeID: 0 },
             success: function (response) {
                 console.log(response);
                 window.$.each(response, function (index, item) {

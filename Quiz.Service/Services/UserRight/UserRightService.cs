@@ -67,13 +67,7 @@ namespace QuizService
         
         public UserRight GetUserRightByID(int userRightID)
         {
-            if (_memoryCache.TryGetValue(UserRightDefaults.UserRightByIdCacheKey, out UserRight userRight)) 
-                return userRight;
-            
-            userRight = _userRightRepository.GetById(userRightID);
-            _memoryCache.Set(UserRightDefaults.UserRightByIdCacheKey, userRight);
-
-            return userRight;
+            return _userRightRepository.GetById(userRightID);
         }
 
         public void UpdateUserRight(UserRight userRight)
@@ -134,13 +128,7 @@ namespace QuizService
 
         public async Task<UserRight> GetUserRightByIDAsync(int userRightID)
         {
-            if (_memoryCache.TryGetValue(UserRightDefaults.UserRightByIdCacheKey, out UserRight userRight)) 
-                return userRight;
-            
-            userRight = await _userRightRepository.GetByIdAsync(userRightID);
-            _memoryCache.Set(UserRightDefaults.UserRightByIdCacheKey, userRight);
-
-            return userRight;
+            return await _userRightRepository.GetByIdAsync(userRightID);
         }
 
         public async Task AddUserRightAsync(UserRight userRight)

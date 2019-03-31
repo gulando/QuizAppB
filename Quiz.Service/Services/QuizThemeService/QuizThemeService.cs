@@ -63,13 +63,7 @@ namespace QuizService
         
         public QuizTheme GetQuizThemeByID(int quizThemeID)
         {
-            if (_memoryCache.TryGetValue(QuizThemeDefaults.QuizThemeIdCacheKey, out QuizTheme quizTheme)) 
-                return quizTheme;
-            
-            quizTheme = _quizThemeRepository.GetById(quizThemeID);
-            _memoryCache.Set(QuizThemeDefaults.QuizThemeIdCacheKey, quizTheme);
-
-            return quizTheme;
+            return _quizThemeRepository.GetById(quizThemeID);
         }
 
         public void UpdateQuizTheme(QuizTheme quizTheme)
@@ -129,13 +123,7 @@ namespace QuizService
 
         public async Task<QuizTheme> GetQuizThemeByIDAsync(int quizThemeID)
         {
-            if (_memoryCache.TryGetValue(QuizThemeDefaults.QuizThemeIdCacheKey, out QuizTheme quizTheme)) 
-                return quizTheme;
-            
-            quizTheme = await _quizThemeRepository.GetByIdAsync(quizThemeID);
-            _memoryCache.Set(QuizThemeDefaults.QuizThemeIdCacheKey, quizTheme);
-
-            return quizTheme;
+            return await _quizThemeRepository.GetByIdAsync(quizThemeID);
         }
 
         public async Task AddQuizThemeAsync(QuizTheme quizTheme)

@@ -50,13 +50,7 @@ namespace QuizService
 
         public RoleRight GetRoleRightByID(int roleRightID)
         {
-            if (_memoryCache.TryGetValue(RoleRightDefaults.RoleRightByIdCacheKey, out RoleRight roleRight)) 
-                return roleRight;
-            
-            roleRight = _roleRightRepository.GetById(roleRightID);
-            _memoryCache.Set(RoleRightDefaults.RoleRightByIdCacheKey, roleRight);
-
-            return roleRight;
+            return _roleRightRepository.GetById(roleRightID);
         }
 
         public void UpdateRoleRight(RoleRight roleRight)
@@ -134,13 +128,7 @@ namespace QuizService
 
         public async Task<RoleRight> GetRoleRightByIDAsync(int roleRightID)
         {
-            if (_memoryCache.TryGetValue(RoleRightDefaults.RoleRightByIdCacheKey, out RoleRight roleRight)) 
-                return roleRight;
-            
-            roleRight = await _roleRightRepository.GetByIdAsync(roleRightID);
-            _memoryCache.Set(RoleRightDefaults.RoleRightByIdCacheKey, roleRight);
-
-            return roleRight;
+            return await _roleRightRepository.GetByIdAsync(roleRightID);
         }
 
         public async Task AddRoleRightAsync(RoleRight roleRight)

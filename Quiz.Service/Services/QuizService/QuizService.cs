@@ -52,13 +52,7 @@ namespace QuizService
 
         public Quiz GetQuizByID(int quizID)
         {
-            if (_memoryCache.TryGetValue(QuizDefaults.QuizIdCacheKey, out Quiz quiz)) 
-                return quiz;
-            
-            quiz = _quizRepository.GetById(quizID);
-            _memoryCache.Set(QuizDefaults.QuizIdCacheKey, quiz);
-
-            return quiz;
+            return _quizRepository.GetById(quizID);
         }
 
         public void UpdateQuiz(Quiz quiz)
@@ -85,23 +79,24 @@ namespace QuizService
             _quizRepository.Delete(quizID);
         }
 
-        public List<QuizSummary> GetQuizSummary(int quizID)
+        public List<QuizSummary> GetQuizSummary(int quizID, int questionTypeID)
         {
             var result = (from quizzes in _quizRepository.Table
                 join quizThemes in _quizThemeRepository.Table on quizzes.ID equals quizThemes.QuizID
                 join questionTypes in _questionTypeRepository.Table on quizzes.ID equals questionTypes.QuizID
-                join answerTypes in _answerTypeRepository.Table on questionTypes.ID equals answerTypes.QuestionTypeID
-                where quizzes.ID == quizID || quizID == 0
+                join answerTypes in _answerTypeRepository.Table on questionTypes.ID equals answerTypes.QuestionTypeID into tmp
+                from answerTypes in tmp.DefaultIfEmpty()
+                where (quizzes.ID == quizID || quizID == 0) && (questionTypes.ID == questionTypeID || questionTypeID == 0)
                 select new QuizSummary 
                 {
                     ID = quizzes.ID,
                     QuizThemeID =  quizThemes.ID,
                     QuestionTypeID = questionTypes.ID,
-                    AnswerTypeID = answerTypes.ID,
+                    AnswerTypeID = answerTypes == null ? 0 : answerTypes.ID, 
                     QuizName = quizzes.QuizName,
                     QuizThemeName = quizThemes.QuizThemeName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
-                    AnswerTypeName = answerTypes.AnswerTypeName,
+                    AnswerTypeName = answerTypes == null ? "" : answerTypes.AnswerTypeName
                 }).ToList();
 
             return result;     
@@ -124,13 +119,7 @@ namespace QuizService
 
         public async Task<Quiz> GetQuizByIDAsync(int quizID)
         {
-            if (_memoryCache.TryGetValue(QuizDefaults.QuizIdCacheKey, out Quiz quiz)) 
-                return quiz;
-            
-            quiz = await _quizRepository.GetByIdAsync(quizID);
-            _memoryCache.Set(QuizDefaults.QuizIdCacheKey, quiz);
-
-            return quiz;
+            return await _quizRepository.GetByIdAsync(quizID);
         }
 
         public async Task AddQuizAsync(Quiz quiz)

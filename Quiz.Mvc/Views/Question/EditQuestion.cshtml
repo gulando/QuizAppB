@@ -11,13 +11,18 @@
 <script language="javascript" type="text/javascript">
  
     function quizNameChange() {
+        
         var quizID = window.$('#QuizName').val();
+        
         window.$("#QuestionTypeName").empty();
+        window.$("#QuizThemeName").empty();
+        window.$("#AnswerTypeName").empty();
+        
         window.$.ajax({
             url: '/Quiz/GetQuizSummary',
             type: "GET",
             dataType: "JSON",
-            data: { QuizID: quizID },
+            data: { QuizID: quizID, QuestionTypeID: 0 },
             success: function (response) {
                 console.log(response);
                 window.$.each(response, function (index, item) {
@@ -38,13 +43,45 @@
                         }));
                     }
                     
-                    
-                    
-                    
+                    if (window.$("#AnswerTypeName option:contains('" + item.answerTypeName + "')").length === 0)
+                    {
+                        window.$("#AnswerTypeName").append(window.$('<option/>', {
+                            value: item.answerTypeID,
+                            text: item.answerTypeName
+                        }));
+                    }
                     
                 });
             }
         });
+    }
+    
+    function questionTypeChange() {
+       
+        var quizID = window.$('#QuizName').val();
+        var questionTypeID = window.$('#QuestionTypeName').val();
+        
+        window.$("#AnswerTypeName").empty();
+        
+        window.$.ajax({
+            url: '/Quiz/GetQuizSummary',
+            type: "GET",
+            dataType: "JSON",
+            data: { QuizID: quizID, QuestionTypeID: questionTypeID },
+            success: function (response) {
+                console.log(response);
+                window.$.each(response, function (index, item) {
+                    if (window.$("#AnswerTypeName option:contains('" + item.answerTypeName + "')").length === 0) {
+                        window.$("#AnswerTypeName").append(window.$('<option/>',
+                            {
+                                value: item.answerTypeID,
+                                text: item.answerTypeName
+                            }));
+                    }
+                });
+            }
+        });
+        
     }
     
 </script>
@@ -54,7 +91,7 @@
 {
     <div class="form-group">
         <label>Quiz</label>
-        @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"), new { @class = "form-control", onchange="quizNameChange()", @id = "QuizName"})
+        @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"), new { @class = "form-control", @id = "QuizName", onchange="quizNameChange()"})
         
         <br/>
         
@@ -63,7 +100,7 @@
         <br/>
 
         <label>Question Type</label>
-        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), new { @class = "form-control", @id = "QuestionTypeName"})                
+        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), new { @class = "form-control", @id = "QuestionTypeName", onchange = "questionTypeChange()"})                
         <br/>
         
         <label>Answer Type</label>

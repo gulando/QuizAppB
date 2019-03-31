@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,11 @@ namespace QuizMvc.Controllers
         private readonly IAnswerTypeService _answerTypeService;
         private readonly IQuestionTypeService _questionTypeService;
         private readonly IMapper _mapper;
+        
+        private List<Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
+        private List<QuestionType> QuestionTypes => _questionTypeService.GetAllQuestionTypes().ToList();
+        private List<QuizTheme> QuizThemes => _quizThemeService.GetAllQuizThemes().ToList();
+        private List<AnswerType> AnswerTypes => _answerTypeService.GetAllAnswerTypes().ToList();
         
         #endregion
 
@@ -57,15 +63,14 @@ namespace QuizMvc.Controllers
         {
             ViewBag.CreateMode = false;
             
-            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
-            ViewData["QuizThemes"] = _quizThemeService.GetAllQuizThemes().ToList();
-            ViewData["AnswerTypes"] = _answerTypeService.GetAllAnswerTypes().ToList();
-            ViewData["QuestionTypes"] = _questionTypeService.GetAllQuestionTypes().ToList();
-
             var question = _questionService.GetQuestionSummary(id).First();
             var questionData = _mapper.Map<QuestionData>(question);
-            
-            
+
+            ViewData["Quizes"] = Quizzes;
+            ViewData["QuizThemes"] = QuizThemes.Where(quizTheme => quizTheme.QuizID == questionData.QuizID);
+            ViewData["QuestionTypes"] = QuestionTypes.Where(questionType => questionType.QuizID == questionData.QuizID);
+            ViewData["AnswerTypes"] = AnswerTypes.Where(answerType => answerType.QuestionTypeID == questionData.QuestionTypeID);
+
             return View("EditQuestion", questionData);
         }
 
@@ -80,10 +85,21 @@ namespace QuizMvc.Controllers
         {
             ViewBag.CreateMode = true;
             
-            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
-            ViewData["QuizThemes"] = _quizThemeService.GetAllQuizThemes().ToList();
-            ViewData["AnswerTypes"] = _answerTypeService.GetAllAnswerTypes().ToList();
-            ViewData["QuestionTypes"] = _questionTypeService.GetAllQuestionTypes().ToList();
+            var quizList = Quizzes;
+            quizList.Insert(0, new Quiz());
+            ViewData["Quizes"] = quizList;
+
+            var questionTypes = QuestionTypes;
+            questionTypes.Insert(0, new QuestionType());
+            ViewData["QuestionTypes"] = questionTypes;
+            
+            var quizThemesList = QuizThemes;
+            quizThemesList.Insert(0, new QuizTheme());
+            ViewData["QuizThemes"] = quizThemesList;
+
+            var answerTypes = AnswerTypes;
+            answerTypes.Insert(0, new AnswerType());
+            ViewData["AnswerTypes"] = answerTypes;
             
             return View("EditQuestion", new QuestionData());
         }

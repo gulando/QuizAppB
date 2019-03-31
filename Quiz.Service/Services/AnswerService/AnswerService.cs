@@ -49,13 +49,7 @@ namespace QuizService
         
         public Answer GetAnswerByID(int answerID)
         {
-            if (_memoryCache.TryGetValue(AnswerDefaults.AnswerByIdCacheKey, out Answer answer)) 
-                return answer;
-            
-            answer = _answerRepository.GetById(answerID);
-            _memoryCache.Set(AnswerDefaults.AnswerByIdCacheKey, answer);
-
-            return answer;
+            return _answerRepository.GetById(answerID);
         }
         
         public void AddAnswer(Answer answer)
@@ -119,13 +113,7 @@ namespace QuizService
         
         public async Task<Answer> GetAnswerByIDAsync(int answerID)
         {
-            if (_memoryCache.TryGetValue(AnswerDefaults.AnswerByIdCacheKey, out Answer answer)) 
-                return answer;
-            
-            answer = await _answerRepository.GetByIdAsync(answerID);
-            _memoryCache.Set(AnswerDefaults.AnswerByIdCacheKey, answer);
-
-            return answer;
+            return await _answerRepository.GetByIdAsync(answerID);
         }
         
         public async Task AddAnswerAsync(Answer answer)

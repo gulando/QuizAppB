@@ -65,13 +65,7 @@ namespace QuizService
         
         public QuestionType GetQuestionTypeByID(int questionTypeID)
         {
-            if (_memoryCache.TryGetValue(QuestionTypeDefaults.QuestionTypeIdCacheKey, out QuestionType questionType)) 
-                return questionType;
-
-            questionType = _questionTypesRepository.GetById(questionTypeID);
-            _memoryCache.Set(QuestionTypeDefaults.QuestionTypeIdCacheKey, questionType);
-
-            return questionType;
+            return _questionTypesRepository.GetById(questionTypeID);
         }
 
         public void UpdateQuestionType(QuestionType questionType)
@@ -132,13 +126,7 @@ namespace QuizService
 
         public async Task<QuestionType> GetQuestionTypeByIDAsync(int questionTypeID)
         {
-            if (_memoryCache.TryGetValue(QuestionTypeDefaults.QuestionTypeIdCacheKey, out QuestionType questionType)) 
-                return questionType;
-
-            questionType = await _questionTypesRepository.GetByIdAsync(questionTypeID);
-            _memoryCache.Set(QuestionTypeDefaults.QuestionTypeIdCacheKey, questionType);
-
-            return questionType;
+            return await _questionTypesRepository.GetByIdAsync(questionTypeID);
         }
 
         public async Task AddQuestionTypeAsync(QuestionType questionType)

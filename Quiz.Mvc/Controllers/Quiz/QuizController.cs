@@ -73,9 +73,9 @@ namespace QuizMvc.Controllers
         }
         
         [HttpGet]
-        public ActionResult GetQuizSummary(int quizID)
+        public ActionResult GetQuizSummary(int quizID, int questionTypeID)
         {
-            var quizSummary = _quizService.GetQuizSummary(quizID);
+            var quizSummary = _quizService.GetQuizSummary(quizID, questionTypeID);
             var quizData = _mapper.Map<List<QuizSummary>, List<Models.QuizData>>(quizSummary);
             
             return Json(quizData);

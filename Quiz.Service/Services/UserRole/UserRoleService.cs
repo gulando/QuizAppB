@@ -50,13 +50,7 @@ namespace QuizService
 
         public UserRole GetUserRoleByID(int userRoleID)
         {
-            if (_memoryCache.TryGetValue(UserRoleDefaults.UserRoleByIdCacheKey, out UserRole userRole)) 
-                return userRole;
-            
-            userRole = _userRoleRepository.GetById(userRoleID);
-            _memoryCache.Set(UserRoleDefaults.UserRoleByIdCacheKey, userRole);
-
-            return userRole;
+            return _userRoleRepository.GetById(userRoleID);
         }
 
         public void UpdateUserRole(UserRole userRole)
@@ -134,13 +128,7 @@ namespace QuizService
 
         public async Task<UserRole> GetUserRoleByIDAsync(int userRoleID)
         {
-            if (_memoryCache.TryGetValue(UserRoleDefaults.UserRoleByIdCacheKey, out UserRole userRole)) 
-                return userRole;
-            
-            userRole = await _userRoleRepository.GetByIdAsync(userRoleID);
-            _memoryCache.Set(UserRoleDefaults.UserRoleByIdCacheKey, userRole);
-
-            return userRole;
+            return await _userRoleRepository.GetByIdAsync(userRoleID);
         }
 
         public async Task AddUserRoleAsync(UserRole userRole)
