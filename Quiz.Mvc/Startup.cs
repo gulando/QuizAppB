@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
+using QuizMvc.Handlers.ImageHandler;
 using QuizMvc.Helpers;
 using QuizRepository;
 using QuizService;
+using QuizUtils.ImageWriter;
 
 
 namespace QuizMvc
@@ -97,10 +99,18 @@ namespace QuizMvc
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IUserRightService, UserRightService>();
             services.AddScoped<IRoleRightService, RoleRightService>();
+            services.AddScoped<IImageService, ImageService>();
             
             services.AddSingleton<ILogService, LogService>();
 
 
+            #endregion
+            
+            #region images
+            
+            services.AddTransient<IImageHandler, ImageHandler>();
+            services.AddTransient<IImageWriter, ImageWriter>();
+            
             #endregion
         }
 

@@ -97,6 +97,25 @@ namespace QuizRepository
             }
         }
 
+        public virtual int InsertGetID(TEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            try
+            {
+                Entities.Add(entity);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException exception)
+            {
+                //ensure that the detailed error text is saved in the Log
+                throw new Exception(GetFullErrorTextAndRollbackEntityChanges(exception), exception);
+            }
+
+            return entity.ID;
+        }
+
         public virtual void Insert(IEnumerable<TEntity> entities)
         {
             if (entities == null)

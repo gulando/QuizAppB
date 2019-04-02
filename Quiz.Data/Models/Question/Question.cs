@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -19,9 +20,10 @@ namespace QuizData
         
         [ForeignKey("QuestionType")]
         public int QuestionTypeID { get; set; }
-                
-        public byte[] QuestionImage { get; set; }
         
+        [ForeignKey("Image")]
+        public int ImageID { get; set; }
+                
         public string CorrectAnswer { get; set; }
     }
 

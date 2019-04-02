@@ -77,6 +77,7 @@ namespace QuizService
                     QuizThemeName = quizThemes.QuizThemeName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
                     AnswerTypeName = answerTypes.AnswerTypeName,
+                    ImageID = questions.ImageID,
                     CorrectAnswer = questions.CorrectAnswer
                 }).ToList();
 

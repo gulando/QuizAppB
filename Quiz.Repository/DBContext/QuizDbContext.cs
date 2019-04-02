@@ -56,6 +56,8 @@ namespace QuizRepository
         
         public DbSet<RoleRight> RoleRights { get; set; }
         
+        public DbSet<Image> Images { get; set; }
+        
         #endregion
     }
 }

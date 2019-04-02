@@ -87,7 +87,7 @@
 </script>
 
 
-@using (Html.BeginForm(ViewBag.CreateMode ? "Create" : "Edit", "Question"))
+@using (Html.BeginForm(ViewBag.CreateMode ? "Create" : "Edit", "Question", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="form-group">
         <label>Quiz</label>
@@ -107,13 +107,20 @@
         @Html.DropDownListFor(x => Model.AnswerTypeID, new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"), new { @class = "form-control", @id = "AnswerTypeName"})
         <br/>
 
-        <label for="file">Upload Image:</label> 
-        <input type="file" name="file" id="file" style="width: 100%;" /> 
-        
-        <br/><br/>
-        
         <label>Correct Answer</label>
         <input asp-for="CorrectAnswer" class="form-control"/>
+        
+        <input asp-for="ImageID" class="form-control" hidden="true"/>
+        
+        <br/>
+        <input type="file" name="file" />
+        
+        @if (Model.ImageID > 0)
+        {
+            <div>
+                <img src="@Url.Action("ViewImage", "Question", new {imageID = Model.ImageID})" />
+            </div>
+        }
     </div>
     
     <div class="text-center">

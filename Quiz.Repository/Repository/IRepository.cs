@@ -14,6 +14,8 @@ namespace QuizRepository
 
         void Insert(TEntity entity);
 
+        int InsertGetID(TEntity entity);
+
         void Insert(IEnumerable<TEntity> entities);
 
         void Update(TEntity entity);
