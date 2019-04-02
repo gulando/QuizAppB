@@ -20,15 +20,14 @@ namespace QuizData
         
         [ForeignKey("QuestionType")]
         public int QuestionTypeID { get; set; }
-        
-        [ForeignKey("Image")]
-        public int ImageID { get; set; }
-                
+                        
         public string CorrectAnswer { get; set; }
     }
 
     public class QuestionSummary : Question
     {
+        public int ImageID { get; set; } 
+        
         public string QuizName { get; set; }
         
         public string QuizThemeName { get; set; }

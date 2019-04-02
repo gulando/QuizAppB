@@ -42,6 +42,11 @@ namespace QuizService
             _imageRepository.Update(image);
         }
 
+        public void AddImage(Image image)
+        {
+            _imageRepository.Insert(image);
+        }
+
         public int InsertImageGetID(Image image)
         {
            return _imageRepository.InsertGetID(image);

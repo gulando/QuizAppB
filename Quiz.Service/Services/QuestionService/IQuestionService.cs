@@ -17,7 +17,7 @@ namespace QuizService
 
         void UpdateQuestion(Question question);
 
-        void AddQuestion(Question question);
+        int AddQuestion(Question question);
 
         void DeleteQuestion(int questionID);
         

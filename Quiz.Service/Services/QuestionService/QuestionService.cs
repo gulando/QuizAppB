@@ -18,6 +18,7 @@ namespace QuizService
         private readonly IRepository<QuizTheme> _quizThemeRepository;
         private readonly IRepository<AnswerType> _answerTypeRepository;
         private readonly IRepository<QuestionType> _questionTypesRepository;
+        private readonly IRepository<Image> _imageRepository;
         
         private readonly IMemoryCache _memoryCache;
 
@@ -27,13 +28,14 @@ namespace QuizService
 
         public QuestionService(IRepository<Quiz> quizRepository, IRepository<QuizTheme> quizThemeRepository,
             IRepository<AnswerType> answerTypeRepository, IRepository<QuestionType> questionTypesRepository,
-            IRepository<Question> questionRepository,IMemoryCache memoryCache)
+            IRepository<Question> questionRepository,IMemoryCache memoryCache, IRepository<Image> imageRepository)
         {
             _questionRepository = questionRepository;
             _quizRepository = quizRepository;
             _quizThemeRepository = quizThemeRepository;
             _answerTypeRepository = answerTypeRepository;
             _questionTypesRepository = questionTypesRepository;
+            _imageRepository = imageRepository;
             
             _memoryCache = memoryCache;
         }
@@ -65,6 +67,7 @@ namespace QuizService
                 join quizThemes in _quizThemeRepository.Table on questions.QuizThemeID equals quizThemes.ID
                 join answerTypes in _answerTypeRepository.Table on questions.AnswerTypeID equals answerTypes.ID
                 join questionTypes in _questionTypesRepository.Table on questions.QuestionTypeID equals questionTypes.ID
+                join images in _imageRepository.Table on questions.ID equals images.QuestionID
                 where questions.ID == questionID || questionID == 0
                 select new QuestionSummary 
                 {
@@ -77,7 +80,7 @@ namespace QuizService
                     QuizThemeName = quizThemes.QuizThemeName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
                     AnswerTypeName = answerTypes.AnswerTypeName,
-                    ImageID = questions.ImageID,
+                    ImageID = images.ID,
                     CorrectAnswer = questions.CorrectAnswer
                 }).ToList();
 
@@ -92,12 +95,12 @@ namespace QuizService
             _questionRepository.Update(question);
         }
 
-        public void AddQuestion(Question question)
+        public int AddQuestion(Question question)
         {
             _memoryCache.Remove(QuestionDefaults.QuestionAllCacheKey);
             _memoryCache.Remove(QuestionDefaults.QuestionyIdCacheKey);
             
-            _questionRepository.Insert(question);
+            return _questionRepository.InsertGetID(question);
         }
 
         public void DeleteQuestion(int questionID)

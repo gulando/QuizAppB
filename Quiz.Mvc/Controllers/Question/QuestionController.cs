@@ -89,14 +89,15 @@ namespace QuizMvc.Controllers
         {
             // _imageHandler.UploadImage(file, question.ImageID);
             
+            var questionID = _questionService.AddQuestion(question);
+            
             if (file != null)
             {
                 var image = CreateImage(file);
-                var imageID = _imageHandler.InsertImageGetID(image);
-                question.ImageID = imageID;
+                image.QuestionID = questionID;
+                _imageHandler.AddImage(image);
             }
                 
-            _questionService.AddQuestion(question);
             return RedirectToAction(nameof(Index));
         }
 
@@ -116,18 +117,21 @@ namespace QuizMvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Question question, IFormFile file)
+        public IActionResult Edit(QuestionData questionData, IFormFile file)
         {
             // _imageHandler.UploadImage(file, question.ImageID);
+            
+            var question = _mapper.Map<Question>(questionData);
+            _questionService.UpdateQuestion(question);
             
             if (file != null)
             {
                 var image = CreateImage(file);
-                var imageID = _imageHandler.InsertImageGetID(image);
-                question.ImageID = imageID;
+                image.ID = questionData.ImageID;
+                image.QuestionID = questionData.ID;
+                _imageHandler.UpdateImage(image);
             }
 
-            _questionService.UpdateQuestion(question);
             return RedirectToAction(nameof(Index));
         }
         

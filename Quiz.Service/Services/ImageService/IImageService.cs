@@ -14,6 +14,8 @@ namespace QuizService
 
         void UpdateImage(Image image);
 
+        void AddImage(Image image);
+        
         int InsertImageGetID(Image image);
 
         void DeleteImage(int imageID);

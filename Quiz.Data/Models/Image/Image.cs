@@ -9,6 +9,9 @@ namespace QuizData
         [Column("ImageID")]
         public override int ID { get; set; }
         
+        [ForeignKey("Question")]
+        public int QuestionID { get; set; }
+        
         public string Name { get; set; }
 
         public byte[] Data { get; set; }
