@@ -40,13 +40,6 @@ namespace QuizMvc.Controllers
             return View(questionTypes);
         }
 
-        [HttpPost]
-        public IActionResult Delete(int id)
-        {
-            _questionTypeService.DeleteQuestionType(id);
-            return RedirectToAction(nameof(Index));
-        }
-
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
@@ -61,6 +54,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Edit(QuestionType questionType)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             _questionTypeService.UpdateQuestionType(questionType);
             return RedirectToAction(nameof(Index));
         }
@@ -76,7 +72,17 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Create(QuestionType questionType)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             _questionTypeService.AddQuestionType(questionType);
+            return RedirectToAction(nameof(Index));
+        }
+        
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            _questionTypeService.DeleteQuestionType(id);
             return RedirectToAction(nameof(Index));
         }
         

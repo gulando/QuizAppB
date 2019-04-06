@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -10,6 +11,8 @@ namespace QuizData
         [Column("QuizID")]
         public override int ID { get; set; }
         
+        [Required]
+        [Display(Name = "Quiz Name")]
         public string QuizName { get; set; }
         
     }

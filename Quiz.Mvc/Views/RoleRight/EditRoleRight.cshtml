@@ -6,18 +6,31 @@
     Layout = "_Layout";
 }
 
+
+<script src="@Url.Content("~/Scripts/jquery.min.js")"></script>
+<script src="@Url.Content("~/lib/jquery-validation/dist/jquery.validate.js")"></script>
+<script src="@Url.Content("~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js")"></script>
+
+
 <form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
+    
     <div class="form-group">
-        <label for="sel1">Select Role Name</label>
-        <select class="form-control" asp-for="RoleID" asp-items="@(new SelectList((IEnumerable)ViewData["Roles"], "ID", "Name"))"></select>
-        
+
+        <div>@Html.ValidationMessageFor(x => x.RoleID, "", new {@class = "text-danger"})</div>
+        <label for="sel1">Role Name</label>
+        @Html.DropDownListFor(x => Model.RoleID, new SelectList((IEnumerable) ViewData["Roles"], "ID", "Name"), "--Select One--", new {@class = "form-control", @id = "RoleID"})
+
         <br/>
-        
+
+        <div>@Html.ValidationMessageFor(x => x.RightID, "", new {@class = "text-danger"})</div>
         <label for="sel1">Select Right Name</label>
-        <select class="form-control" asp-for="RightID" asp-items="@(new SelectList((IEnumerable)ViewData["Rights"], "ID", "Name"))"></select>
+        @Html.DropDownListFor(x => Model.RightID, new SelectList((IEnumerable) ViewData["Rights"], "ID", "Name"), "--Select One--", new {@class = "form-control", @id = "RightID"})
+        
     </div>
+    
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
     </div>
+    
 </form>

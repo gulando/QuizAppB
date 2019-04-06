@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -8,14 +9,19 @@ namespace QuizData
         [Column("UserID")]
         public override int ID { get; set; }
         
+        [Required]
         public string FirstName { get; set; }
         
+        [Required]
         public string LastName { get; set; }
         
+        [Required]
         public string Username { get; set; }
         
+        [Required]
         public byte[] PasswordHash { get; set; }
         
+        [Required]
         public byte[] PasswordSalt { get; set; }
         
         /// <summary>

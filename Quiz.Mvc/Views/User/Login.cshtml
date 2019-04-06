@@ -1,4 +1,4 @@
-@model QuizMvc.Models.UserData
+@model QuizMvc.Models.UserLoginData
 
 @{
     ViewBag.Title = "Log In";
@@ -7,13 +7,17 @@
 <div class="text-danger" asp-validation-summary="All"></div>
 
 <form asp-action="Login" asp-controller="User" method="post">
+    
     <div class="form-group">
+        
         <label asp-for="Username"></label>
         <div>
             <span asp-validation-for="Username" class="text-danger"></span>
         </div>
         <input asp-for="Username" class="form-control"/>
+        
     </div>
+    
     <div class="form-group">
         <label asp-for="Password"></label>
         <div>
@@ -21,5 +25,7 @@
         </div>
         <input asp-for="Password" class="form-control"/>
     </div>
+    
     <button class="btn btn-primary" type="submit">Log In</button>
+    
 </form>

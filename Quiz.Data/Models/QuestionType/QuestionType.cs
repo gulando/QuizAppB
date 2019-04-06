@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -8,9 +9,11 @@ namespace QuizData
         [Column("QuestionTypeID")]
         public override int ID { get; set; }
 
+        [Required]
         [ForeignKey("Quiz")]
         public int QuizID { get; set; }
         
+        [Required]
         public string QuestionTypeName { get; set; }
     }
 

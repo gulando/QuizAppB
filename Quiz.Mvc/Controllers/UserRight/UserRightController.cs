@@ -60,6 +60,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Edit(UserRightData userRightData)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             var userRight = _mapper.Map<UserRight>(userRightData);
             _userRightService.UpdateUserRight(userRight);
             
@@ -80,6 +83,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Create(UserRightData userRightData)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             var userRight = _mapper.Map<UserRight>(userRightData);
             _userRightService.AddUserRight(userRight);
             

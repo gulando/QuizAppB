@@ -8,6 +8,8 @@
 }
 
 <script src="@Url.Content("~/Scripts/jquery.min.js")"></script>
+<script src="@Url.Content("~/lib/jquery-validation/dist/jquery.validate.js")"></script>
+<script src="@Url.Content("~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js")"></script>
 
 <script language="javascript" type="text/javascript">
  
@@ -39,16 +41,23 @@
 @using (Html.BeginForm(ViewBag.CreateMode ? "Create" : "Edit", "AnswerType"))
 {
     <div class="form-group">
-        <label for="sel1">Quiz Name</label>  
-        @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"), new { @class = "form-control", onchange="quizNameChange()", @id = "QuizName"})
         
+        <div>@Html.ValidationMessageFor(x => x.QuizID, "", new { @class = "text-danger" })</div>
+        <label for="sel1">Quiz Name</label>
+        @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable) ViewData["Quizes"], "ID", "QuizName"), "--Select One--", new {@class = "form-control", onchange = "quizNameChange()", @id = "QuizName"})
+
         <br/>
+        
+        <div>@Html.ValidationMessageFor(x => x.QuestionTypeID, "", new { @class = "text-danger" })</div>
         <label for="sel1">Question Type Name</label>
-        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), new { @class = "form-control",   @id = "QuestionTypeName"})            
+        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable) ViewData["QuestionTypes"], "ID", "QuestionTypeName"), "--Select One--", new {@class = "form-control", @id = "QuestionTypeName"})
+
         <br/>
 
+        <div><span asp-validation-for="AnswerTypeName" class="text-danger"></span></div>
         <label for="sel1">Answer Type Name</label>
         <input asp-for="AnswerTypeName" class="form-control"/>
+        
     </div>
     
     <div class="text-center">

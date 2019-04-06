@@ -5,19 +5,24 @@
     ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
     Layout = "_Layout";
 }
+
+<script src="@Url.Content("~/Scripts/jquery.min.js")"></script>
+<script src="@Url.Content("~/lib/jquery-validation/dist/jquery.validate.js")"></script>
+<script src="@Url.Content("~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js")"></script>
+
+<form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
+   <div class="form-group">
+       <label for="sel1">Quiz Name</label>
+       <select class="form-control" asp-for="QuizID" asp-items="@(new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"))"></select>
        
-       <form asp-action="@(ViewBag.CreateMode ? "Create" : "Edit")" method="post">
-           <div class="form-group">
-               <label for="sel1">Quiz Name</label>
-               <select class="form-control" asp-for="QuizID" asp-items="@(new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"))"></select>
-               
-               <br/>
-               
-               <label for="sel2">Quiz Theme</label>
-               <input asp-for="QuizThemeName" class="form-control" />
-           </div>
-           <div class="text-center">
-               <button class="btn btn-primary" type="submit">Save</button>
-               <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-           </div>
-       </form>
+       <br/>
+       
+       <div><span asp-validation-for="QuizThemeName" class="text-danger"></span></div>
+       <label for="sel2">Quiz Theme</label>
+       <input asp-for="QuizThemeName" class="form-control" />
+   </div>
+   <div class="text-center">
+       <button class="btn btn-primary" type="submit">Save</button>
+       <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+   </div>
+</form>

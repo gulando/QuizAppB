@@ -65,21 +65,10 @@ namespace QuizMvc.Controllers
         {
             ViewBag.CreateMode = true;
             
-            var quizList = Quizzes;
-            quizList.Insert(0, new Quiz());
-            ViewData["Quizes"] = quizList;
-
-            var questionTypes = QuestionTypes;
-            questionTypes.Insert(0, new QuestionType());
-            ViewData["QuestionTypes"] = questionTypes;
-            
-            var quizThemesList = QuizThemes;
-            quizThemesList.Insert(0, new QuizTheme());
-            ViewData["QuizThemes"] = quizThemesList;
-
-            var answerTypes = AnswerTypes;
-            answerTypes.Insert(0, new AnswerType());
-            ViewData["AnswerTypes"] = answerTypes;
+            ViewData["Quizes"] = Quizzes;
+            ViewData["QuestionTypes"] = QuestionTypes;
+            ViewData["QuizThemes"] = QuizThemes;
+            ViewData["AnswerTypes"] = AnswerTypes;
             
             return View("EditQuestion", new QuestionData());
         }
@@ -87,8 +76,10 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Create(Question question, IFormFile file)
         {
-            // _imageHandler.UploadImage(file, question.ImageID);
+            if (!ModelState.IsValid)
+                return null;
             
+            // _imageHandler.UploadImage(file, question.ImageID);
             var questionID = _questionService.AddQuestion(question);
             
             if (file != null)
@@ -119,6 +110,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Edit(QuestionData questionData, IFormFile file)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             // _imageHandler.UploadImage(file, question.ImageID);
             
             var question = _mapper.Map<Question>(questionData);

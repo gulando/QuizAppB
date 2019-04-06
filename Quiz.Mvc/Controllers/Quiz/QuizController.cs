@@ -36,16 +36,17 @@ namespace QuizMvc.Controllers
         {
             var quizes = _quizService.GetAllQuizes();
             return View(quizes);
-
         }
 
-        [HttpPost]
-        public IActionResult Delete(int id)
+        [HttpGet]
+        public ActionResult GetQuizSummary(int quizID, int questionTypeID)
         {
-            _quizService.DeleteQuiz(id);
-            return RedirectToAction(nameof(Index));
+            var quizSummary = _quizService.GetQuizSummary(quizID, questionTypeID);
+            var quizData = _mapper.Map<List<QuizSummary>, List<Models.QuizData>>(quizSummary);
+            
+            return Json(quizData);
         }
-
+        
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
@@ -55,6 +56,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Edit(Quiz quiz)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             _quizService.UpdateQuiz(quiz);
             return RedirectToAction(nameof(Index));
         }
@@ -68,17 +72,18 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Create(Quiz quiz)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             _quizService.AddQuiz(quiz);
             return RedirectToAction(nameof(Index));
         }
         
-        [HttpGet]
-        public ActionResult GetQuizSummary(int quizID, int questionTypeID)
+        [HttpPost]
+        public IActionResult Delete(int id)
         {
-            var quizSummary = _quizService.GetQuizSummary(quizID, questionTypeID);
-            var quizData = _mapper.Map<List<QuizSummary>, List<Models.QuizData>>(quizSummary);
-            
-            return Json(quizData);
+            _quizService.DeleteQuiz(id);
+            return RedirectToAction(nameof(Index));
         }
         
         #endregion

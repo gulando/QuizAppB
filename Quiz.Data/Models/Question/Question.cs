@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -9,18 +10,23 @@ namespace QuizData
         [Column("QuestionID")]
         public override int ID { get; set; }
 
+        [Required]
         [ForeignKey("Quiz")]
         public int QuizID { get; set; }
         
+        [Required]
         [ForeignKey("QuizTheme")]
         public int QuizThemeID { get; set; }
         
+        [Required]
         [ForeignKey("AnswerType")]
         public int AnswerTypeID { get; set; }
         
+        [Required]
         [ForeignKey("QuestionType")]
         public int QuestionTypeID { get; set; }
-                        
+               
+        [Required]         
         public string CorrectAnswer { get; set; }
     }
 

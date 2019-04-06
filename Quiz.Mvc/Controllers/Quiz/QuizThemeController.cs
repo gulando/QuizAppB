@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using QuizData;
 using QuizMvc.Models;
 
 
-namespace QuizApi.Controllers
+namespace QuizMvc.Controllers
 {
     [Authorize]
     public class QuizThemeController : Controller
@@ -17,6 +18,8 @@ namespace QuizApi.Controllers
         private readonly IQuizThemeService _quizThemeService;
         private readonly IQuizService _quizService;
         private readonly IMapper _mapper;
+        
+        private List<Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
         
         #endregion
 
@@ -39,38 +42,27 @@ namespace QuizApi.Controllers
             return View(quizThemes);
         }
         
-        [HttpPost]
-        public IActionResult Delete(int id)
-        {
-            _quizThemeService.DeleteQuizTheme(id);
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        public IActionResult Edit(QuizTheme quizTheme)
-        {
-            _quizThemeService.UpdateQuizTheme(quizTheme);
-            return RedirectToAction(nameof(Index));
-        }
-        
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            ViewData["Quizes"] = _quizService.GetAllQuizes().ToList();
+            ViewData["Quizes"] = Quizzes;
 
             var quizTheme = _quizThemeService.GetQuizThemeSummary(id).First();
             var quizThemeData = _mapper.Map<QuizThemeData>(quizTheme);
             
             return View("EditQuizTheme", quizThemeData);
         }
-
+        
         [HttpPost]
-        public IActionResult Create(QuizTheme quizTheme)
+        public IActionResult Edit(QuizTheme quizTheme)
         {
-            _quizThemeService.AddQuizTheme(quizTheme);
+            if (!ModelState.IsValid)
+                return null;
+            
+            _quizThemeService.UpdateQuizTheme(quizTheme);
             return RedirectToAction(nameof(Index));
         }
-
+        
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
@@ -79,7 +71,23 @@ namespace QuizApi.Controllers
             return View("EditQuizTheme", new QuizThemeData());
         }
         
-        #endregion
+        [HttpPost]
+        public IActionResult Create(QuizTheme quizTheme)
+        {
+            if (!ModelState.IsValid)
+                return null;
+            
+            _quizThemeService.AddQuizTheme(quizTheme);
+            return RedirectToAction(nameof(Index));
+        }
 
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            _quizThemeService.DeleteQuizTheme(id);
+            return RedirectToAction(nameof(Index));
+        }
+        
+        #endregion
     }
 }

@@ -1,27 +1,39 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace QuizApi.Models
 {
     public class QuestionData
     {
         public int ID { get; set; }
         
+        [Required]
+        [Display(Name = "Quiz Name")]
         public int QuizID { get; set; }
+        
+        [Required]
+        [Display(Name = "Quiz Theme Name")]
+        public int QuizThemeID { get; set; }
+        
+        [Required]
+        [Display(Name = "Answer Type")]
+        public int AnswerTypeID { get; set; }
+        
+        [Required]
+        [Display(Name = "Question Type")]
+        public int QuestionTypeID { get; set; }
+        
+        public int ImageID { get; set; }
         
         public string QuizName { get; set; }
         
-        public int QuizThemeID { get; set; }
-        
         public string QuizThemeName { get; set; }
-        
-        public int AnswerTypeID { get; set; }
-        
-        public string AnswerTypeName { get; set; }
-        
-        public int QuestionTypeID { get; set; }
         
         public string QuestionTypeName { get; set; }
         
-        public byte[] QuestionImage { get; set; }
-        
+        public string AnswerTypeName { get; set; }
+      
+        [Required]
+        [Display(Name = "Correct Answer")]
         public string CorrectAnswer { get; set; }
     }
 }

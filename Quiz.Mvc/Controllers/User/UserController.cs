@@ -60,6 +60,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(UserData userData)
         {
+            if (!ModelState.IsValid)
+                return null;
+                
             var user = _mapper.Map<User>(userData);
             await _userService.Update(user, userData.Password);
             return RedirectToAction(nameof(Index));
@@ -74,6 +77,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(UserData userData)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             var user = _mapper.Map<User>(userData);
             await _userService.Create(user,userData.Password);
             return RedirectToAction(nameof(Index));
@@ -99,7 +105,7 @@ namespace QuizMvc.Controllers
         
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login(UserData userData)
+        public async Task<IActionResult> Login(UserLoginData userData)
         {
             if (!ModelState.IsValid) return View(userData);
             

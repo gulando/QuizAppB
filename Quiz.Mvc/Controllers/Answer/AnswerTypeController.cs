@@ -43,14 +43,6 @@ namespace QuizMvc.Controllers
         {
             var answerTypes = _answerTypeService.GetAnswerTypeSummary();
             return View(answerTypes);
-
-        }
-
-        [HttpPost]
-        public IActionResult Delete(int id)
-        {
-            _answerTypeService.DeleteAnswerType(id);
-            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Edit(int id)
@@ -69,6 +61,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Edit(AnswerType answerType)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             _answerTypeService.UpdateAnswerType(answerType);
             return RedirectToAction(nameof(Index));
         }
@@ -77,13 +72,8 @@ namespace QuizMvc.Controllers
         {
             ViewBag.CreateMode = true;
 
-            var quizList = Quizzes;
-            quizList.Insert(0, new Quiz());
-            ViewData["Quizes"] = quizList;
-
-            var questionTypes = QuestionTypes;
-            questionTypes.Insert(0, new QuestionType());
-            ViewData["QuestionTypes"] = questionTypes;
+            ViewData["Quizes"] = Quizzes;
+            ViewData["QuestionTypes"] = QuestionTypes;
             
             return View("EditAnswerType", new AnswerTypeData());
         }
@@ -91,7 +81,17 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Create(AnswerType answerType)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             _answerTypeService.AddAnswerType(answerType);
+            return RedirectToAction(nameof(Index));
+        }
+        
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            _answerTypeService.DeleteAnswerType(id);
             return RedirectToAction(nameof(Index));
         }
         

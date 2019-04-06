@@ -20,6 +20,9 @@ namespace QuizMvc.Controllers
         private readonly IAnswerTypeService _answerTypeService;
         private readonly IMapper _mapper;
 
+        private List<Question> Questions => _questionService.GetAllQuestions().ToList(); 
+        private List<AnswerType> AnswerTypes => _answerTypeService.GetAllAnswerTypes().ToList();
+        
         #endregion
 
         #region ctor
@@ -47,8 +50,8 @@ namespace QuizMvc.Controllers
         public IActionResult Edit(int id)
         {
             ViewBag.CreateMode = false;
-            ViewData["Questions"] = _questionService.GetAllQuestions().ToList();;
-            ViewData["AnswerTypes"] = _answerTypeService.GetAllAnswerTypes().ToList();
+            ViewData["Questions"] = Questions;
+            ViewData["AnswerTypes"] = AnswerTypes;
             
             var answerSummary = _answerService.GetAnswerSummary(id).First();
             var answerData = _mapper.Map<AnswerData>(answerSummary);
@@ -59,6 +62,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Edit(AnswerData answerData)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             var answer = _mapper.Map<Answer>(answerData);
             _answerService.UpdateAnswer(answer);
             
@@ -68,8 +74,8 @@ namespace QuizMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            ViewData["Questions"] = _questionService.GetAllQuestions().ToList();;
-            ViewData["AnswerTypes"] = _answerTypeService.GetAllAnswerTypes().ToList();
+            ViewData["Questions"] = Questions;
+            ViewData["AnswerTypes"] = AnswerTypes;
             
             return View("EditAnswer", new AnswerData());
         }

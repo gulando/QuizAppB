@@ -60,6 +60,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Edit(RoleRightData roleRightData)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             var roleRight = _mapper.Map<RoleRight>(roleRightData);
             _roleRightService.UpdateRoleRight(roleRight);
             
@@ -80,6 +83,9 @@ namespace QuizMvc.Controllers
         [HttpPost]
         public IActionResult Create(RoleRightData roleRightData)
         {
+            if (!ModelState.IsValid)
+                return null;
+            
             var roleRight = _mapper.Map<RoleRight>(roleRightData);
             _roleRightService.AddRoleRight(roleRight);
             

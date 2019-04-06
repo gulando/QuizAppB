@@ -14,6 +14,9 @@ namespace QuizApi.Helpers
             CreateMap<User, UserData>();
             CreateMap<UserData, User>();
             
+            CreateMap<User, UserLoginData>();
+            CreateMap<UserLoginData, User>();
+            
             CreateMap<UserRoleData, UserRoleSummary>();
             CreateMap<UserRoleSummary, UserRoleData>();
             
