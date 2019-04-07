@@ -1,0 +1,16 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/Quiz.Api
+/Quiz.Data
+/Quiz.Service
+/Quiz.Mvc
+/Quiz.Repository
+/Quiz.Utils/bin/Debug/netcoreapp2.1
+/Quiz.Utils/obj/Debug/netcoreapp2.1
+/Quiz.Utils/obj
+/Quiz.Tests/bin/Debug/netcoreapp2.1
+/Quiz.Tests/obj/Debug/netcoreapp2.1
+/Quiz.Tests/obj
