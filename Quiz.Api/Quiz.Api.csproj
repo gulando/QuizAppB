@@ -35,4 +35,8 @@
       <Content Remove="Log\**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Controllers\Account\" />
+    </ItemGroup>
+
 </Project>

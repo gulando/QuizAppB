@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace QuizData
@@ -29,5 +30,10 @@ namespace QuizData
         // we will use Quiz.Api and for that we already have correct(JWT).
         /// </summary>
         public string Password { get; set; }
+    }
+
+    public class AppUser : IdentityUser
+    {
+
     }
 }

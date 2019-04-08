@@ -43,12 +43,20 @@ namespace QuizApi
             #region database
 
             var conString = Configuration["ConnectionStrings:DefaultConnection"];
-            //services.AddDbContext<QuizDBContext>(options => options.UseSqlServer(conString));
             services.AddScoped<IDbContext>(provider => provider.GetService<QuizDBContext>())
                 .AddDbContext<QuizDBContext>(options => options.UseSqlServer(conString));
 
+            var identityConString = Configuration["ConnectionStrings:IdentityConnection"];
+
+            services.AddScoped<IIdentityDBContext>(provider => provider.GetService<QuizIdentityDBContext>())
+                .AddDbContext<QuizIdentityDBContext>(options =>
+                    options.UseSqlServer(identityConString, b => b.MigrationsAssembly("Quiz.Api")));
+
+            //services.AddDbContext<QuizDBContext>(options => options.UseSqlServer(conString));
+            //.AddDbContext<QuizDBContext>(options => options.UseSqlServer(conString));
+
             #endregion
-            
+
             #region mapping
 
             services.AddAutoMapper();
