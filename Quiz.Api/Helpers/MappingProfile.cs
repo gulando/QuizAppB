@@ -13,7 +13,9 @@ namespace QuizApi.Helpers
             // Add as many of these lines as you need to map your objects
             CreateMap<User, UserData>();
             CreateMap<UserData, User>();
-            
+
+            CreateMap<UserData, AppUser>().ForMember(au => au.UserName, map => map.MapFrom(vm => vm.Username));
+
             CreateMap<User, UserLoginData>();
             CreateMap<UserLoginData, User>();
             
