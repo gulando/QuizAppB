@@ -114,11 +114,22 @@ namespace QuizMvc
             #endregion
         }
 
-        public void Configure(IApplicationBuilder app, ILogService logger)
+        public void Configure(IApplicationBuilder app, ILogService logger, IHostingEnvironment env)
         {
-            //Custom Exception Handling.
-            app.ConfigureExceptionHandler(logger);
-            
+            if (env.IsDevelopment())
+            {
+                //Standard Exception Handling
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+            }
+            else
+            {
+                //Custom Exception Handling.
+                app.ConfigureExceptionHandler(logger);
+
+                app.UseExceptionHandler("/Error");
+            }
+
             app.UseStatusCodePages();
             app.UseStaticFiles();
             app.UseAuthentication();

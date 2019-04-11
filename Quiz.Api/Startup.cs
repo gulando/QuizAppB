@@ -8,6 +8,7 @@ using QuizRepository;
 using QuizService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using NLog;
@@ -190,10 +191,19 @@ namespace QuizApi
             
         }
 
-        public void Configure(IApplicationBuilder app, ILogService logger)
-        {    
-            //Custom Exception Handling.
-            app.ConfigureExceptionHandler(logger);
+        public void Configure(IApplicationBuilder app, ILogService logger, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                //Standard Exception Handling
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+            }
+            else
+            {
+                //Custom Exception Handling.
+                app.ConfigureExceptionHandler(logger);
+            }
             
             app.UseStatusCodePages();
             app.UseStaticFiles();
