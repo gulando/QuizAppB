@@ -121,12 +121,12 @@ namespace QuizMvc
                 //Standard Exception Handling
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+
+                //Custom Exception Handling.
+                //app.ConfigureExceptionHandler(logger);
             }
             else
             {
-                //Custom Exception Handling.
-                app.ConfigureExceptionHandler(logger);
-
                 app.UseExceptionHandler("/Error");
             }
 
