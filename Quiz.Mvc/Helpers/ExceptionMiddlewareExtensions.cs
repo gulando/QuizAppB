@@ -19,21 +19,19 @@ namespace QuizMvc.Helpers
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     context.Response.ContentType = "application/json";
- 
+
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    
-                    if(contextFeature != null)
-                    { 
+
+                    #region logError
+
+                    if (contextFeature != null)
+                    {
                         logger.LogError($"Something went wrong: {contextFeature.Error}");
- 
-                        await context.Response.WriteAsync(new ErrorDetails()
-                        {
-                            StatusCode = context.Response.StatusCode,
-                            Message = contextFeature.Error.Message
-                        }.ToString());
                     }
 
-                    #region log exception
+                    #endregion
+
+                    #region log to ExceptionLess
 
                     app.UseExceptionless("jWD5J6z5bAhRROVzXQYETeaqvg6yMtOnyh1JqFhi");
                     if (contextFeature != null)
@@ -43,9 +41,23 @@ namespace QuizMvc.Helpers
                     }
 
                     #endregion
-                    
+
+                    #region Redirect to Error Page
+
+                    context.Response.Redirect("/Error");
+
+                    #endregion
                 });
             });
+
         }
     }
 }
+
+
+
+//await context.Response.WriteAsync(new ErrorDetails()
+//{
+//    StatusCode = context.Response.StatusCode,
+//    Message = contextFeature.Error.Message
+//}.ToString());

@@ -19,7 +19,9 @@ namespace QuizApi.Helpers
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     context.Response.ContentType = "application/json";
- 
+
+                    #region Log Exception
+
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                     if(contextFeature != null)
                     {
@@ -31,13 +33,18 @@ namespace QuizApi.Helpers
                             Message = contextFeature.Error.Message
                         }.ToString());
                     }
-                    
-                    #region log exception
+
+                    #endregion
+
+                    #region log to ExceptionLess
 
                     app.UseExceptionless("jWD5J6z5bAhRROVzXQYETeaqvg6yMtOnyh1JqFhi");
-                    var exceptionLess = contextFeature.Error.ToExceptionless();
-                    exceptionLess.Submit();
-                    
+                    if (contextFeature != null)
+                    {
+                        var exceptionLess = contextFeature.Error.ToExceptionless();
+                        exceptionLess.Submit();
+                    }
+
                     #endregion
                     
                 });
