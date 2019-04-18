@@ -16,7 +16,7 @@ namespace QuizData
         [ForeignKey("Quiz")]
         public int QuizID { get; set; }
 
-        public Quiz Quiz { get; set; }
+        //public Quiz Quiz { get; set; }
     }
 
     public class QuizThemeSummary : QuizTheme

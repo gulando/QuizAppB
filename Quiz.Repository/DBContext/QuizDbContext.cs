@@ -68,7 +68,7 @@ namespace QuizRepository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Quiz>().HasMany(p => p.QuizThemes).WithOne(p => p.Quiz).IsRequired();
+            //modelBuilder.Entity<Quiz>().HasMany(p => p.QuizThemes).WithOne(p => p.Quiz).IsRequired();
         }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

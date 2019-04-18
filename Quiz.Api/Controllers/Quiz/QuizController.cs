@@ -85,10 +85,10 @@ namespace QuizApi.Controllers
         #region other
 
         [Produces("application/json")]
-        [ActionName("GetAllQuizesEF")]
+        [ActionName("GetAllQuizzesWithChild")]
         public JsonResult GetQuizzes()
         {
-            var quiz = _quizService.GetAllQuizesEF();
+            var quiz = _quizService.GetAllQuizzesWithChild();
             if (quiz != null)
                 return Json(quiz);
 
