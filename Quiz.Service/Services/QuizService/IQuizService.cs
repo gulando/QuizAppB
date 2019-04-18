@@ -35,7 +35,13 @@ namespace QuizService
         Task UpdateQuizAsync(Quiz quiz);
 
         Task DeleteQuizAsync(int quizID);
-        
+
+        #endregion
+
+        #region other 
+
+        List<Quiz> GetAllQuizesEF();
+
         #endregion
 
     }

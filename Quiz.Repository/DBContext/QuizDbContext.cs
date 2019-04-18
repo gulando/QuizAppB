@@ -30,10 +30,12 @@ namespace QuizRepository
             return base.SaveChangesAsync();
         }
 
+
+
         #endregion
-        
+
         #region tables
-        
+
         public DbSet<Quiz> Quizes { get; set; }
         
         public DbSet<Question> Questions { get; set; }
@@ -59,7 +61,21 @@ namespace QuizRepository
         public DbSet<RoleRight> RoleRights { get; set; }
         
         public DbSet<Image> Images { get; set; }
-        
+
+        #endregion
+
+        #region override
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Quiz>().HasMany(p => p.QuizThemes).WithOne(p => p.Quiz).IsRequired();
+        }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
+        //}
+
         #endregion
     }
 }

@@ -79,8 +79,22 @@ namespace QuizApi.Controllers
             await _quizService.DeleteQuizAsync(quizID);
             return new JsonResult(null);
         }
-        
+
         #endregion
-        
+
+        #region other
+
+        [Produces("application/json")]
+        [ActionName("GetAllQuizesEF")]
+        public JsonResult GetQuizzes()
+        {
+            var quiz = _quizService.GetAllQuizesEF();
+            if (quiz != null)
+                return Json(quiz);
+
+            return new JsonResult(null);
+        }
+
+        #endregion
     }
 }

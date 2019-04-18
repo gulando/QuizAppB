@@ -14,7 +14,9 @@ namespace QuizData
         [Required]
         [Display(Name = "Quiz Name")]
         public string QuizName { get; set; }
-        
+
+        public ICollection<QuizTheme> QuizThemes { get; set; }
+
     }
 
     public class QuizSummary : Quiz

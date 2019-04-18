@@ -10,11 +10,13 @@ namespace QuizData
         public override int ID { get; set; }
 
         [Required]
+        public string QuizThemeName { get; set; }
+
+        [Required]
         [ForeignKey("Quiz")]
         public int QuizID { get; set; }
-        
-        [Required]
-        public string QuizThemeName { get; set; }
+
+        public Quiz Quiz { get; set; }
     }
 
     public class QuizThemeSummary : QuizTheme

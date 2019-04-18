@@ -147,5 +147,15 @@ namespace QuizService
         }
 
         #endregion
+
+        #region other
+
+        public List<Quiz> GetAllQuizesEF()
+        {
+            var quizzes = _quizRepository.Table.Include(p => p.QuizThemes).ToList();
+            return quizzes;
+        }
+
+        #endregion
     }
 }
