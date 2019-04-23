@@ -23,7 +23,8 @@ namespace QuizApi.Models
         public int QuestionTypeID { get; set; }
         
         public int ImageID { get; set; }
-        
+        public byte[] ImageData { get; set; }
+
         public string QuizName { get; set; }
         
         public string QuizThemeName { get; set; }

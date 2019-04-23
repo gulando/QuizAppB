@@ -54,7 +54,7 @@ namespace QuizMvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Quiz quiz)
+        public IActionResult Edit(QuizData.Quiz quiz)
         {
             if (!ModelState.IsValid)
                 return null;
@@ -66,11 +66,11 @@ namespace QuizMvc.Controllers
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
-            return View("EditQuiz", new Quiz());
+            return View("EditQuiz", new QuizData.Quiz());
         }
         
         [HttpPost]
-        public IActionResult Create(Quiz quiz)
+        public IActionResult Create(QuizData.Quiz quiz)
         {
             if (!ModelState.IsValid)
                 return null;

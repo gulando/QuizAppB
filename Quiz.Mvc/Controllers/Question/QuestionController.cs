@@ -29,7 +29,7 @@ namespace QuizMvc.Controllers
         private readonly IMapper _mapper;
         private readonly IImageService _imageHandler;
         
-        private List<Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
+        private List<QuizData.Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
         private List<QuestionType> QuestionTypes => _questionTypeService.GetAllQuestionTypes().ToList();
         private List<QuizTheme> QuizThemes => _quizThemeService.GetAllQuizThemes().ToList();
         private List<AnswerType> AnswerTypes => _answerTypeService.GetAllAnswerTypes().ToList();

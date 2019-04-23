@@ -41,5 +41,6 @@ namespace QuizData
         public string QuestionTypeName { get; set; }
         
         public string AnswerTypeName { get; set; }
+        public byte[] ImageData { get; set; }
     }
 }

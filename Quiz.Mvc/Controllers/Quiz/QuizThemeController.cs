@@ -19,7 +19,7 @@ namespace QuizMvc.Controllers
         private readonly IQuizService _quizService;
         private readonly IMapper _mapper;
         
-        private List<Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
+        private List<QuizData.Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
         
         #endregion
 

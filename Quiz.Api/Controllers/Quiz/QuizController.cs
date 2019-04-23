@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -39,8 +40,11 @@ namespace QuizApi.Controllers
         {
             var quiz = await _quizService.GetQuizByIDAsync(quizID);
             if (quiz != null)
-                return Json(quiz);
-            
+            {
+                var quizData = _mapper.Map<Models.Quiz.QuizData>(quiz);
+                return Json(quizData);
+            }
+                
             return new JsonResult(null);
         }
 
@@ -51,25 +55,32 @@ namespace QuizApi.Controllers
         {
             var quizList = await _quizService.GetAllQuizesAsync();
             if (quizList != null && quizList.Count > 0)
-                return Json(quizList);
-            
+            {
+                var quizListData = _mapper.Map<List<Quiz>, List<Models.Quiz.QuizData>>(quizList);
+                return Json(quizListData);
+            }
+                
             return new JsonResult(null);
         }
 
         [HttpPost]
         [ActionName("AddQuiz")]
-        public async Task<JsonResult> AddQuiz([FromBody] Quiz quiz)
+        public async Task<JsonResult> AddQuiz([FromBody] Models.Quiz.QuizData quizData)
         {
+            var quiz = _mapper.Map<Quiz>(quizData);
             await _quizService.AddQuizAsync(quiz);
-            return new JsonResult(null);
+
+            return new JsonResult("Quiz Added successfully");
         }
 
         [HttpPut("{quizID}")]
         [ActionName("UpdateQuiz")]
-        public async Task<JsonResult> UpdateQuiz(int quizID, [FromBody] Quiz quiz)
+        public async Task<JsonResult> UpdateQuiz([FromBody] Models.Quiz.QuizData quizData)
         {
+            var quiz = _mapper.Map<Quiz>(quizData);
             await _quizService.UpdateQuizAsync(quiz);
-            return new JsonResult(null);
+
+            return new JsonResult("Quiz Updated successfully");
         }
         
         [HttpDelete("{quizID}")]
@@ -77,7 +88,8 @@ namespace QuizApi.Controllers
         public async Task<JsonResult> DeleteQuiz(int quizID)
         {
             await _quizService.DeleteQuizAsync(quizID);
-            return new JsonResult(null);
+
+            return new JsonResult("Quiz Deleted successfully");
         }
 
         #endregion
@@ -85,13 +97,16 @@ namespace QuizApi.Controllers
         #region other
 
         [Produces("application/json")]
-        [ActionName("GetAllQuizesEF")]
-        public JsonResult GetQuizzes()
+        [ActionName("GetAllQuizesWithChild")]
+        public JsonResult GetAllQuizesWithChild()
         {
-            var quiz = _quizService.GetAllQuizesEF();
-            if (quiz != null)
-                return Json(quiz);
-
+            var quizList = _quizService.GetAllQuizesEF();
+            if (quizList != null)
+            {
+                var quizListData = _mapper.Map<List<Quiz>, List<Models.Quiz.QuizData>>(quizList);
+                return Json(quizListData);
+            }
+                
             return new JsonResult(null);
         }
 
