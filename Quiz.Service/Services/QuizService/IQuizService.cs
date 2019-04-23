@@ -40,7 +40,7 @@ namespace QuizService
 
         #region other 
 
-        List<Quiz> GetAllQuizesEF();
+        List<Quiz> GetAllQuizzesWithChild();
 
         #endregion
 

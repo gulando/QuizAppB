@@ -150,9 +150,15 @@ namespace QuizService
 
         #region other
 
-        public List<Quiz> GetAllQuizesEF()
+        public List<Quiz> GetAllQuizzesWithChild()
         {
-            var quizzes = _quizRepository.Table.Include(p => p.QuizThemes).ToList();
+            var quizzes = _quizRepository.Table
+                .Include(p => p.QuizThemes)
+                .Include(p => p.QuestionTypes)
+                .Include(p => p.Questions)
+                .Include(p => p.AnswerTypes)
+                .ToList();
+
             return quizzes;
         }
 

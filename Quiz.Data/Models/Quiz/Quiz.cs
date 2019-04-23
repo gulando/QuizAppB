@@ -17,6 +17,12 @@ namespace QuizData
 
         public ICollection<QuizTheme> QuizThemes { get; set; }
 
+        public ICollection<QuestionType> QuestionTypes { get; set; }
+
+        public ICollection<AnswerType> AnswerTypes { get; set; } 
+
+        public ICollection<Question> Questions { get; set; }
+
     }
 
     public class QuizSummary : Quiz
