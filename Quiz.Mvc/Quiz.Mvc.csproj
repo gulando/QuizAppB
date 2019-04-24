@@ -40,5 +40,11 @@
     <ItemGroup>
       <Content Remove="Log\**" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="Views\Home1\Index.cshtml">
+        <Pack>$(IncludeRazorContentInPack)</Pack>
+      </Content>
+    </ItemGroup>
     
 </Project>
