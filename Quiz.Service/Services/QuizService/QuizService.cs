@@ -44,7 +44,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuizDefaults.QuizAllCacheKey, out List<Quiz> quizzes)) 
                 return quizzes.ToList();
                 
-            quizzes = _quizRepository.Table.ToList();
+            quizzes = _quizRepository.Table.OrderBy(k => k.QuizName).ToList();
             _memoryCache.Set(QuizDefaults.QuizAllCacheKey, quizzes);
 
             return quizzes.ToList();
@@ -97,7 +97,7 @@ namespace QuizService
                     QuizThemeName = quizThemes.QuizThemeName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
                     AnswerTypeName = answerTypes == null ? "" : answerTypes.AnswerTypeName
-                }).ToList();
+                }).OrderBy(k => k.QuizName).ToList();
 
             return result;     
         }
@@ -111,7 +111,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuizDefaults.QuizAllCacheKey, out List<Quiz> quizzes)) 
                 return quizzes.ToList();
                 
-            quizzes = await _quizRepository.Table.ToListAsync();
+            quizzes = await _quizRepository.Table.OrderBy(k => k.QuizName).ToListAsync();
             _memoryCache.Set(QuizDefaults.QuizAllCacheKey, quizzes);
 
             return quizzes.ToList();
@@ -157,6 +157,7 @@ namespace QuizService
                 .Include(p => p.QuestionTypes)
                 .Include(p => p.Questions)
                 .Include(p => p.AnswerTypes)
+                .OrderBy(k => k.QuizName)
                 .ToList();
 
             return quizzes;

@@ -11,15 +11,15 @@
 <script src="@Url.Content("~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js")"></script>
 
 <script language="javascript" type="text/javascript">
- 
+
     function quizNameChange() {
-        
+
         var quizID = window.$('#QuizName').val();
-        
+
         window.$("#QuestionTypeName").empty();
         window.$("#QuizThemeName").empty();
         window.$("#AnswerTypeName").empty();
-        
+
         window.$.ajax({
             url: '/Quiz/GetQuizSummary',
             type: "GET",
@@ -28,43 +28,40 @@
             success: function (response) {
                 console.log(response);
                 window.$.each(response, function (index, item) {
-                    
-                    if (window.$("#QuizThemeName option:contains('" + item.quizThemeName + "')").length === 0)
-                    {
+
+                    if (window.$("#QuizThemeName option:contains('" + item.quizThemeName + "')").length === 0) {
                         window.$("#QuizThemeName").append(window.$('<option/>', {
                             value: item.quizThemeID,
                             text: item.quizThemeName
                         }));
                     }
-                    
-                    if (window.$("#QuestionTypeName option:contains('" + item.questionTypeName + "')").length === 0)
-                    {
+
+                    if (window.$("#QuestionTypeName option:contains('" + item.questionTypeName + "')").length === 0) {
                         window.$("#QuestionTypeName").append(window.$('<option/>', {
                             value: item.questionTypeID,
                             text: item.questionTypeName
                         }));
                     }
-                    
-                    if (window.$("#AnswerTypeName option:contains('" + item.answerTypeName + "')").length === 0)
-                    {
+
+                    if (window.$("#AnswerTypeName option:contains('" + item.answerTypeName + "')").length === 0) {
                         window.$("#AnswerTypeName").append(window.$('<option/>', {
                             value: item.answerTypeID,
                             text: item.answerTypeName
                         }));
                     }
-                    
+
                 });
             }
         });
     }
-    
+
     function questionTypeChange() {
-       
+
         var quizID = window.$('#QuizName').val();
         var questionTypeID = window.$('#QuestionTypeName').val();
-        
+
         window.$("#AnswerTypeName").empty();
-        
+
         window.$.ajax({
             url: '/Quiz/GetQuizSummary',
             type: "GET",
@@ -83,68 +80,74 @@
                 });
             }
         });
-        
+
     }
-    
+
 </script>
 
 
 @using (Html.BeginForm(ViewBag.CreateMode ? "Create" : "Edit", "Question", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="form-group">
-        
-        <div>@Html.ValidationMessageFor(x => x.QuizID, "", new {@class = "text-danger"})</div>
+
+        <div>@Html.ValidationMessageFor(x => x.QuizID, "", new { @class = "text-danger" })</div>
         <label>Quiz</label>
-        @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable) ViewData["Quizes"], "ID", "QuizName"), "--Select One--", new {@class = "form-control", @id = "QuizName", onchange = "quizNameChange()"})
+        @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"), "--Select One--", new { @class = "form-control", @id = "QuizName", onchange = "quizNameChange()" })
 
-        <br/>
+        <br />
 
-        <div>@Html.ValidationMessageFor(x => x.QuizThemeID, "", new {@class = "text-danger"})</div>
+        <div>@Html.ValidationMessageFor(x => x.QuizThemeID, "", new { @class = "text-danger" })</div>
         <label>Quiz Theme</label>
-        @Html.DropDownListFor(x => Model.QuizThemeID, new SelectList((IEnumerable) ViewData["QuizThemes"], "ID", "QuizThemeName"), "--Select One--", new {@class = "form-control", @id = "QuizThemeName"})
-        
-        <br/>
+        @Html.DropDownListFor(x => Model.QuizThemeID, new SelectList((IEnumerable)ViewData["QuizThemes"], "ID", "QuizThemeName"), "--Select One--", new { @class = "form-control", @id = "QuizThemeName" })
 
-        <div>@Html.ValidationMessageFor(x => x.QuestionTypeID, "", new {@class = "text-danger"})</div>
+        <br />
+
+        <div>@Html.ValidationMessageFor(x => x.QuestionTypeID, "", new { @class = "text-danger" })</div>
         <label>Question Type</label>
-        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable) ViewData["QuestionTypes"], "ID", "QuestionTypeName"), "--Select One--", new {@class = "form-control", @id = "QuestionTypeName", onchange = "questionTypeChange()"})
-        
-        <br/>
+        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), "--Select One--", new { @class = "form-control", @id = "QuestionTypeName", onchange = "questionTypeChange()" })
 
-        <div>@Html.ValidationMessageFor(x => x.AnswerTypeID, "", new {@class = "text-danger"})</div>
+        <br />
+
+        <div>@Html.ValidationMessageFor(x => x.AnswerTypeID, "", new { @class = "text-danger" })</div>
         <label>Answer Type</label>
-        @Html.DropDownListFor(x => Model.AnswerTypeID, new SelectList((IEnumerable) ViewData["AnswerTypes"], "ID", "AnswerTypeName"), "--Select One--", new {@class = "form-control", @id = "AnswerTypeName"})
-        
-        <br/>
+        @Html.DropDownListFor(x => Model.AnswerTypeID, new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"), "--Select One--", new { @class = "form-control", @id = "AnswerTypeName" })
+
+        <br />
+
+        <div><span asp-validation-for="QuestionText" class="text-danger"></span></div>
+        <label>Question Text</label><br/>
+        <textarea asp-for="QuestionText" rows="7" cols="75"></textarea>
+
+        <br />
 
         <div><span asp-validation-for="CorrectAnswer" class="text-danger"></span></div>
         <label>Correct Answer</label>
-        <input asp-for="CorrectAnswer" class="form-control"/>
+        <input asp-for="CorrectAnswer" class="form-control" />
 
-        <input asp-for="ImageID" class="form-control" hidden="true"/>
+        @*<input asp-for="ImageID" class="form-control" hidden="true" />
 
-        <br/>
-        
-        @if (Model.ImageID == 0)
-        {
-            <div>@Html.ValidationMessage("file", "", new {@class = "text-danger"})</div>
-            <input type="file" name="file" id="file" data-val="true" data-val-required="A File is required." name="file" />
-        }
-        else
-        {
-            <input type="file" name="file" id="file" name="file" />
-        }
-               
+            <br />
 
-        @if (Model.ImageID > 0)
-        {
-            <div>
-                <img src="@Url.Action("ViewImage", "Question", new {imageID = Model.ImageID})"/>
-            </div>
-        }
-        
+            @if (Model.ImageID == 0)
+            {
+                <div>@Html.ValidationMessage("file", "", new { @class = "text-danger" })</div>
+                <input type="file" name="file" id="file" data-val="true" data-val-required="A File is required." name="file" />
+            }
+            else
+            {
+                <input type="file" name="file" id="file" name="file" />
+            }
+
+
+            @if (Model.ImageID > 0)
+            {
+                <div>
+                    <img src="@Url.Action("ViewImage", "Question", new {imageID = Model.ImageID})" />
+                </div>
+            }*@
+
     </div>
-    
+
     <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>

@@ -42,7 +42,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(AnswerTypeDefaults.AnswerTypeAllCacheKey, out List<AnswerType> answerTypes))
                 return answerTypes;
 
-            answerTypes = _answerTypeRepository.Table.ToList();
+            answerTypes = _answerTypeRepository.Table.OrderBy(k => k.AnswerTypeName).ToList();
             _memoryCache.Set(AnswerTypeDefaults.AnswerTypeAllCacheKey, answerTypes);
     
             return answerTypes;
@@ -92,7 +92,7 @@ namespace QuizService
                     QuizName = quizes.QuizName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
                     AnswerTypeName = answerTypes.AnswerTypeName
-                }).ToList();
+                }).OrderBy(k => k.AnswerTypeName).ToList();
 
             return result;     
         }
@@ -106,7 +106,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(AnswerTypeDefaults.AnswerTypeAllCacheKey, out List<AnswerType> answerTypes))
                 return answerTypes;
 
-            answerTypes = await _answerTypeRepository.Table.ToListAsync();
+            answerTypes = await _answerTypeRepository.Table.OrderBy(k => k.AnswerTypeName).ToListAsync();
             _memoryCache.Set(AnswerTypeDefaults.AnswerTypeAllCacheKey, answerTypes);
     
             return answerTypes;
@@ -131,7 +131,7 @@ namespace QuizService
                     QuizName = quizes.QuizName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
                     AnswerTypeName = answerTypes.AnswerTypeName
-                }).ToListAsync();
+                }).OrderBy(k => k.AnswerTypeName).ToListAsync();
 
             return await result;  
         }

@@ -39,7 +39,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuizThemeDefaults.QuizThemeAllCacheKey, out List<QuizTheme> quizThemes)) 
                 return quizThemes.ToList();
                 
-            quizThemes = _quizThemeRepository.Table.ToList();
+            quizThemes = _quizThemeRepository.Table.OrderBy(k => k.QuizID).ToList();
             _memoryCache.Set(QuizThemeDefaults.QuizThemeAllCacheKey, quizThemes);
 
             return quizThemes.ToList();
@@ -56,7 +56,7 @@ namespace QuizService
                     ID = quizThemes.ID,
                     QuizName = quizes.QuizName,
                     QuizThemeName = quizThemes.QuizThemeName
-                }).ToList();
+                }).OrderBy(k => k.QuizName).ToList();
 
             return result;     
         }
@@ -99,7 +99,7 @@ namespace QuizService
             if (_memoryCache.TryGetValue(QuizThemeDefaults.QuizThemeAllCacheKey, out List<QuizTheme> quizThemes)) 
                 return quizThemes.ToList();
                 
-            quizThemes = await _quizThemeRepository.Table.ToListAsync();
+            quizThemes = await _quizThemeRepository.Table.OrderBy(k => k.QuizID).ToListAsync();
             _memoryCache.Set(QuizThemeDefaults.QuizThemeAllCacheKey, quizThemes);
 
             return quizThemes.ToList();
@@ -116,7 +116,7 @@ namespace QuizService
                     ID = quizThemes.ID,
                     QuizName = quizes.QuizName,
                     QuizThemeName = quizThemes.QuizThemeName
-                }).ToListAsync();
+                }).OrderBy(k => k.QuizName).ToListAsync();
 
             return await result;  
         }

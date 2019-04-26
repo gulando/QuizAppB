@@ -82,12 +82,12 @@ namespace QuizMvc.Controllers
             // _imageHandler.UploadImage(file, question.ImageID);
             var questionID = _questionService.AddQuestion(question);
             
-            if (file != null)
-            {
-                var image = CreateImage(file);
-                image.QuestionID = questionID;
-                _imageHandler.AddImage(image);
-            }
+            //if (file != null)
+            //{
+            //    var image = CreateImage(file);
+            //    image.QuestionID = questionID;
+            //    _imageHandler.AddImage(image);
+            //}
                 
             return RedirectToAction(nameof(Index));
         }
@@ -118,13 +118,13 @@ namespace QuizMvc.Controllers
             var question = _mapper.Map<Question>(questionData);
             _questionService.UpdateQuestion(question);
             
-            if (file != null)
-            {
-                var image = CreateImage(file);
-                image.ID = questionData.ImageID;
-                image.QuestionID = questionData.ID;
-                _imageHandler.UpdateImage(image);
-            }
+            //if (file != null)
+            //{
+            //    var image = CreateImage(file);
+            //    image.ID = questionData.ImageID;
+            //    image.QuestionID = questionData.ID;
+            //    _imageHandler.UpdateImage(image);
+            //}
 
             return RedirectToAction(nameof(Index));
         }

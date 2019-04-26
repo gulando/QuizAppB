@@ -21,7 +21,15 @@ namespace QuizMvc.Models
         [Required]
         [Display(Name = "Question Type")]
         public int QuestionTypeID { get; set; }
-        
+
+        [Required]
+        [Display(Name = "Question Text")]
+        public string QuestionText { get; set; }
+
+        [Required]
+        [Display(Name = "Correct Answer")]
+        public string CorrectAnswer { get; set; }
+
         public int ImageID { get; set; }
         
         public string QuizName { get; set; }
@@ -32,8 +40,5 @@ namespace QuizMvc.Models
         
         public string AnswerTypeName { get; set; }
       
-        [Required]
-        [Display(Name = "Correct Answer")]
-        public string CorrectAnswer { get; set; }
     }
 }

@@ -28,12 +28,17 @@ namespace QuizData
                
         [Required]         
         public string CorrectAnswer { get; set; }
+
+        [Required]
+        public string QuestionText { get; set; }
     }
 
     public class QuestionSummary : Question
     {
-        public int ImageID { get; set; } 
-        
+        //public int ImageID { get; set; }
+
+        //public byte[] ImageData { get; set; }
+
         public string QuizName { get; set; }
         
         public string QuizThemeName { get; set; }
@@ -41,6 +46,6 @@ namespace QuizData
         public string QuestionTypeName { get; set; }
         
         public string AnswerTypeName { get; set; }
-        public byte[] ImageData { get; set; }
+        
     }
 }
