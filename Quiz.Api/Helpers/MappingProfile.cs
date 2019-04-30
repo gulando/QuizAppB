@@ -27,7 +27,10 @@ namespace QuizApi.Helpers
             
             CreateMap<RoleRightData, RoleRightSummary>();
             CreateMap<RoleRightSummary, RoleRightData>();
-            
+
+            CreateMap<Models.QuizData, Quiz>();
+            CreateMap<Quiz, Models.QuizData>();
+
             CreateMap<QuizThemeData, QuizThemeSummary>();
             CreateMap<QuizThemeSummary, QuizThemeData>();
             

@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using QuizApi.Models;
 using QuizService;
 using QuizData;
 
@@ -56,6 +58,17 @@ namespace QuizApi.Controllers
             return new JsonResult(null);
         }
 
+        [Produces("application/json")]
+        [ActionName("GetAllQuizzesWithChild")]
+        public async Task<JsonResult> GetQuizzes()
+        {
+            var quizList = await _quizService.GetAllQuizzesWithChild();
+            if (quizList != null && quizList.Count > 0)
+                return Json(quizList);
+
+            return new JsonResult(null);
+        }
+
         [HttpPost]
         [ActionName("AddQuiz")]
         public async Task<JsonResult> AddQuiz([FromBody] Quiz quiz)
@@ -66,7 +79,7 @@ namespace QuizApi.Controllers
 
         [HttpPut("{quizID}")]
         [ActionName("UpdateQuiz")]
-        public async Task<JsonResult> UpdateQuiz(int quizID, [FromBody] Quiz quiz)
+        public async Task<JsonResult> UpdateQuiz([FromBody] Quiz quiz)
         {
             await _quizService.UpdateQuizAsync(quiz);
             return new JsonResult(null);
@@ -77,21 +90,6 @@ namespace QuizApi.Controllers
         public async Task<JsonResult> DeleteQuiz(int quizID)
         {
             await _quizService.DeleteQuizAsync(quizID);
-            return new JsonResult(null);
-        }
-
-        #endregion
-
-        #region other
-
-        [Produces("application/json")]
-        [ActionName("GetAllQuizzesWithChild")]
-        public JsonResult GetQuizzes()
-        {
-            var quiz = _quizService.GetAllQuizzesWithChild();
-            if (quiz != null)
-                return Json(quiz);
-
             return new JsonResult(null);
         }
 

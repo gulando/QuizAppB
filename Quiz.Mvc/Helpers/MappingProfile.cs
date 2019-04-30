@@ -24,7 +24,10 @@ namespace QuizMvc.Helpers
             
             CreateMap<RoleRightData, RoleRightSummary>();
             CreateMap<RoleRightSummary, RoleRightData>();
-            
+
+            CreateMap<Models.QuizData, QuizSummary>();
+            CreateMap<QuizSummary, Models.QuizData>();
+
             CreateMap<QuizThemeData, QuizThemeSummary>();
             CreateMap<QuizThemeSummary, QuizThemeData>();
             
@@ -40,8 +43,6 @@ namespace QuizMvc.Helpers
             CreateMap<AnswerData, AnswerSummary>();
             CreateMap<AnswerSummary, AnswerData>();
             
-            CreateMap<Models.QuizData, QuizSummary>();
-            CreateMap<QuizSummary, Models.QuizData>();
         }
     }
 }

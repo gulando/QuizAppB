@@ -1,4 +1,7 @@
-namespace QuizApi.Models.Quiz
+using System.Collections.Generic;
+using QuizData;
+
+namespace QuizApi.Models
 {
     public class QuizData
     {

@@ -150,7 +150,7 @@ namespace QuizService
 
         #region other
 
-        public List<Quiz> GetAllQuizzesWithChild()
+        public async Task<List<Quiz>> GetAllQuizzesWithChild()
         {
             var quizzes = _quizRepository.Table
                 .Include(p => p.QuizThemes)
@@ -158,9 +158,9 @@ namespace QuizService
                 .Include(p => p.Questions)
                 .Include(p => p.AnswerTypes)
                 .OrderBy(k => k.QuizName)
-                .ToList();
+                .ToListAsync();
 
-            return quizzes;
+            return  await quizzes;
         }
 
         #endregion
