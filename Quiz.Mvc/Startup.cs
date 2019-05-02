@@ -91,7 +91,8 @@ namespace QuizMvc
             services.AddScoped<IQuestionTypeService, QuestionTypeService>();
             services.AddScoped<IQuizService, QuizService.QuizService>();
             services.AddScoped<IQuizThemeService, QuizThemeService>();
-            
+            services.AddScoped<IExamTypeService, ExamTypeService>();
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRightService, RightService>();
             services.AddScoped<IRoleService, RoleService>();

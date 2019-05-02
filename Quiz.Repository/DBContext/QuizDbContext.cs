@@ -62,6 +62,8 @@ namespace QuizRepository
         
         public DbSet<Image> Images { get; set; }
 
+        public DbSet<ExamType> ExamTypes { get; set; } 
+
         #endregion
 
         #region override

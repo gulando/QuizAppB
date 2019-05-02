@@ -28,19 +28,21 @@ namespace QuizMvc.Controllers
         private readonly IQuestionTypeService _questionTypeService;
         private readonly IMapper _mapper;
         private readonly IImageService _imageHandler;
-        
-        private List<QuizData.Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
+        private readonly IExamTypeService _examTypeService;
+
+        private List<Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
         private List<QuestionType> QuestionTypes => _questionTypeService.GetAllQuestionTypes().ToList();
         private List<QuizTheme> QuizThemes => _quizThemeService.GetAllQuizThemes().ToList();
         private List<AnswerType> AnswerTypes => _answerTypeService.GetAllAnswerTypes().ToList();
-        
+        private List<ExamType> ExamTypes => _examTypeService.GetAllExamTypes().ToList();
+
         #endregion
 
         #region ctor
 
         public QuestionController(IQuestionService service, IQuizService quizService,
             IQuizThemeService quizThemeService, IAnswerTypeService answerTypeService,
-            IQuestionTypeService questionTypeService, IMapper mapper, IImageService imageHandler)
+            IQuestionTypeService questionTypeService, IMapper mapper, IImageService imageHandler, IExamTypeService examTypeService)
         {
             _questionService = service;
             _quizService = quizService;
@@ -49,6 +51,7 @@ namespace QuizMvc.Controllers
             _questionTypeService = questionTypeService;
             _mapper = mapper;
             _imageHandler = imageHandler;
+            _examTypeService = examTypeService;
         }
         
         #endregion
@@ -69,7 +72,8 @@ namespace QuizMvc.Controllers
             ViewData["QuestionTypes"] = QuestionTypes;
             ViewData["QuizThemes"] = QuizThemes;
             ViewData["AnswerTypes"] = AnswerTypes;
-            
+            ViewData["ExamTypes"] = ExamTypes;
+
             return View("EditQuestion", new QuestionData());
         }
         
@@ -103,6 +107,7 @@ namespace QuizMvc.Controllers
             ViewData["QuizThemes"] = QuizThemes.Where(quizTheme => quizTheme.QuizID == questionData.QuizID);
             ViewData["QuestionTypes"] = QuestionTypes.Where(questionType => questionType.QuizID == questionData.QuizID);
             ViewData["AnswerTypes"] = AnswerTypes.Where(answerType => answerType.QuestionTypeID == questionData.QuestionTypeID);
+            ViewData["ExamTypes"] = ExamTypes;//.Where(examType => examType.ID == questionData.ExamTypeID);
 
             return View("EditQuestion", questionData);
         }

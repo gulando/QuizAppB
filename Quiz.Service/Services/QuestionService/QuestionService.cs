@@ -19,7 +19,8 @@ namespace QuizService
         private readonly IRepository<AnswerType> _answerTypeRepository;
         private readonly IRepository<QuestionType> _questionTypesRepository;
         private readonly IRepository<Image> _imageRepository;
-        
+        private readonly IRepository<ExamType> _examTypeRepository;
+
         private readonly IMemoryCache _memoryCache;
 
         #endregion
@@ -28,7 +29,7 @@ namespace QuizService
 
         public QuestionService(IRepository<Quiz> quizRepository, IRepository<QuizTheme> quizThemeRepository,
             IRepository<AnswerType> answerTypeRepository, IRepository<QuestionType> questionTypesRepository,
-            IRepository<Question> questionRepository,IMemoryCache memoryCache, IRepository<Image> imageRepository)
+            IRepository<Question> questionRepository,IMemoryCache memoryCache, IRepository<Image> imageRepository, IRepository<ExamType> examTypeRepository)
         {
             _questionRepository = questionRepository;
             _quizRepository = quizRepository;
@@ -36,7 +37,8 @@ namespace QuizService
             _answerTypeRepository = answerTypeRepository;
             _questionTypesRepository = questionTypesRepository;
             _imageRepository = imageRepository;
-            
+            _examTypeRepository = examTypeRepository;
+
             _memoryCache = memoryCache;
         }
 
@@ -67,6 +69,7 @@ namespace QuizService
                 join quizThemes in _quizThemeRepository.Table on questions.QuizThemeID equals quizThemes.ID
                 join answerTypes in _answerTypeRepository.Table on questions.AnswerTypeID equals answerTypes.ID
                 join questionTypes in _questionTypesRepository.Table on questions.QuestionTypeID equals questionTypes.ID
+                join examTypes in _examTypeRepository.Table on questions.ExamTypeID equals examTypes.ID
                 //join images in _imageRepository.Table on questions.ID equals images.QuestionID
                 where questions.ID == questionID || questionID == 0
                 select new QuestionSummary 
@@ -76,13 +79,14 @@ namespace QuizService
                     QuizThemeID =  quizThemes.ID,
                     QuestionTypeID = questionTypes.ID,
                     AnswerTypeID = answerTypes.ID,
+                    ExamTypeID = examTypes.ID,
                     //ImageID = images.ID,
                     QuestionText = questions.QuestionText,
                     QuizName = quizes.QuizName,
                     QuizThemeName = quizThemes.QuizThemeName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
                     AnswerTypeName = answerTypes.AnswerTypeName,
-                   
+                    ExamTypeName = examTypes.ExamTypeName,
                     CorrectAnswer = questions.CorrectAnswer
                 }).OrderBy(k => k.QuestionTypeName).ToList();
 

@@ -168,7 +168,8 @@ namespace QuizApi
             services.AddScoped<IQuestionTypeService, QuestionTypeService>();
             services.AddScoped<IQuizService, QuizService.QuizService>();
             services.AddScoped<IQuizThemeService, QuizThemeService>();
-            
+            services.AddScoped<IExamTypeService, ExamTypeService>();
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRightService, RightService>();
             services.AddScoped<IRoleService, RoleService>();
@@ -176,7 +177,6 @@ namespace QuizApi
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IUserRightService, UserRightService>();
             services.AddScoped<IRoleRightService, RoleRightService>();
-            
             
             services.AddSingleton<ILogService, LogService>();
 
