@@ -64,7 +64,7 @@ namespace QuizApi.Controllers
 
         [HttpPost]
         [ActionName("AddAnswerType")]
-        public async Task<JsonResult> AddAnswerType([FromBody] AnswerType answerTypeData)
+        public async Task<JsonResult> AddAnswerType([FromBody] AnswerTypeData answerTypeData)
         {
             var answerType = _mapper.Map<AnswerType>(answerTypeData);
             await _answerTypeService.AddAnswerTypeAsync(answerType);
@@ -73,7 +73,7 @@ namespace QuizApi.Controllers
 
         [HttpPut("{answerTypeID}")]
         [ActionName("UpdateAnswerType")]
-        public async Task<JsonResult> UpdateAnswerType(int answerTypeID, [FromBody] AnswerType answerTypeData)
+        public async Task<JsonResult> UpdateAnswerType(int answerTypeID, [FromBody] AnswerTypeData answerTypeData)
         {
             var answer = _mapper.Map<AnswerType>(answerTypeData);
             await _answerTypeService.UpdateAnswerTypeAsync(answer);
