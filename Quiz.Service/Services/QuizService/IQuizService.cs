@@ -42,6 +42,12 @@ namespace QuizService
 
         Task<List<Quiz>> GetAllQuizzesWithChild();
 
+        Task<List<QuizThemeSummary>> GetAllQuizThemesByQuizIDAsync(int quizID);
+
+        Task<List<QuestionSummary>> GetAllQuestionsByQuizThemesAsync(int quizID, List<int> quizThemeIDs);
+
+        Task<List<QuestionSummary>> GetAllQuestionsByExamTypeAsync(int quizID, int examType);
+
         #endregion
 
     }

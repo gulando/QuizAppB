@@ -23,10 +23,6 @@ namespace QuizMvc.Models
         public int QuestionTypeID { get; set; }
 
         [Required]
-        [Display(Name = "Exam Type")]
-        public int ExamTypeID { get; set; }
-
-        [Required]
         [Display(Name = "Question Text")]
         public string QuestionText { get; set; }
 

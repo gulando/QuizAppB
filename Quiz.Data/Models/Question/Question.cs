@@ -26,10 +26,6 @@ namespace QuizData
         [ForeignKey("QuestionType")]
         public int QuestionTypeID { get; set; }
 
-        [Required]
-        [ForeignKey("ExamType")]
-        public int ExamTypeID { get; set; }
-
         [Required]         
         public string CorrectAnswer { get; set; }
 

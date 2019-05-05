@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using QuizApi.Models;
 using QuizService;
 using System;
 using System.Collections.Generic;
@@ -36,11 +37,30 @@ namespace QuizApi.Controllers.ExamType
         [ActionName("GetAllExamTypes")]
         public async Task<JsonResult> GetAllExamTypes()
         {
-            var answerTypes = await _examTypeService.GetAllExamTypesAsync();
+            var examTypes = await _examTypeService.GetAllExamTypesAsync();
 
-            if (answerTypes != null && answerTypes.Count > 0)
-                return Json(answerTypes);
-            
+            if (examTypes != null && examTypes.Count > 0)
+            {
+                var examTypeDataList = _mapper.Map<List<QuizData.ExamType>, List<ExamTypeData>>(examTypes);
+                return Json(examTypeDataList);
+            }
+
+            return new JsonResult(null);
+        }
+
+        [HttpGet("{examTypeID}")]
+        [Produces("application/json")]
+        [ActionName("GetExamTypeByID")]
+        public async Task<JsonResult> GetExamTypeByID(int examTypeID)
+        {
+            var examType = await _examTypeService.GetExamTypeByIDAsync(examTypeID);
+
+            if (examType != null)
+            {
+                var examTypeData = _mapper.Map<QuizData.ExamType>(examType);
+                return Json(examTypeData);
+            }
+
             return new JsonResult(null);
         }
 

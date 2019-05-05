@@ -45,6 +45,9 @@ namespace QuizApi.Helpers
             
             CreateMap<AnswerData, AnswerSummary>();
             CreateMap<AnswerSummary, AnswerData>();
+
+            CreateMap<ExamTypeData, ExamType>();
+            CreateMap<ExamType, ExamTypeData>();
         }
     }
 }

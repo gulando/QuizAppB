@@ -14,25 +14,10 @@ namespace QuizApi.Models
         [Display(Name = "Quiz Theme Name")]
         public int QuizThemeID { get; set; }
         
-        [Required]
-        [Display(Name = "Answer Type")]
-        public int AnswerTypeID { get; set; }
-        
-        [Required]
-        [Display(Name = "Question Type")]
-        public int QuestionTypeID { get; set; }
-        
-        public int ImageID { get; set; }
-        public byte[] ImageData { get; set; }
-
         public string QuizName { get; set; }
         
         public string QuizThemeName { get; set; }
-        
-        public string QuestionTypeName { get; set; }
-        
-        public string AnswerTypeName { get; set; }
-      
+              
         [Required]
         [Display(Name = "Correct Answer")]
         public string CorrectAnswer { get; set; }

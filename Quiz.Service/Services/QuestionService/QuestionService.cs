@@ -69,7 +69,6 @@ namespace QuizService
                 join quizThemes in _quizThemeRepository.Table on questions.QuizThemeID equals quizThemes.ID
                 join answerTypes in _answerTypeRepository.Table on questions.AnswerTypeID equals answerTypes.ID
                 join questionTypes in _questionTypesRepository.Table on questions.QuestionTypeID equals questionTypes.ID
-                join examTypes in _examTypeRepository.Table on questions.ExamTypeID equals examTypes.ID
                 //join images in _imageRepository.Table on questions.ID equals images.QuestionID
                 where questions.ID == questionID || questionID == 0
                 select new QuestionSummary 
@@ -79,14 +78,12 @@ namespace QuizService
                     QuizThemeID =  quizThemes.ID,
                     QuestionTypeID = questionTypes.ID,
                     AnswerTypeID = answerTypes.ID,
-                    ExamTypeID = examTypes.ID,
                     //ImageID = images.ID,
                     QuestionText = questions.QuestionText,
                     QuizName = quizes.QuizName,
                     QuizThemeName = quizThemes.QuizThemeName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
                     AnswerTypeName = answerTypes.AnswerTypeName,
-                    ExamTypeName = examTypes.ExamTypeName,
                     CorrectAnswer = questions.CorrectAnswer
                 }).OrderBy(k => k.QuestionTypeName).ToList();
 

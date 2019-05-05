@@ -114,12 +114,6 @@
 
         <br />
 
-        <div>@Html.ValidationMessageFor(x => x.ExamTypeID, "", new { @class = "text-danger" })</div>
-        <label>Exam Type</label>
-        @Html.DropDownListFor(x => Model.ExamTypeID, new SelectList((IEnumerable)ViewData["ExamTypes"], "ID", "ExamTypeName"), "--Select One--", new { @class = "form-control", @id = "ExamTypeName" })
-
-        <br />
-
         <div><span asp-validation-for="QuestionText" class="text-danger"></span></div>
         <label>Question Text</label><br />
         <textarea asp-for="QuestionText" rows="7" cols="75"></textarea>
