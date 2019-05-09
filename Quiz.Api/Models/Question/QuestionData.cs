@@ -17,7 +17,9 @@ namespace QuizApi.Models
         public string QuizName { get; set; }
         
         public string QuizThemeName { get; set; }
-              
+
+        public string QuestionText { get; set; }
+
         [Required]
         [Display(Name = "Correct Answer")]
         public string CorrectAnswer { get; set; }

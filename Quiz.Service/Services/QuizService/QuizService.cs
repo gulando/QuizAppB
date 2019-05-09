@@ -210,7 +210,7 @@ namespace QuizService
             var extendedDataElement = examType.ExtendedDataElement; 
             var questions = GetAllQuestionsByQuizThemesAsync(quizID, new List<int>());
 
-            return null;
+            return await questions;
         }
 
         #endregion

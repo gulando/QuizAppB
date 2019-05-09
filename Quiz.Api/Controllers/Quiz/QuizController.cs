@@ -112,10 +112,10 @@ namespace QuizApi.Controllers
             return new JsonResult(null);
         }
 
-        [HttpGet("{quizID}/{quizThemeIDs}")]
+        [HttpGet("{quizID}")]
         [Produces("application/json")]
         [ActionName("GetAllQuestionsByQuizThemes")]
-        public async Task<JsonResult> GetAllQuestionsByQuizThemes(int quizID, List<int> quizThemeIDs)
+        public async Task<JsonResult> GetAllQuestionsByQuizThemes(int quizID, [FromQuery]List<int> quizThemeIDs)
         {
             var questions = await _quizService.GetAllQuestionsByQuizThemesAsync(quizID, quizThemeIDs);
 

@@ -57,7 +57,7 @@ namespace QuizApi.Controllers.ExamType
 
             if (examType != null)
             {
-                var examTypeData = _mapper.Map<QuizData.ExamType>(examType);
+                var examTypeData = _mapper.Map<ExamTypeData>(examType);
                 return Json(examTypeData);
             }
 
