@@ -28,4 +28,13 @@ namespace QuizData
         public string QuestionTypeName { get; set; }
         
     }
+
+    public enum AnswerTypes
+    {
+        None = 0,
+        OptionalResponse = 1,
+        ShortAnswerFirstType =2,
+        ShortAnswerSecondType = 3,
+        ResponseByBeam = 4
+    }
 }

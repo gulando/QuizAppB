@@ -65,13 +65,14 @@ namespace QuizMvc.Controllers
         
         public IActionResult Index()
         {
-            var questions = _questionService.GetQuestionSummary().OrderBy(q=>q.QuizThemeName).ToList();
+            var questions = _questionService.GetQuestionSummary().OrderBy(q => q.QuizThemeName).ToList();
             _memoryCache.Set(QuestionDefaults.QuestionGetAll, questions);
 
             var quizThemesByQuestions = questions.Select(question => new { question.QuizThemeID, question.QuizThemeName}).ToList();
+            var distinctQuizThemes = quizThemesByQuestions.Distinct().ToList();
 
             var quizThemeDataList = new List<QuizThemeData>();
-            foreach (var item in quizThemesByQuestions)
+            foreach (var item in distinctQuizThemes)
             {
                 var quizThemeData = new QuizThemeData
                 {
