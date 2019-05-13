@@ -6,22 +6,23 @@ namespace QuizApi.Models
     {
         public int ID { get; set; }
         
-        [Required]
-        [Display(Name = "Quiz Name")]
         public int QuizID { get; set; }
         
-        [Required]
-        [Display(Name = "Quiz Theme Name")]
         public int QuizThemeID { get; set; }
-        
+
+        public int QuestionTypeID { get; set; }
+
+        public int AnswerTypeID { get; set; }
+
         public string QuizName { get; set; }
         
         public string QuizThemeName { get; set; }
 
         public string QuestionText { get; set; }
 
-        [Required]
-        [Display(Name = "Correct Answer")]
-        public string CorrectAnswer { get; set; }
+        public double QuestionNo { get; set; }
+
+        public string CorrectAnswer { get; set; }        
+       
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using QuizService;
 using QuizData;
 using QuizMvc.Handlers.ImageHandler;
@@ -29,19 +31,21 @@ namespace QuizMvc.Controllers
         private readonly IMapper _mapper;
         private readonly IImageService _imageHandler;
         private readonly IExamTypeService _examTypeService;
+        private readonly IMemoryCache _memoryCache;
 
         private List<Quiz> Quizzes => _quizService.GetAllQuizes().ToList(); 
         private List<QuestionType> QuestionTypes => _questionTypeService.GetAllQuestionTypes().ToList();
         private List<QuizTheme> QuizThemes => _quizThemeService.GetAllQuizThemes().ToList();
         private List<AnswerType> AnswerTypes => _answerTypeService.GetAllAnswerTypes().ToList();
-
+        private List<QuestionSummary> Questions { get; set; }
         #endregion
 
         #region ctor
 
         public QuestionController(IQuestionService service, IQuizService quizService,
             IQuizThemeService quizThemeService, IAnswerTypeService answerTypeService,
-            IQuestionTypeService questionTypeService, IMapper mapper, IImageService imageHandler, IExamTypeService examTypeService)
+            IQuestionTypeService questionTypeService, IMapper mapper, IImageService imageHandler,
+            IExamTypeService examTypeService, IMemoryCache memoryCache)
         {
             _questionService = service;
             _quizService = quizService;
@@ -51,6 +55,8 @@ namespace QuizMvc.Controllers
             _mapper = mapper;
             _imageHandler = imageHandler;
             _examTypeService = examTypeService;
+
+            _memoryCache = memoryCache;
         }
         
         #endregion
@@ -59,8 +65,23 @@ namespace QuizMvc.Controllers
         
         public IActionResult Index()
         {
-            var questions = _questionService.GetQuestionSummary();
-            return View(questions);
+            var questions = _questionService.GetQuestionSummary().OrderBy(q=>q.QuizThemeName).ToList();
+            _memoryCache.Set(QuestionDefaults.QuestionGetAll, questions);
+
+            var quizThemesByQuestions = questions.Select(question => new { question.QuizThemeID, question.QuizThemeName}).ToList();
+
+            var quizThemeDataList = new List<QuizThemeData>();
+            foreach (var item in quizThemesByQuestions)
+            {
+                var quizThemeData = new QuizThemeData
+                {
+                    ID = item.QuizThemeID,
+                    QuizThemeName = item.QuizThemeName
+                };
+                quizThemeDataList.Add(quizThemeData);
+            }
+
+            return View("QuizThemesByQuestions", quizThemeDataList);
         }
 
         public IActionResult Create()
@@ -171,7 +192,17 @@ namespace QuizMvc.Controllers
             }
             
         }
-        
+
+        public IActionResult ShowQuestions(int id)
+        {
+            if (_memoryCache.TryGetValue(QuestionDefaults.QuestionGetAll, out List<QuestionSummary> questionSummaryList))
+            {
+                var questions = questionSummaryList.Where(question => question.QuizThemeID == id).ToList();
+                return View("Index", questions);
+            }
+            throw new Exception("Something went wrong");
+        }
+
         #endregion
     }
 }

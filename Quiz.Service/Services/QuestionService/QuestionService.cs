@@ -78,6 +78,7 @@ namespace QuizService
                     QuizThemeID =  quizThemes.ID,
                     QuestionTypeID = questionTypes.ID,
                     AnswerTypeID = answerTypes.ID,
+                    QuestionNo = questions.QuestionNo,
                     //ImageID = images.ID,
                     QuestionText = questions.QuestionText,
                     QuizName = quizes.QuizName,
@@ -85,7 +86,7 @@ namespace QuizService
                     QuestionTypeName = questionTypes.QuestionTypeName,
                     AnswerTypeName = answerTypes.AnswerTypeName,
                     CorrectAnswer = questions.CorrectAnswer
-                }).OrderBy(k => k.QuestionTypeName).ToList();
+                }).ToList();
 
             return result;     
         }
@@ -145,6 +146,7 @@ namespace QuizService
                     QuizThemeID =  quizThemes.ID,
                     QuestionTypeID = questionTypes.ID,
                     AnswerTypeID = answerTypes.ID,
+                    QuestionNo = questions.QuestionNo,
                     //ImageID = images.ID,
                     //ImageData = images.Data,
                     QuestionText = questions.QuestionText,
@@ -153,7 +155,7 @@ namespace QuizService
                     QuestionTypeName = questionTypes.QuestionTypeName,
                     AnswerTypeName = answerTypes.AnswerTypeName,
                     CorrectAnswer = questions.CorrectAnswer
-                }).OrderBy(k => k.QuestionTypeName). ToListAsync();
+                }). ToListAsync();
 
             return await result;    
         }

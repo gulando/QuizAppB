@@ -89,6 +89,11 @@
 @using (Html.BeginForm(ViewBag.CreateMode ? "Create" : "Edit", "Question", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="form-group">
+        
+        <div>@Html.ValidationMessageFor(x => x.QuestionNo, "", new { @class = "text-danger" })</div>
+        <label>Question No.</label>
+        <input asp-for="QuestionNo" class="form-control" />
+
 
         <div>@Html.ValidationMessageFor(x => x.QuizID, "", new { @class = "text-danger" })</div>
         <label>Quiz</label>

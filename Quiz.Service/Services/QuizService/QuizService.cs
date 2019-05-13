@@ -195,6 +195,8 @@ namespace QuizService
                               ID = questions.ID,
                               QuizID = quizes.ID,
                               QuizThemeID = quizThemes.ID,
+                              QuestionTypeID = questions.QuestionTypeID,
+                              AnswerTypeID = questions.AnswerTypeID,
                               QuestionText = questions.QuestionText,
                               QuizName = quizes.QuizName,
                               QuizThemeName = quizThemes.QuizThemeName,

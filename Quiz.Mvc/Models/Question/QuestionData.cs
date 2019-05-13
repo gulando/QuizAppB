@@ -30,6 +30,10 @@ namespace QuizMvc.Models
         [Display(Name = "Correct Answer")]
         public string CorrectAnswer { get; set; }
 
+        [Required]
+        [Display(Name = "Question No")]
+        public double QuestionNo { get; set; }
+
         public int ImageID { get; set; }
         
         public string QuizName { get; set; }
