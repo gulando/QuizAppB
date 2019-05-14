@@ -18,7 +18,7 @@ namespace QuizData
         public XElement ExtendedDataElement
         {
             get => XElement.Parse(ExtendedData);
-            set { ExtendedData = value.ToString(); }
+            set => ExtendedData = value.ToString();
         }
     }
 }

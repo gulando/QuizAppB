@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Linq;
 
 
 namespace QuizData
@@ -19,6 +20,12 @@ namespace QuizData
         
         [Required]
         public string AnswerTypeName { get; set; }
+
+        [Column(TypeName = "xml")]
+        public string AnswerTypeDescription { get; set; }
+
+        [NotMapped]
+        public XElement AnswerTypeDescriptionElement => XElement.Parse(AnswerTypeDescription);
     }
 
     public class AnswerTypeSummary : AnswerType
@@ -29,12 +36,17 @@ namespace QuizData
         
     }
 
-    public enum AnswerTypes
+    public enum RenderType
     {
         None = 0,
-        OptionalResponse = 1,
-        ShortAnswerFirstType =2,
-        ShortAnswerSecondType = 3,
-        ResponseByBeam = 4
+        CheckBox = 1,
+        RadioGroup = 2
+    }
+
+    public class AnswerTypeConfiguration
+    {
+        public RenderType RenderType { get; set; }
+        public int Count { get; set; }
+        public int CorrectCount { get; set; }
     }
 }
