@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizService;
 using QuizData;
+using QuizMvc.Helpers;
 
 
 namespace QuizMvc.Controllers
@@ -16,15 +17,17 @@ namespace QuizMvc.Controllers
         #region properties
         
         private readonly IQuizService _quizService;
+        private readonly IAnswerTypeService _answerTypeService;
         private readonly IMapper _mapper;
         
         #endregion
 
         #region ctor
         
-        public QuizController(IQuizService service, IMapper mapper)
+        public QuizController(IQuizService service, IMapper mapper, IAnswerTypeService answerTypeService)
         {
             _quizService = service;
+            _answerTypeService = answerTypeService;
             _mapper = mapper;
         }
         
@@ -42,6 +45,15 @@ namespace QuizMvc.Controllers
         public ActionResult GetQuizSummary(int quizID, int questionTypeID)
         {
             var quizSummary = _quizService.GetQuizSummary(quizID, questionTypeID);
+            var answerType = _answerTypeService.GetAnswerTypeByID(quizSummary[0].AnswerTypeID);
+
+
+            var answerTypeDescriptionElement = answerType.AnswerTypeDescription;
+            var x = Util.Deserialize<AnswerTypeConfiguration>(answerTypeDescriptionElement);
+            
+
+            //var answerTypeDescription = Util.DeSerializer<AnswerTypeConfiguration>(answerTypeDescriptionElement);
+           
             var quizData = _mapper.Map<List<QuizSummary>, List<Models.QuizData>>(quizSummary);
             
             return Json(quizData);

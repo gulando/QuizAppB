@@ -89,7 +89,7 @@
 @using (Html.BeginForm(ViewBag.CreateMode ? "Create" : "Edit", "Question", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <div class="form-group">
-        
+
         <div>@Html.ValidationMessageFor(x => x.QuestionNo, "", new { @class = "text-danger" })</div>
         <label>Question No.</label>
         <input asp-for="QuestionNo" class="form-control" />
@@ -108,16 +108,20 @@
         <br />
 
         <div>@Html.ValidationMessageFor(x => x.QuestionTypeID, "", new { @class = "text-danger" })</div>
-        <label>Question Type</label>
+        <label>Question Type Name</label>
         @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), "--Select One--", new { @class = "form-control", @id = "QuestionTypeName", onchange = "questionTypeChange()" })
 
         <br />
 
         <div>@Html.ValidationMessageFor(x => x.AnswerTypeID, "", new { @class = "text-danger" })</div>
-        <label>Answer Type</label>
+        <label>Answer Type Name</label>
         @Html.DropDownListFor(x => Model.AnswerTypeID, new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"), "--Select One--", new { @class = "form-control", @id = "AnswerTypeName" })
 
         <br />
+
+        <label>Answer Type</label>
+
+
 
         <div><span asp-validation-for="QuestionText" class="text-danger"></span></div>
         <label>Question Text</label><br />
@@ -125,9 +129,9 @@
 
         <br />
 
-        <div><span asp-validation-for="CorrectAnswer" class="text-danger"></span></div>
-        <label>Correct Answer</label>
-        <input asp-for="CorrectAnswer" class="form-control" />
+        @*<div><span asp-validation-for="CorrectAnswer" class="text-danger"></span></div>
+            <label>Correct Answer</label>
+            <input asp-for="CorrectAnswer" class="form-control" />*@
 
         @*<input asp-for="ImageID" class="form-control" hidden="true" />
 
