@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 
 namespace QuizData
@@ -43,9 +44,10 @@ namespace QuizData
         RadioGroup = 2
     }
 
+    [XmlRoot("AnswerType"), XmlType("AnswerType")]
     public class AnswerTypeConfiguration
     {
-        public RenderType RenderType { get; set; }
+        public RenderType Type { get; set; }
         public int Count { get; set; }
         public int CorrectCount { get; set; }
     }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Caching.Memory;
 using QuizService;
 using QuizData;
 using QuizMvc.Handlers.ImageHandler;
+using QuizMvc.Helpers;
 using QuizMvc.Models;
 
 

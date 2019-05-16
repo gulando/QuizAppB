@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuizData;
+using QuizMvc.Helpers;
 using QuizMvc.Models;
 using QuizService;
 
@@ -94,7 +95,8 @@ namespace QuizMvc.Controllers
             _answerTypeService.DeleteAnswerType(id);
             return RedirectToAction(nameof(Index));
         }
-        
+
         #endregion
+
     }
 }

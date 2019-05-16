@@ -136,6 +136,11 @@ namespace QuizService
             return await result;  
         }
 
+        public AnswerType GetAnswerTypeByQuestionType(int questionTypeID)
+        {
+            return _answerTypeRepository.Table.First(answerType => answerType.QuestionTypeID == questionTypeID);
+        }
+
         public async Task AddAnswerTypeAsync(AnswerType answerType)
         {
             _memoryCache.Remove(AnswerTypeDefaults.AnswerTypeAllCacheKey);

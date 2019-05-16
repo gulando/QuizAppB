@@ -1,0 +1,28 @@
+@using QuizData
+@model AnswerTypeConfiguration
+
+
+<label>Correct Answer</label>
+<br />
+@{
+    
+    if (Model != null)
+    {
+        switch (Model.Type)
+        {
+            case RenderType.CheckBox:
+                for (int i = 0; i < Model.Count - 1; i++)
+                {
+                    @Html.CheckBox("Check" + i, false)
+                }
+                break;
+            case RenderType.RadioGroup:
+            case RenderType.None:
+                throw new Exception();
+        }
+    }
+    else
+    {
+        @Html.CheckBox("Check", false)
+    }
+}

@@ -1,3 +1,5 @@
+using QuizData;
+
 namespace QuizMvc.Models
 {
     public class QuizData
@@ -17,5 +19,7 @@ namespace QuizMvc.Models
         public string QuestionTypeName { get; set; }
         
         public string AnswerTypeName { get; set; }
+
+        public AnswerTypeConfiguration AnswerTypeConfiguration { get; set; }
     }
 }

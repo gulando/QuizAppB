@@ -1,5 +1,6 @@
 @model QuizMvc.Models.QuestionData
 @using System.Collections
+@using QuizData
 
 @{
     ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
@@ -88,76 +89,75 @@
 
 @using (Html.BeginForm(ViewBag.CreateMode ? "Create" : "Edit", "Question", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <div class="form-group">
+<div class="form-group">
 
-        <div>@Html.ValidationMessageFor(x => x.QuestionNo, "", new { @class = "text-danger" })</div>
-        <label>Question No.</label>
-        <input asp-for="QuestionNo" class="form-control" />
+    <div>@Html.ValidationMessageFor(x => x.QuestionNo, "", new { @class = "text-danger" })</div>
+    <label>Question No.</label>
+    <input asp-for="QuestionNo" class="form-control" />
 
 
-        <div>@Html.ValidationMessageFor(x => x.QuizID, "", new { @class = "text-danger" })</div>
-        <label>Quiz</label>
-        @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"), "--Select One--", new { @class = "form-control", @id = "QuizName", onchange = "quizNameChange()" })
+    <div>@Html.ValidationMessageFor(x => x.QuizID, "", new { @class = "text-danger" })</div>
+    <label>Quiz</label>
+    @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"), "--Select One--", new { @class = "form-control", @id = "QuizName", onchange = "quizNameChange()" })
+
+    <br />
+
+    <div>@Html.ValidationMessageFor(x => x.QuizThemeID, "", new { @class = "text-danger" })</div>
+    <label>Quiz Theme</label>
+    @Html.DropDownListFor(x => Model.QuizThemeID, new SelectList((IEnumerable)ViewData["QuizThemes"], "ID", "QuizThemeName"), "--Select One--", new { @class = "form-control", @id = "QuizThemeName" })
+
+    <br />
+
+    <div>@Html.ValidationMessageFor(x => x.QuestionTypeID, "", new { @class = "text-danger" })</div>
+    <label>Question Type Name</label>
+    @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), "--Select One--", new { @class = "form-control", @id = "QuestionTypeName", onchange = "questionTypeChange()" })
+
+    <br />
+
+    <div>@Html.ValidationMessageFor(x => x.AnswerTypeID, "", new { @class = "text-danger" })</div>
+    <label>Answer Type Name</label>
+    @Html.DropDownListFor(x => Model.AnswerTypeID, new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"), "--Select One--", new { @class = "form-control", @id = "AnswerTypeName" })
+
+    <br />
+
+    @await Component.InvokeAsync("CheckBoxComponent", Model.AnswerTypeID)
+
+    <br /><br />
+    <div><span asp-validation-for="QuestionText" class="text-danger"></span></div>
+    <label>Question Text</label><br />
+    <textarea asp-for="QuestionText" rows="7" cols="75"></textarea>
+
+    <br />
+
+    @*<div><span asp-validation-for="CorrectAnswer" class="text-danger"></span></div>
+        <label>Correct Answer</label>
+        <input asp-for="CorrectAnswer" class="form-control" />*@
+
+    @*<input asp-for="ImageID" class="form-control" hidden="true" />
 
         <br />
 
-        <div>@Html.ValidationMessageFor(x => x.QuizThemeID, "", new { @class = "text-danger" })</div>
-        <label>Quiz Theme</label>
-        @Html.DropDownListFor(x => Model.QuizThemeID, new SelectList((IEnumerable)ViewData["QuizThemes"], "ID", "QuizThemeName"), "--Select One--", new { @class = "form-control", @id = "QuizThemeName" })
-
-        <br />
-
-        <div>@Html.ValidationMessageFor(x => x.QuestionTypeID, "", new { @class = "text-danger" })</div>
-        <label>Question Type Name</label>
-        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), "--Select One--", new { @class = "form-control", @id = "QuestionTypeName", onchange = "questionTypeChange()" })
-
-        <br />
-
-        <div>@Html.ValidationMessageFor(x => x.AnswerTypeID, "", new { @class = "text-danger" })</div>
-        <label>Answer Type Name</label>
-        @Html.DropDownListFor(x => Model.AnswerTypeID, new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"), "--Select One--", new { @class = "form-control", @id = "AnswerTypeName" })
-
-        <br />
-
-        <label>Answer Type</label>
-
-
-
-        <div><span asp-validation-for="QuestionText" class="text-danger"></span></div>
-        <label>Question Text</label><br />
-        <textarea asp-for="QuestionText" rows="7" cols="75"></textarea>
-
-        <br />
-
-        @*<div><span asp-validation-for="CorrectAnswer" class="text-danger"></span></div>
-            <label>Correct Answer</label>
-            <input asp-for="CorrectAnswer" class="form-control" />*@
-
-        @*<input asp-for="ImageID" class="form-control" hidden="true" />
-
-            <br />
-
-            @if (Model.ImageID == 0)
+        @if (Model.ImageID == 0)
             {
-                <div>@Html.ValidationMessage("file", "", new { @class = "text-danger" })</div>
-                <input type="file" name="file" id="file" data-val="true" data-val-required="A File is required." name="file" />
-            }
-            else
-            {
-                <input type="file" name="file" id="file" name="file" />
-            }
+            <div>@Html.ValidationMessage("file", "", new { @class = "text-danger" })</div>
+            <input type="file" name="file" id="file" data-val="true" data-val-required="A File is required." name="file" />
+        }
+        else
+        {
+            <input type="file" name="file" id="file" name="file" />
+        }
 
 
-            @if (Model.ImageID > 0)
-            {
-                <div>
-                    <img src="@Url.Action("ViewImage", "Question", new {imageID = Model.ImageID})" />
-                </div>
-            }*@
+        @if (Model.ImageID > 0)
+        {
+            <div>
+                <img src="@Url.Action("ViewImage", "Question", new {imageID = Model.ImageID})" />
+            </div>
+        }*@
 
-    </div>
+</div>
 
-    <div class="text-center">
+<div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
     </div>

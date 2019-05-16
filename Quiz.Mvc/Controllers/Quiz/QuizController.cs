@@ -45,17 +45,8 @@ namespace QuizMvc.Controllers
         public ActionResult GetQuizSummary(int quizID, int questionTypeID)
         {
             var quizSummary = _quizService.GetQuizSummary(quizID, questionTypeID);
-            var answerType = _answerTypeService.GetAnswerTypeByID(quizSummary[0].AnswerTypeID);
-
-
-            var answerTypeDescriptionElement = answerType.AnswerTypeDescription;
-            var x = Util.Deserialize<AnswerTypeConfiguration>(answerTypeDescriptionElement);
-            
-
-            //var answerTypeDescription = Util.DeSerializer<AnswerTypeConfiguration>(answerTypeDescriptionElement);
-           
             var quizData = _mapper.Map<List<QuizSummary>, List<Models.QuizData>>(quizSummary);
-            
+
             return Json(quizData);
         }
         

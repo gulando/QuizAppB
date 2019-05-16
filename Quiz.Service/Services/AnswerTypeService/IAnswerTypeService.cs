@@ -20,12 +20,13 @@ namespace QuizService
         void DeleteAnswerType(int answerID);
         
         List<AnswerTypeSummary> GetAnswerTypeSummary(int answerTypeID = 0);
-        
+
+        AnswerType GetAnswerTypeByQuestionType(int questionTypeID);
+
         #endregion
 
-        
         #region async methods
-        
+
         Task<List<AnswerType>> GetAllAnswerTypesAsync();
 
         Task<AnswerType> GetAnswerTypeByIDAsync(int answerTypeID);
@@ -39,5 +40,6 @@ namespace QuizService
         Task<List<AnswerTypeSummary>> GetAnswerTypeSummaryAsync(int answerTypeID = 0);
         
         #endregion
+
     }
 }
