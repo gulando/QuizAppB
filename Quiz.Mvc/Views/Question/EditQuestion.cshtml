@@ -1,15 +1,17 @@
 @model QuizMvc.Models.QuestionData
 @using System.Collections
-@using QuizData
+
 
 @{
     ViewData["Title"] = ViewBag.CreateMode ? "Create" : "Edit";
     Layout = "_Layout";
 }
 
+
 <script src="@Url.Content("~/Scripts/jquery.min.js")"></script>
 <script src="@Url.Content("~/lib/jquery-validation/dist/jquery.validate.js")"></script>
 <script src="@Url.Content("~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js")"></script>
+
 
 <script language="javascript" type="text/javascript">
 
@@ -81,7 +83,6 @@
                 });
             }
         });
-
     }
 
 </script>
@@ -129,32 +130,6 @@
 
     <br />
 
-    @*<div><span asp-validation-for="CorrectAnswer" class="text-danger"></span></div>
-        <label>Correct Answer</label>
-        <input asp-for="CorrectAnswer" class="form-control" />*@
-
-    @*<input asp-for="ImageID" class="form-control" hidden="true" />
-
-        <br />
-
-        @if (Model.ImageID == 0)
-            {
-            <div>@Html.ValidationMessage("file", "", new { @class = "text-danger" })</div>
-            <input type="file" name="file" id="file" data-val="true" data-val-required="A File is required." name="file" />
-        }
-        else
-        {
-            <input type="file" name="file" id="file" name="file" />
-        }
-
-
-        @if (Model.ImageID > 0)
-        {
-            <div>
-                <img src="@Url.Action("ViewImage", "Question", new {imageID = Model.ImageID})" />
-            </div>
-        }*@
-
 </div>
 
 <div class="text-center">
@@ -162,3 +137,30 @@
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
     </div>
 }
+
+
+@*<div><span asp-validation-for="CorrectAnswer" class="text-danger"></span></div>
+        <label>Correct Answer</label>
+        <input asp-for="CorrectAnswer" class="form-control" />*@
+
+@*<input asp-for="ImageID" class="form-control" hidden="true" />
+
+<br />
+
+@if (Model.ImageID == 0)
+    {
+    <div>@Html.ValidationMessage("file", "", new { @class = "text-danger" })</div>
+    <input type="file" name="file" id="file" data-val="true" data-val-required="A File is required." name="file" />
+}
+else
+{
+    <input type="file" name="file" id="file" name="file" />
+}
+
+
+@if (Model.ImageID > 0)
+{
+    <div>
+        <img src="@Url.Action("ViewImage", "Question", new {imageID = Model.ImageID})" />
+    </div>
+}*@

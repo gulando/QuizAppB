@@ -1,11 +1,11 @@
 @using QuizData
-@model AnswerTypeConfiguration
+@using System.Collections
 
 
 <label>Correct Answer</label>
 <br />
 @{
-    
+
     if (Model != null)
     {
         switch (Model.Type)
@@ -18,7 +18,7 @@
                 break;
             case RenderType.RadioGroup:
             case RenderType.None:
-                throw new Exception();
+                break;
         }
     }
     else

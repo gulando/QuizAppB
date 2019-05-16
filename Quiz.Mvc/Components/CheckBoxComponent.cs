@@ -17,7 +17,6 @@ namespace QuizMvc.ViewComponents
 
         public IViewComponentResult Invoke(int answerTypeID)
         {
-
             if (answerTypeID > 0)
             {
                 var answerType = _answerTypeService.GetAnswerTypeByID(answerTypeID);
