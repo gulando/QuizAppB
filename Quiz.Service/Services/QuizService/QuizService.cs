@@ -200,7 +200,7 @@ namespace QuizService
                               QuestionText = questions.QuestionText,
                               QuizName = quizes.QuizName,
                               QuizThemeName = quizThemes.QuizThemeName,
-                              CorrectAnswer = questions.CorrectAnswer
+                              //CorrectAnswer = questions.CorrectAnswer
                           }).OrderBy(k => k.QuizThemeName).ToListAsync();
 
             return await result;

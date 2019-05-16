@@ -7,7 +7,7 @@ namespace QuizApi.Models
 {
     public class ExamTypeData
     {
-        public int ExamTypeID { get; set; }
+        public int ID { get; set; }
 
         public string ExamTypeName { get; set; }
     }

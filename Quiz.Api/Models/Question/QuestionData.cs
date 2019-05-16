@@ -20,9 +20,9 @@ namespace QuizApi.Models
 
         public string QuestionText { get; set; }
 
-        public double QuestionNo { get; set; }
+        //public double QuestionNo { get; set; }
 
-        public string CorrectAnswer { get; set; }        
+        //public string CorrectAnswer { get; set; }        
        
     }
 }
