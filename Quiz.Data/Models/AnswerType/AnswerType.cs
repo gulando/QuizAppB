@@ -25,8 +25,8 @@ namespace QuizData
         [Column(TypeName = "xml")]
         public string AnswerTypeDescription { get; set; }
 
-        [NotMapped]
-        public XElement AnswerTypeDescriptionElement => XElement.Parse(AnswerTypeDescription);
+        //[NotMapped]
+        //public XElement AnswerTypeDescriptionElement => XElement.Parse(AnswerTypeDescription);
     }
 
     public class AnswerTypeSummary : AnswerType

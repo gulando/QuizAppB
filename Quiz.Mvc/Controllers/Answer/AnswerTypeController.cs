@@ -65,6 +65,7 @@ namespace QuizMvc.Controllers
             if (!ModelState.IsValid)
                 return null;
             
+            
             _answerTypeService.UpdateAnswerType(answerType);
             return RedirectToAction(nameof(Index));
         }
@@ -84,7 +85,8 @@ namespace QuizMvc.Controllers
         {
             if (!ModelState.IsValid)
                 return null;
-            
+
+            answerType.AnswerTypeDescription = "<AnswerType></AnswerType>";
             _answerTypeService.AddAnswerType(answerType);
             return RedirectToAction(nameof(Index));
         }

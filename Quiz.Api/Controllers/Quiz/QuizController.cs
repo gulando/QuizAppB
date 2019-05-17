@@ -147,7 +147,7 @@ namespace QuizApi.Controllers
         [HttpGet("{questionID}")]
         [Produces("application/json")]
         [ActionName("IsAnswerCorrect")]
-        public bool IsAnswerCorrect(int questionID, [FromQuery]List<int> answersIDs)
+        public bool IsAnswerCorrect(int questionID, List<int> idSList)
         {
             return false;
         }

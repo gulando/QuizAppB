@@ -22,5 +22,7 @@ namespace QuizMvc.Models
         [Required]
         [Display(Name = "Answer Type")]
         public string AnswerTypeName { get; set; }
+
+        public string AnswerTypeDescription { get; set; }
     }
 }
