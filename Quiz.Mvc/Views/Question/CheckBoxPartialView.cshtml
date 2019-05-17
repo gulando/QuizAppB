@@ -1,9 +1,10 @@
+@model AnswerTypeConfiguration
 @using QuizData
-@using System.Collections
 
 
-<label>Correct Answer</label>
+<label>Check Correct Answer(s)</label>
 <br />
+
 @{
 
     if (Model != null)
@@ -23,6 +24,6 @@
     }
     else
     {
-        @Html.CheckBox("Check", false)
+        @Html.CheckBox("Check" + 0, false)
     }
 }

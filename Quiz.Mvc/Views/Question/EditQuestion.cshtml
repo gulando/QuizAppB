@@ -18,6 +18,7 @@
     function quizNameChange() {
 
         var quizID = window.$('#QuizName').val();
+        var ansnwerTypeID = null;
 
         window.$("#QuestionTypeName").empty();
         window.$("#QuizThemeName").empty();
@@ -54,6 +55,17 @@
                     }
 
                 });
+
+                ansnwerTypeID = response[0].answerTypeID;
+
+                window.$.ajax({
+                    url: '/Question/GetCheckBoxesByAnswerTypeID',
+                    type: "GET",
+                    data: { AnswerTypeID: ansnwerTypeID},
+                    success: function (response) {
+                        $("#element").html(response);
+                    }
+                });
             }
         });
     }
@@ -62,6 +74,7 @@
 
         var quizID = window.$('#QuizName').val();
         var questionTypeID = window.$('#QuestionTypeName').val();
+        var ansnwerTypeID = null;
 
         window.$("#AnswerTypeName").empty();
 
@@ -81,8 +94,20 @@
                             }));
                     }
                 });
+
+                ansnwerTypeID = response[0].answerTypeID;
+
+                window.$.ajax({
+                    url: '/Question/GetCheckBoxesByAnswerTypeID',
+                    type: "GET",
+                    data: { AnswerTypeID: ansnwerTypeID},
+                    success: function (response) {
+                        $("#element").html(response);
+                    }
+                });
             }
         });
+       
     }
 
 </script>
@@ -121,46 +146,45 @@
 
     <br />
 
-    @await Component.InvokeAsync("CheckBoxComponent", Model.AnswerTypeID)
-
-    <br /><br />
     <div><span asp-validation-for="QuestionText" class="text-danger"></span></div>
     <label>Question Text</label><br />
-    <textarea asp-for="QuestionText" rows="7" cols="75"></textarea>
-
+    <textarea asp-for="QuestionText" class="form-control" rows="7" cols="75"></textarea>
+    
     <br />
+    <div id="element"></div>
 
 </div>
 
-<div class="text-center">
+    <div class="text-center">
         <button class="btn btn-primary" type="submit">Save</button>
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
     </div>
+
 }
 
 
 @*<div><span asp-validation-for="CorrectAnswer" class="text-danger"></span></div>
-        <label>Correct Answer</label>
-        <input asp-for="CorrectAnswer" class="form-control" />*@
+    <label>Correct Answer</label>
+    <input asp-for="CorrectAnswer" class="form-control" />*@
 
 @*<input asp-for="ImageID" class="form-control" hidden="true" />
 
-<br />
+    <br />
 
-@if (Model.ImageID == 0)
+    @if (Model.ImageID == 0)
+        {
+        <div>@Html.ValidationMessage("file", "", new { @class = "text-danger" })</div>
+        <input type="file" name="file" id="file" data-val="true" data-val-required="A File is required." name="file" />
+    }
+    else
     {
-    <div>@Html.ValidationMessage("file", "", new { @class = "text-danger" })</div>
-    <input type="file" name="file" id="file" data-val="true" data-val-required="A File is required." name="file" />
-}
-else
-{
-    <input type="file" name="file" id="file" name="file" />
-}
+        <input type="file" name="file" id="file" name="file" />
+    }
 
 
-@if (Model.ImageID > 0)
-{
-    <div>
-        <img src="@Url.Action("ViewImage", "Question", new {imageID = Model.ImageID})" />
-    </div>
-}*@
+    @if (Model.ImageID > 0)
+    {
+        <div>
+            <img src="@Url.Action("ViewImage", "Question", new {imageID = Model.ImageID})" />
+        </div>
+    }*@

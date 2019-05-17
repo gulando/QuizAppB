@@ -86,6 +86,21 @@ namespace QuizMvc.Controllers
             return View("QuizThemesByQuestions", quizThemeDataList);
         }
 
+        public IActionResult Edit(int id)
+        {
+            ViewBag.CreateMode = false;
+
+            var question = _questionService.GetQuestionSummary(id).First();
+            var questionData = _mapper.Map<QuestionData>(question);
+
+            ViewData["Quizes"] = Quizzes;
+            ViewData["QuizThemes"] = QuizThemes.Where(quizTheme => quizTheme.QuizID == questionData.QuizID);
+            ViewData["QuestionTypes"] = QuestionTypes.Where(questionType => questionType.QuizID == questionData.QuizID);
+            ViewData["AnswerTypes"] = AnswerTypes.Where(answerType => answerType.QuestionTypeID == questionData.QuestionTypeID);
+
+            return View("EditQuestion", questionData);
+        }
+
         public IActionResult Create()
         {
             ViewBag.CreateMode = true;
@@ -97,7 +112,29 @@ namespace QuizMvc.Controllers
 
             return View("EditQuestion", new QuestionData());
         }
-        
+
+        [HttpPost]
+        public IActionResult Edit(QuestionData questionData, IFormFile file)
+        {
+            if (!ModelState.IsValid)
+                return null;
+
+            // _imageHandler.UploadImage(file, question.ImageID);
+
+            var question = _mapper.Map<Question>(questionData);
+            _questionService.UpdateQuestion(question);
+
+            //if (file != null)
+            //{
+            //    var image = CreateImage(file);
+            //    image.ID = questionData.ImageID;
+            //    image.QuestionID = questionData.ID;
+            //    _imageHandler.UpdateImage(image);
+            //}
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpPost]
         public IActionResult Create(Question question, IFormFile file)
         {
@@ -117,43 +154,6 @@ namespace QuizMvc.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Edit(int id)
-        {
-            ViewBag.CreateMode = false;
-            
-            var question = _questionService.GetQuestionSummary(id).First();
-            var questionData = _mapper.Map<QuestionData>(question);
-
-            ViewData["Quizes"] = Quizzes;
-            ViewData["QuizThemes"] = QuizThemes.Where(quizTheme => quizTheme.QuizID == questionData.QuizID);
-            ViewData["QuestionTypes"] = QuestionTypes.Where(questionType => questionType.QuizID == questionData.QuizID);
-            ViewData["AnswerTypes"] = AnswerTypes.Where(answerType => answerType.QuestionTypeID == questionData.QuestionTypeID);
-
-            return View("EditQuestion", questionData);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(QuestionData questionData, IFormFile file)
-        {
-            if (!ModelState.IsValid)
-                return null;
-            
-            // _imageHandler.UploadImage(file, question.ImageID);
-            
-            var question = _mapper.Map<Question>(questionData);
-            _questionService.UpdateQuestion(question);
-            
-            //if (file != null)
-            //{
-            //    var image = CreateImage(file);
-            //    image.ID = questionData.ImageID;
-            //    image.QuestionID = questionData.ID;
-            //    _imageHandler.UpdateImage(image);
-            //}
-
-            return RedirectToAction(nameof(Index));
-        }
-        
         [HttpPost]
         public IActionResult Delete(int id)
         {
@@ -203,6 +203,20 @@ namespace QuizMvc.Controllers
                 return View("Index", questions);
             }
             throw new Exception("Something went wrong");
+        }
+
+        [HttpGet]
+        public ActionResult GetCheckBoxesByAnswerTypeID(int answerTypeID)
+        {
+            if (answerTypeID > 0)
+            {
+                var answerType = _answerTypeService.GetAnswerTypeByID(answerTypeID);
+                var answerTypeDescriptionElement = answerType.AnswerTypeDescription;
+                var answerTypeConfiguration = Util.Deserialize<AnswerTypeConfiguration>(answerTypeDescriptionElement);
+
+                return PartialView("CheckBoxPartialView", answerTypeConfiguration);
+            }
+            return null;
         }
 
         #endregion
