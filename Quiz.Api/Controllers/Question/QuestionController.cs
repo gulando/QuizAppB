@@ -87,8 +87,25 @@ namespace QuizApi.Controllers
             await _questionService.DeleteQuestionAsync(questionID);
             return new JsonResult(null);
         }
-        
+
         #endregion
-        
+
+        #region other
+
+        [HttpGet("{questionID}/{answers}")]
+        [Produces("application/json")]
+        [ActionName("IsAnswerCorrect")]
+        public bool IsAnswerCorrect(int questionID, string answers)
+        {
+            var question = _questionService.GetQuestionByID(questionID);
+
+            if (question.CorrectAnswer.Contains(answers))
+                return true;
+
+            return false;
+        }
+
+        #endregion
+
     }
 } 

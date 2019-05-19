@@ -144,14 +144,6 @@ namespace QuizApi.Controllers
             return new JsonResult(null);
         }
 
-        [HttpGet("{questionID}")]
-        [Produces("application/json")]
-        [ActionName("IsAnswerCorrect")]
-        public bool IsAnswerCorrect(int questionID, List<int> idSList)
-        {
-            return false;
-        }
-
         #endregion
     }
 }
