@@ -20,6 +20,8 @@
         var quizID = window.$('#QuizName').val();
         var ansnwerTypeID = null;
 
+        document.getElementById("editCorrectAnswer").innerHTML = "";
+
         window.$("#QuestionTypeName").empty();
         window.$("#QuizThemeName").empty();
         window.$("#AnswerTypeName").empty();
@@ -30,7 +32,7 @@
             dataType: "JSON",
             data: { QuizID: quizID, QuestionTypeID: 0 },
             success: function (response) {
-                console.log(response);
+                //console.log(response);
                 window.$.each(response, function (index, item) {
 
                     if (window.$("#QuizThemeName option:contains('" + item.quizThemeName + "')").length === 0) {
@@ -61,9 +63,9 @@
                 window.$.ajax({
                     url: '/Question/GetCheckBoxesByAnswerTypeID',
                     type: "GET",
-                    data: { AnswerTypeID: ansnwerTypeID},
+                    data: { AnswerTypeID: ansnwerTypeID },
                     success: function (response) {
-                        $("#element").html(response);
+                        $("#newCorrectAnswer").html(response);
                     }
                 });
             }
@@ -76,6 +78,8 @@
         var questionTypeID = window.$('#QuestionTypeName').val();
         var ansnwerTypeID = null;
 
+        document.getElementById("editCorrectAnswer").innerHTML = "";
+
         window.$("#AnswerTypeName").empty();
 
         window.$.ajax({
@@ -84,7 +88,7 @@
             dataType: "JSON",
             data: { QuizID: quizID, QuestionTypeID: questionTypeID },
             success: function (response) {
-                console.log(response);
+                //console.log(response);
                 window.$.each(response, function (index, item) {
                     if (window.$("#AnswerTypeName option:contains('" + item.answerTypeName + "')").length === 0) {
                         window.$("#AnswerTypeName").append(window.$('<option/>',
@@ -100,14 +104,26 @@
                 window.$.ajax({
                     url: '/Question/GetCheckBoxesByAnswerTypeID',
                     type: "GET",
-                    data: { AnswerTypeID: ansnwerTypeID},
+                    data: { AnswerTypeID: ansnwerTypeID },
                     success: function (response) {
-                        $("#element").html(response);
+                        $("#newCorrectAnswer").html(response);
                     }
                 });
             }
         });
-       
+    }
+
+    function onSaveClick() {
+        var newCorrectAnswer = '';
+        if (correctAnswer.includes(',')) {
+            newCorrectAnswer = correctAnswer.substr(1, correctAnswer.length)
+        }
+        else {
+            newCorrectAnswer = correctAnswer;
+        }
+            
+        document.getElementById('correctAnswerID').value = newCorrectAnswer;
+        alert(newCorrectAnswer);
     }
 
 </script>
@@ -115,48 +131,60 @@
 
 @using (Html.BeginForm(ViewBag.CreateMode ? "Create" : "Edit", "Question", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-<div class="form-group">
+    <div class="form-group">
 
-    <div>@Html.ValidationMessageFor(x => x.QuestionNo, "", new { @class = "text-danger" })</div>
-    <label>Question No.</label>
-    <input asp-for="QuestionNo" class="form-control" />
+        <div>@Html.ValidationMessageFor(x => x.QuestionNo, "", new { @class = "text-danger" })</div>
+        <label>Question No.</label>
+        <input asp-for="QuestionNo" class="form-control" />
 
 
-    <div>@Html.ValidationMessageFor(x => x.QuizID, "", new { @class = "text-danger" })</div>
-    <label>Quiz</label>
-    @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"), "--Select One--", new { @class = "form-control", @id = "QuizName", onchange = "quizNameChange()" })
+        <div>@Html.ValidationMessageFor(x => x.QuizID, "", new { @class = "text-danger" })</div>
+        <label>Quiz</label>
+        @Html.DropDownListFor(x => Model.QuizID, new SelectList((IEnumerable)ViewData["Quizes"], "ID", "QuizName"), "--Select One--", new { @class = "form-control", @id = "QuizName", onchange = "quizNameChange()" })
 
-    <br />
+        <br />
 
-    <div>@Html.ValidationMessageFor(x => x.QuizThemeID, "", new { @class = "text-danger" })</div>
-    <label>Quiz Theme</label>
-    @Html.DropDownListFor(x => Model.QuizThemeID, new SelectList((IEnumerable)ViewData["QuizThemes"], "ID", "QuizThemeName"), "--Select One--", new { @class = "form-control", @id = "QuizThemeName" })
+        <div>@Html.ValidationMessageFor(x => x.QuizThemeID, "", new { @class = "text-danger" })</div>
+        <label>Quiz Theme</label>
+        @Html.DropDownListFor(x => Model.QuizThemeID, new SelectList((IEnumerable)ViewData["QuizThemes"], "ID", "QuizThemeName"), "--Select One--", new { @class = "form-control", @id = "QuizThemeName" })
 
-    <br />
+        <br />
 
-    <div>@Html.ValidationMessageFor(x => x.QuestionTypeID, "", new { @class = "text-danger" })</div>
-    <label>Question Type Name</label>
-    @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), "--Select One--", new { @class = "form-control", @id = "QuestionTypeName", onchange = "questionTypeChange()" })
+        <div>@Html.ValidationMessageFor(x => x.QuestionTypeID, "", new { @class = "text-danger" })</div>
+        <label>Question Type Name</label>
+        @Html.DropDownListFor(x => Model.QuestionTypeID, new SelectList((IEnumerable)ViewData["QuestionTypes"], "ID", "QuestionTypeName"), "--Select One--", new { @class = "form-control", @id = "QuestionTypeName", onchange = "questionTypeChange()" })
 
-    <br />
+        <br />
 
-    <div>@Html.ValidationMessageFor(x => x.AnswerTypeID, "", new { @class = "text-danger" })</div>
-    <label>Answer Type Name</label>
-    @Html.DropDownListFor(x => Model.AnswerTypeID, new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"), "--Select One--", new { @class = "form-control", @id = "AnswerTypeName" })
+        <div>@Html.ValidationMessageFor(x => x.AnswerTypeID, "", new { @class = "text-danger" })</div>
+        <label>Answer Type Name</label>
+        @Html.DropDownListFor(x => Model.AnswerTypeID, new SelectList((IEnumerable)ViewData["AnswerTypes"], "ID", "AnswerTypeName"), "--Select One--", new { @class = "form-control", @id = "AnswerTypeName" })
 
-    <br />
+        <br />
 
-    <div><span asp-validation-for="QuestionText" class="text-danger"></span></div>
-    <label>Question Text</label><br />
-    <textarea asp-for="QuestionText" class="form-control" rows="7" cols="75"></textarea>
-    
-    <br />
-    <div id="element"></div>
+        <div><span asp-validation-for="QuestionText" class="text-danger"></span></div>
+        <label>Question Text</label><br />
+        <textarea asp-for="QuestionText" class="form-control" rows="7" cols="75"></textarea>
 
-</div>
+        <br />
+
+        <div>
+            <div id="editCorrectAnswer">
+                @if (Model.AnswerTypeConfigurationSummary != null && !string.IsNullOrEmpty(Model.AnswerTypeConfigurationSummary.CorrectAnswer))
+                {
+                    await Html.RenderPartialAsync("CheckBoxPartialView", Model.AnswerTypeConfigurationSummary);
+                }
+            </div>
+            <div id="newCorrectAnswer">
+
+            </div>
+            <input asp-for="CorrectAnswer" id="correctAnswerID" class="form-control" hidden="true" value="" />
+        </div>
+
+    </div>
 
     <div class="text-center">
-        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-primary" type="submit" onclick="onSaveClick()">Save</button>
         <a asp-action="Index" class="btn btn-secondary">Cancel</a>
     </div>
 

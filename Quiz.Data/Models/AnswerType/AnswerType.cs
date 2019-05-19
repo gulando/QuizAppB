@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 
 namespace QuizData
 {
+
     public class AnswerType : EntityBase
     {
         [Column("AnswerTypeID")]
@@ -41,7 +42,8 @@ namespace QuizData
     {
         None = 0,
         CheckBox = 1,
-        RadioGroup = 2
+        Input = 2,
+        RadioGroup = 3
     }
 
     [XmlRoot("AnswerType"), XmlType("AnswerType")]
@@ -50,5 +52,12 @@ namespace QuizData
         public RenderType Type { get; set; }
         public int Count { get; set; }
         public int CorrectCount { get; set; }
+        public int RowCount { get; set; }
+    }
+
+    public class AnswerTypeConfigurationSummary
+    {
+        public AnswerTypeConfiguration AnswerTypeConfiguration { get; set; }
+        public string CorrectAnswer { get; set; }
     }
 }

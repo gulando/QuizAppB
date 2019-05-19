@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using QuizData;
 
 namespace QuizMvc.Models
 {
@@ -45,6 +46,7 @@ namespace QuizMvc.Models
         public string AnswerTypeName { get; set; }
 
         public string ExamTypeName { get; set; }
-      
+
+        public AnswerTypeConfigurationSummary AnswerTypeConfigurationSummary { get; set; }
     }
 }

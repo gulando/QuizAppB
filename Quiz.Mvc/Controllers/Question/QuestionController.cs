@@ -98,6 +98,14 @@ namespace QuizMvc.Controllers
             ViewData["QuestionTypes"] = QuestionTypes.Where(questionType => questionType.QuizID == questionData.QuizID);
             ViewData["AnswerTypes"] = AnswerTypes.Where(answerType => answerType.QuestionTypeID == questionData.QuestionTypeID);
 
+            var answerTypeConfiguration = GetAnswerTypeConfiguration(questionData.AnswerTypeID);
+            var answerTypeConfigurationSummary = new AnswerTypeConfigurationSummary
+            {
+                AnswerTypeConfiguration = answerTypeConfiguration,
+                CorrectAnswer = questionData.CorrectAnswer
+            };
+            questionData.AnswerTypeConfigurationSummary = answerTypeConfigurationSummary;
+
             return View("EditQuestion", questionData);
         }
 
@@ -199,7 +207,7 @@ namespace QuizMvc.Controllers
         {
             if (_memoryCache.TryGetValue(QuestionDefaults.QuestionGetAll, out List<QuestionSummary> questionSummaryList))
             {
-                var questions = questionSummaryList.Where(question => question.QuizThemeID == id).ToList();
+                var questions = questionSummaryList.Where(question => question.QuizThemeID == id).OrderBy(question => question.QuestionNo).ToList();
                 return View("Index", questions);
             }
             throw new Exception("Something went wrong");
@@ -210,15 +218,30 @@ namespace QuizMvc.Controllers
         {
             if (answerTypeID > 0)
             {
-                var answerType = _answerTypeService.GetAnswerTypeByID(answerTypeID);
-                var answerTypeDescriptionElement = answerType.AnswerTypeDescription;
-                var answerTypeConfiguration = Util.Deserialize<AnswerTypeConfiguration>(answerTypeDescriptionElement);
+                var answerTypeConfiguration = GetAnswerTypeConfiguration(answerTypeID);
+                var answerTypeConfigurationSummary = new AnswerTypeConfigurationSummary
+                {
+                    AnswerTypeConfiguration = answerTypeConfiguration,
+                    CorrectAnswer = string.Empty
+                };
 
-                return PartialView("CheckBoxPartialView", answerTypeConfiguration);
+                return PartialView("CheckBoxPartialView", answerTypeConfigurationSummary);
             }
             return null;
         }
 
+        private AnswerTypeConfiguration GetAnswerTypeConfiguration(int answerTypeID)
+        {
+            if (answerTypeID > 0)
+            {
+                var answerType = _answerTypeService.GetAnswerTypeByID(answerTypeID);
+                var answerTypeDescriptionElement = answerType.AnswerTypeDescription;
+                var answerTypeConfiguration = Util.Deserialize<AnswerTypeConfiguration>(answerTypeDescriptionElement);
+
+                return answerTypeConfiguration;
+            }
+            return null;
+        }
         #endregion
     }
 }
