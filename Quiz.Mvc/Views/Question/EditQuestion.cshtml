@@ -114,16 +114,18 @@
     }
 
     function onSaveClick() {
-        var newCorrectAnswer = '';
-        if (correctAnswer.includes(',')) {
-            newCorrectAnswer = correctAnswer.substr(1, correctAnswer.length)
+
+        if (correctAnswer === '') {
+           
+        }
+        else if (correctAnswer.includes(',')) {
+            document.getElementById('correctAnswerID').value = correctAnswer.substr(1, correctAnswer.length);
         }
         else {
-            newCorrectAnswer = correctAnswer;
+            document.getElementById('correctAnswerID').value = correctAnswer;
         }
-            
-        document.getElementById('correctAnswerID').value = newCorrectAnswer;
-        alert(newCorrectAnswer);
+
+        //alert(correctAnswer);
     }
 
 </script>
@@ -178,7 +180,7 @@
             <div id="newCorrectAnswer">
 
             </div>
-            <input asp-for="CorrectAnswer" id="correctAnswerID" class="form-control" hidden="true" value="" />
+            <input asp-for="CorrectAnswer" id="correctAnswerID" class="form-control" hidden="true" />
         </div>
 
     </div>

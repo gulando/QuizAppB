@@ -17,11 +17,11 @@
         }
     }
 
-
-    $('#textbox').change(function () {
+    function textBoxChanged() {
         correctAnswer = "";
         correctAnswer = window.$('#textbox').val();
-    });
+    }
+
 
 </script>
 
@@ -31,12 +31,12 @@
     <br />
 
     @{
-        if (Model != null && Model.AnswerTypeConfiguration != null)
-        {
-            var answerTypeConfiguration = Model.AnswerTypeConfiguration;
-            var correctAnswer = Model.CorrectAnswer;
-            int[] correctAnswerIDs = new int[100];
+        var answerTypeConfiguration = Model.AnswerTypeConfiguration;
+        var correctAnswer = Model.CorrectAnswer;
+        int[] correctAnswerIDs = new int[100];
 
+        if (Model != null && answerTypeConfiguration != null)
+        {
             if (!string.IsNullOrEmpty(correctAnswer))
             {
                 correctAnswerIDs = correctAnswer.Split(",").Select(n => Convert.ToInt32(n)).ToArray();
@@ -71,11 +71,11 @@
                     {
                         if (!string.IsNullOrEmpty(correctAnswer))
                         {
-                            @Html.TextBox("Input" + i, correctAnswer, new { id = "textbox" })
+                            @Html.TextBox("Input" + i, correctAnswer, new { id = "textbox", onchange = "textBoxChanged()", type = "numeric" })
                         }
                         else
                         {
-                            @Html.TextBox("Input" + i, "", new { id = "textbox" })
+                            @Html.TextBox("Input" + i, "", new { id = "textbox", onchange = "textBoxChanged()",  type = "numeric"})
                         }
                     }
                     break;
@@ -87,12 +87,6 @@
         else
         {
             @Html.CheckBox("Check" + 0, false)
-        }
-
-        if (!string.IsNullOrEmpty(Model.CorrectAnswer))
-        {
-            string correctAnswer = Model.CorrectAnswer;
-
         }
     }
 
