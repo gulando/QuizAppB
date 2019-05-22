@@ -98,10 +98,10 @@ namespace QuizApi.Controllers
         // 2  1,2,3
         // 3  '1:1,2,3', '2:3,9', '3"7,8,9'
 
-        [HttpGet("{questionID}/{answers}")]
+        [HttpGet("{questionID}")]
         [Produces("application/json")]
         [ActionName("IsAnswerCorrect")]
-        public async Task<int> IsAnswerCorrect(int questionID, List<string> answers)
+        public async Task<int> IsAnswerCorrect(int questionID, [FromQuery]List<string> answers)
         {
             var question = _questionService.GetQuestionByID(questionID);
             var answerType = await _answerTypeService.GetAnswerTypeByIDAsync(question.AnswerTypeID);
