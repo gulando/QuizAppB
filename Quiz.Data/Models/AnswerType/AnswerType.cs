@@ -6,6 +6,13 @@ using System.Xml.Serialization;
 
 namespace QuizData
 {
+    public enum RenderType
+    {
+        None = 0,
+        CheckBox = 1,
+        Input = 2,
+        RadioGroup = 3
+    }
 
     public class AnswerType : EntityBase
     {
@@ -36,14 +43,6 @@ namespace QuizData
         
         public string QuestionTypeName { get; set; }
         
-    }
-
-    public enum RenderType
-    {
-        None = 0,
-        CheckBox = 1,
-        Input = 2,
-        RadioGroup = 3
     }
 
     [XmlRoot("AnswerType"), XmlType("AnswerType")]

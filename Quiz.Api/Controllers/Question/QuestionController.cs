@@ -18,15 +18,17 @@ namespace QuizApi.Controllers
         #region properties
         
         private readonly IQuestionService _questionService;
+        private readonly IAnswerTypeService _answerTypeService;
         private readonly IMapper _mapper;
         
         #endregion
 
         #region ctor
         
-        public QuestionController(IQuestionService service, IMapper mapper)
+        public QuestionController(IQuestionService questionService, IAnswerTypeService answerTypeService, IMapper mapper)
         {
-            _questionService = service;
+            _questionService = questionService;
+            _answerTypeService = answerTypeService;
             _mapper = mapper;
         }
         
@@ -92,17 +94,37 @@ namespace QuizApi.Controllers
 
         #region other
 
+        // 1  130
+        // 2  1,2,3
+        // 3  '1:1,2,3', '2:3,9', '3"7,8,9'
+
         [HttpGet("{questionID}/{answers}")]
         [Produces("application/json")]
         [ActionName("IsAnswerCorrect")]
-        public bool IsAnswerCorrect(int questionID, string answers)
+        public async Task<int> IsAnswerCorrect(int questionID, List<string> answers)
         {
             var question = _questionService.GetQuestionByID(questionID);
+            var answerType = await _answerTypeService.GetAnswerTypeByIDAsync(question.AnswerTypeID);
 
-            if (question.CorrectAnswer.Contains(answers))
-                return true;
+            if (answers.Count == 1)
+            {
+                if (question.CorrectAnswer.Equals(answers[0]))
+                    return 1;
+                else
+                {
 
-            return false;
+                }
+            }
+            else
+            {
+                
+            }
+
+
+            //if (question.CorrectAnswer.Contains(answers))
+            //    return true;
+
+            return 0;
         }
 
         #endregion
