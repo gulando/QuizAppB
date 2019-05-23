@@ -42,7 +42,8 @@ namespace QuizData
         public string QuizName { get; set; }
         
         public string QuestionTypeName { get; set; }
-        
+
+        public AnswerTypeConfiguration AnswerTypeConfiguration { get; set; }
     }
 
     [XmlRoot("AnswerType"), XmlType("AnswerType")]

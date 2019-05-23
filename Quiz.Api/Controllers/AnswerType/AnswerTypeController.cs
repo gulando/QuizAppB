@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizApi.Models;
 using QuizService;
 using QuizData;
-
+using QuizApi.Helpers;
 
 namespace QuizApi.Controllers
 {
@@ -54,9 +54,17 @@ namespace QuizApi.Controllers
         public async Task<JsonResult> GetAllAnswerTypes()
         {
             var answerTypes = await _answerTypeService.GetAnswerTypeSummaryAsync();
+
             if (answerTypes != null && answerTypes.Count > 0)
             {
+                foreach(var answerType in answerTypes)
+                {
+                    var answerTypeConfiguration = Util.Deserialize<AnswerTypeConfiguration>(answerType.AnswerTypeDescription);
+                    answerType.AnswerTypeConfiguration = answerTypeConfiguration;
+                }
+                
                 var answerDataList = _mapper.Map<List<AnswerTypeSummary>, List<AnswerTypeData>>(answerTypes);
+
                 return Json(answerDataList);
             }
             return new JsonResult(null);

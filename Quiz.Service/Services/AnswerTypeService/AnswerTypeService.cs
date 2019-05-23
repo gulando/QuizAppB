@@ -131,7 +131,8 @@ namespace QuizService
                     QuestionTypeID = questionTypes.ID,
                     QuizName = quizes.QuizName,
                     QuestionTypeName = questionTypes.QuestionTypeName,
-                    AnswerTypeName = answerTypes.AnswerTypeName
+                    AnswerTypeName = answerTypes.AnswerTypeName,
+                    AnswerTypeDescription = answerTypes.AnswerTypeDescription
                 }).OrderBy(k => k.AnswerTypeName).ToListAsync();
 
             return await result;  

@@ -1,3 +1,4 @@
+using QuizData;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuizApi.Models
@@ -21,5 +22,7 @@ namespace QuizApi.Models
         [Required]
         [Display(Name = "Answer Type")]
         public string AnswerTypeName { get; set; }
+
+        public AnswerTypeConfiguration AnswerTypeConfiguration { get; set; }
     }
 }
