@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using QuizApi.Models;
 using QuizService;
 using QuizData;
-
+using QuizApi.Helpers;
 
 namespace QuizApi.Controllers
 {
@@ -101,15 +101,20 @@ namespace QuizApi.Controllers
         [HttpGet("{questionID}")]
         [Produces("application/json")]
         [ActionName("IsAnswerCorrect")]
-        public async Task<int> IsAnswerCorrect(int questionID, [FromQuery]List<string> answers)
+        public async Task<JsonResult> IsAnswerCorrect(int questionID, [FromQuery]List<string> answers)
         {
             var question = _questionService.GetQuestionByID(questionID);
+
             var answerType = await _answerTypeService.GetAnswerTypeByIDAsync(question.AnswerTypeID);
+            var answerTypeConfiguration = GetAnswerTypeConfiguration(question.AnswerTypeID);
+
+            var resultData = new ResultData();
+            int score = 0;
 
             if (answers.Count == 1)
             {
                 if (question.CorrectAnswer.Equals(answers[0]))
-                    return 1;
+                    score = 1;
                 else
                 {
 
@@ -120,11 +125,25 @@ namespace QuizApi.Controllers
                 
             }
 
+            resultData.CorrectAnswer = question.CorrectAnswer;
+            resultData.Score = score;
+            resultData.MaxScore = answerTypeConfiguration.CorrectCount;
 
-            //if (question.CorrectAnswer.Contains(answers))
-            //    return true;
 
-            return 0;
+            return new JsonResult(resultData);
+        }
+
+        private AnswerTypeConfiguration GetAnswerTypeConfiguration(int answerTypeID)
+        {
+            if (answerTypeID > 0)
+            {
+                var answerType = _answerTypeService.GetAnswerTypeByID(answerTypeID);
+                var answerTypeDescriptionElement = answerType.AnswerTypeDescription;
+                var answerTypeConfiguration = Util.Deserialize<AnswerTypeConfiguration>(answerTypeDescriptionElement);
+
+                return answerTypeConfiguration;
+            }
+            return null;
         }
 
         #endregion

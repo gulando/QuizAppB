@@ -138,7 +138,7 @@ namespace QuizApi.Controllers
             if (questions != null && questions.Count > 0)
             {
                 var questionDataList = _mapper.Map<List<QuestionSummary>, List<QuestionData>>(questions);
-                return Json(questionDataList);
+                return Json(questionDataList.Take(50));
             }
 
             return new JsonResult(null);
