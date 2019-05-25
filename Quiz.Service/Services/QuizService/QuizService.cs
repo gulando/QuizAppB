@@ -188,7 +188,7 @@ namespace QuizService
         {
             var result = (from questions in _questionRepository.Table
                           join quizes in _quizRepository.Table on questions.QuizID equals quizes.ID
-                          join quizThemes in _quizThemeRepository.Table on quizes.ID equals quizThemes.QuizID
+                          join quizThemes in _quizThemeRepository.Table on questions.QuizThemeID equals quizThemes.ID
                           where quizes.ID == quizID && (quizThemeIDs.Contains(quizThemes.ID) || quizThemeIDs.Count == 0)
                           select new QuestionSummary
                           {
