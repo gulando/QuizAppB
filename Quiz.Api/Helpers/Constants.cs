@@ -11,7 +11,7 @@ namespace QuizApi.Helpers
         {
             public static class JwtClaimIdentifiers
             {
-                public const string Rol = "rol", Id = "id";
+                public const string Role = "rol", Id = "id";
             }
 
             public static class JwtClaims
