@@ -43,7 +43,7 @@ namespace QuizApi.Controllers
             if (questionType != null && questionType.Count > 0)
             {
                 var questionData = _mapper.Map<QuestionTypeData>(questionType.First());
-                return Json(questionData);                
+                return Json(questionData);
             }
             return new JsonResult(null);
         }
